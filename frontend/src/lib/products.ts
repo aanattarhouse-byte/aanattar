@@ -15,15 +15,11 @@ export type Product = {
   hoverImage?: string;
 };
 
-export const SALIM_WARDROBE_BUNDLE_SLUG =
-  "salim-premium-attar-buy-3-at-799";
-
 const unsplashImage = (id: string) =>
   `https://unsplash.com/photos/${id}/download?force=true&w=900`;
 
 export const productImages: Record<string, string> = {
   "salim-luxury-attar": "/salim1.jpg",
-  [SALIM_WARDROBE_BUNDLE_SLUG]: "/salim2.jpg",
   "royal-confidence": unsplashImage("j1vg92xdoX4"),
   "armani-prestige": unsplashImage("7BfHnIkZv5E"),
   "jannat-essence": unsplashImage("eKjhDOOsb0U"),
@@ -63,7 +59,6 @@ export const productImages: Record<string, string> = {
 
 export const productDiscountPercents: Record<string, number> = {
   "salim-luxury-attar": 28,
-  [SALIM_WARDROBE_BUNDLE_SLUG]: 38,
   "royal-confidence": 28,
   "armani-prestige": 24,
   "jannat-essence": 18,
@@ -119,24 +114,6 @@ const productCatalog: Product[] = [
     bestFor: "Daily wear, gifting, evening plans, and signature scent lovers.",
     price: 499,
     category: "Signature Classics",
-    premium: true,
-  },
-  {
-    id: SALIM_WARDROBE_BUNDLE_SLUG,
-    slug: SALIM_WARDROBE_BUNDLE_SLUG,
-    name: "Salim Premium Attar Combo",
-    image: "/salim2.jpg",
-    hoverImage: "/salim1.jpg",
-    shortDescription:
-      "Buy 3 Salim premium attars at Rs. 799: 12 ML + 5 ML + 5 ML.",
-    description:
-      "Salim Premium Attar Combo is a wardrobe-building set with one 12 ML Salim attar and two 5 ML companion attars at Rs. 799. It is made for daily wear, gifting, and layering, with premium oil concentration and long-lasting performance.",
-    notes: ["12 ML Salim attar", "5 ML companion attar", "5 ML layering attar"],
-    vibe: "Premium wardrobe set",
-    bestFor:
-      "Trying more Salim attars, building a daily fragrance rotation, and gifting.",
-    price: 799,
-    category: "Premium Attar Combo",
     premium: true,
   },
   {
@@ -658,11 +635,7 @@ export const products: Product[] = productCatalog.map((product) => ({
   discountPercent: getProductDiscountPercent(product),
 }));
 
-const salimProductSlugs = new Set(["salim-luxury-attar", SALIM_WARDROBE_BUNDLE_SLUG]);
-
-export const salimProducts = products.filter((product) =>
-  salimProductSlugs.has(product.slug)
-);
+const salimProductSlugs = new Set(["salim-luxury-attar"]);
 
 export const signatureProducts = products.filter(
   (product) => !salimProductSlugs.has(product.slug)

@@ -16,9 +16,19 @@ import paymentRoutes from './routes/payment.routes.js';
 import productRoutes from './routes/product.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import connectDB from './config/db.js';
+import { handleRazorpayWebhook } from './controllers/payment.controller.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 const app = express();
+
+const ensureDbConnection = async (_req, _res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 
 const configuredOrigins = [
   process.env.CLIENT_URL,
@@ -57,6 +67,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 300 }));
+app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), ensureDbConnection, handleRazorpayWebhook);
+app.post('/payment/webhook', express.raw({ type: 'application/json' }), ensureDbConnection, handleRazorpayWebhook);
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -69,14 +81,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
-app.use(async (_req, _res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
+app.use(ensureDbConnection);
 
 app.use('/auth', authRoutes);
 app.use('/api/auth', authRoutes);

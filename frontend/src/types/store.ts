@@ -5,12 +5,20 @@ export type PaymentStatus = 'Pending' | 'Paid' | 'Failed' | 'Refunded';
 export type Address = {
   fullName?: string;
   phone?: string;
+  alternatePhone?: string;
   line1: string;
   line2?: string;
+  landmark?: string;
   city: string;
   state: string;
   pincode: string;
   country?: string;
+  deliveryInstructions?: string;
+  receiverFullName?: string;
+  mobileNumber?: string;
+  alternateMobileNumber?: string;
+  houseFlatBuilding?: string;
+  streetAreaLocality?: string;
   isDefault?: boolean;
 };
 
@@ -62,6 +70,8 @@ export type Order = {
   amount: number;
   paymentStatus: PaymentStatus;
   orderStatus: OrderStatus;
+  paymentMethod?: 'COD' | 'Razorpay';
+  paymentDetails?: Record<string, unknown>;
   shippingAddress: Address;
   razorpayOrderId?: string;
   razorpayPaymentId?: string;

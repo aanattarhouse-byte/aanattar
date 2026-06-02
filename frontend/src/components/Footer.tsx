@@ -160,7 +160,7 @@ duration-500
 
 
 <div className="space-y-3 text-zinc-400">
-<p>hello@theaanstory.com</p>
+<p>aan.attarhouse@gmail.com</p>
 <p>+91 9876543210</p>
 </div>
 

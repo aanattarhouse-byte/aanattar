@@ -1,16 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { SALIM_WARDROBE_BUNDLE_SLUG, formatPrice } from "@/lib/products";
+import { formatPrice } from "@/lib/products";
+import { getSalimComboState } from "@/lib/salimCombo";
+import CheckoutAddressModal from "@/components/CheckoutAddressModal";
 
 export default function CartClient() {
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const { items, subtotal, updateQuantity, removeItem } = useCart();
-  const hasSalimProductInCart = items.some(
-    (item) => item.slug === "salim-luxury-attar"
-  );
+  const salimComboState = getSalimComboState(items);
 
   if (items.length === 0) {
     return (
@@ -18,13 +20,13 @@ export default function CartClient() {
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-full border border-amber-300/30 bg-amber-300/10 text-amber-200">
           <ShoppingBag size={26} />
         </div>
-        <h1 className="mt-5 text-4xl">Your Cart Is Empty</h1>
-        <p className="mt-3 text-zinc-300">
+        <h1 className="mt-5 text-2xl">Your Cart Is Empty</h1>
+        <p className="mt-3 text-sm text-zinc-300">
           Explore the collection and choose a signature attar to begin.
         </p>
         <Link
           href="/build-your-signature"
-          className="mt-7 inline-flex h-12 items-center rounded-[8px] bg-[#D4A24C] px-6 text-sm font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A]"
+          className="mt-7 inline-flex h-11 items-center rounded-[8px] bg-[#D4A24C] px-5 text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A]"
         >
           Shop Collection
         </Link>
@@ -54,8 +56,8 @@ export default function CartClient() {
             </Link>
 
             <div>
-              <h2 className="text-2xl">{item.name}</h2>
-              <p className="mt-2 font-sans text-sm font-bold text-amber-200">
+              <h2 className="text-lg">{item.name}</h2>
+              <p className="mt-2 font-sans text-xs font-bold text-amber-200">
                 {formatPrice(item.price)}
               </p>
               <div className="mt-4 inline-flex h-10 items-center overflow-hidden rounded-[8px] border border-white/15 bg-white/5">
@@ -69,7 +71,7 @@ export default function CartClient() {
                 >
                   <Minus size={15} />
                 </button>
-                <span className="grid h-10 min-w-10 place-items-center border-x border-white/15 text-sm font-bold">
+                <span className="grid h-10 min-w-10 place-items-center border-x border-white/15 text-xs font-bold">
                   {item.quantity}
                 </span>
                 <button
@@ -86,7 +88,7 @@ export default function CartClient() {
             </div>
 
             <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
-              <p className="font-bold text-white">
+              <p className="text-sm font-bold text-white">
                 {formatPrice(item.price * item.quantity)}
               </p>
               <button
@@ -100,54 +102,57 @@ export default function CartClient() {
             </div>
           </article>
         ))}
-        {hasSalimProductInCart && (
-          <div className="rounded-[8px] border border-amber-300/25 bg-amber-300/10 p-5">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-display text-3xl text-white">
-                  Build your wardrobe
-                </p>
-                <p className="mt-2 text-sm font-semibold text-amber-100">
-                  Buy 3 products at {formatPrice(799)}
-                </p>
-                <p className="mt-1 font-sans text-xs font-bold uppercase tracking-[0.16em] text-amber-200">
-                  12 ML + 5 ML + 5 ML
-                </p>
-              </div>
-              <Link
-                href={`/product/${SALIM_WARDROBE_BUNDLE_SLUG}`}
-                className="inline-flex h-11 items-center justify-center rounded-[8px] bg-[#D4A24C] px-5 text-sm font-bold uppercase tracking-[0.1em] text-black transition hover:bg-[#E0B35A]"
-              >
-                Choose more
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
 
       <aside className="h-fit rounded-[8px] border border-amber-300/20 bg-[#1a120d] p-6">
-        <h2 className="text-3xl">Order Summary</h2>
+        <h2 className="text-xl">Order Summary</h2>
         <div className="mt-6 space-y-3 border-y border-white/10 py-5">
           <div className="flex justify-between text-sm text-zinc-300">
             <span>Subtotal</span>
             <span>{formatPrice(subtotal)}</span>
           </div>
+          {salimComboState.active && (
+            <>
+              <div className="rounded-[8px] border border-emerald-400/20 bg-emerald-400/10 p-3">
+                <p className="text-xs font-bold text-emerald-200">
+                  Salim Combo Offer Applied
+                </p>
+                <p className="mt-1 text-xs font-semibold text-emerald-100">
+                  You saved {formatPrice(salimComboState.savedAmount)}
+                </p>
+              </div>
+              <div className="flex justify-between text-sm font-semibold text-emerald-200">
+                <span>Combo Discount</span>
+                <span>-{formatPrice(salimComboState.discount)}</span>
+              </div>
+            </>
+          )}
           <div className="flex justify-between text-sm text-zinc-300">
             <span>Shipping</span>
             <span>Calculated at checkout</span>
           </div>
         </div>
-        <div className="mt-5 flex justify-between text-lg font-bold">
-          <span>Total</span>
-          <span>{formatPrice(subtotal)}</span>
+        <div className="mt-5 flex justify-between text-base font-bold">
+          <span>{salimComboState.active ? "Final Total" : "Total"}</span>
+          <span>{formatPrice(salimComboState.finalTotal)}</span>
         </div>
         <button
           type="button"
-          className="mt-6 h-13 w-full rounded-[8px] bg-[#D4A24C] text-sm font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A]"
+          onClick={() => setCheckoutOpen(true)}
+          className="mt-6 h-12 w-full rounded-[8px] bg-[#D4A24C] text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A]"
         >
           Order Now
         </button>
       </aside>
+      {checkoutOpen && (
+        <CheckoutAddressModal
+          items={items}
+          subtotal={subtotal}
+          discount={salimComboState.discount}
+          finalAmount={salimComboState.finalTotal}
+          onClose={() => setCheckoutOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -18,7 +18,13 @@ function getRazorpay() {
 }
 
 export default {
+  get instance() {
+    return getRazorpay();
+  },
   get orders() {
     return getRazorpay().orders;
+  },
+  get payments() {
+    return getRazorpay().payments;
   }
 };

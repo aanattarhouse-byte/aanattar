@@ -28,6 +28,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/salim",
+        destination: "/product/salim-luxury-attar",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

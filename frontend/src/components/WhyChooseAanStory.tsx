@@ -3,7 +3,7 @@
 import { fadeUp, stagger } from "@/lib/framer/motion";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
+import ShopSalimButton from "@/components/ShopSalimButton";
 
 const particles = [
   "left-[8%] top-[18%] h-1.5 w-1.5 opacity-70",
@@ -71,13 +71,12 @@ export default function WhyChooseAanStory() {
         </motion.div>
 
         <motion.div variants={fadeUp} className="mt-14 flex justify-center">
-          <Link
-            href="/salim"
+          <ShopSalimButton
             className="group relative overflow-hidden rounded-full border border-[#fff0bd]/45 bg-gradient-to-r from-[#ff7a38] via-[#ffb347] to-[#c89b3c] px-8 py-4 text-center text-xs font-bold uppercase tracking-[0.18em] text-[#090705] shadow-[0_18px_70px_rgba(255,179,71,0.26)] transition duration-300 hover:scale-[1.025] hover:shadow-[0_24px_90px_rgba(255,179,71,0.38)]"
           >
             <span className="absolute inset-0 translate-x-[-120%] bg-gradient-to-r from-transparent via-white/55 to-transparent transition duration-700 group-hover:translate-x-[120%]" />
             <span className="relative">Shop Salim</span>
-          </Link>
+          </ShopSalimButton>
         </motion.div>
       </motion.div>
     </section>

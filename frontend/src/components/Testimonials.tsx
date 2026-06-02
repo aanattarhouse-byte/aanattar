@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Quote, Star } from "lucide-react";
-import Link from "next/link";
+import ShopSalimButton from "@/components/ShopSalimButton";
 
 const testimonials = [
   {
@@ -70,12 +70,11 @@ export default function Testimonials() {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/salim"
+                <ShopSalimButton
                   className="rounded-lg bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
                 >
                   Shop Salim
-                </Link>
+                </ShopSalimButton>
               </div>
             </div>
 

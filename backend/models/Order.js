@@ -1,9 +1,13 @@
 import mongoose from 'mongoose';
 
 const orderProductSchema = new mongoose.Schema({
-  product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+  product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+  productId: String,
+  slug: String,
   name: String,
   image: String,
+  variant: String,
+  size: String,
   quantity: { type: Number, required: true },
   price: { type: Number, required: true }
 }, { _id: false });
@@ -22,6 +26,12 @@ const orderSchema = new mongoose.Schema({
     enum: ['Pending', 'Processing', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'],
     default: 'Pending'
   },
+  paymentMethod: {
+    type: String,
+    enum: ['COD', 'Razorpay'],
+    default: 'COD'
+  },
+  paymentDetails: { type: Object },
   shippingAddress: { type: Object, required: true },
   razorpayOrderId: String,
   razorpayPaymentId: String

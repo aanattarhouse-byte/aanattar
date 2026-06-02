@@ -81,7 +81,7 @@ export default function OrderDetailsClient({ initialOrder }: OrderDetailsClientP
             <DetailItem label="Order ID" value={order._id} />
             <DetailItem label="Order Date" value={formatDate(order.createdAt)} />
             <DetailItem label="Current Status" value={order.orderStatus} />
-            <DetailItem label="Payment Method" value={order.razorpayOrderId || order.razorpayPaymentId ? 'Razorpay' : 'Razorpay'} />
+            <DetailItem label="Payment Method" value={order.paymentMethod || (order.razorpayOrderId || order.razorpayPaymentId ? 'Razorpay' : 'COD')} />
             <DetailItem label="Payment Status" value={order.paymentStatus} />
             <DetailItem label="Total Amount" value={formatCurrency(order.amount)} />
           </dl>
@@ -107,6 +107,7 @@ export default function OrderDetailsClient({ initialOrder }: OrderDetailsClientP
           <dl className={styles.detailList}>
             <DetailItem label="Full Name" value={user?.name || order.shippingAddress.fullName} />
             <DetailItem label="Phone Number" value={user?.phone || order.shippingAddress.phone} />
+            <DetailItem label="Alternate Phone" value={order.shippingAddress.alternatePhone || order.shippingAddress.alternateMobileNumber} />
             <DetailItem label="Email" value={user?.email} />
             <DetailItem label="User ID" value={user?._id} />
             <DetailItem label="Account Creation Date" value={formatDate(user?.createdAt)} />
@@ -117,10 +118,12 @@ export default function OrderDetailsClient({ initialOrder }: OrderDetailsClientP
           <h2 className={styles.sectionTitle}>Shipping Information</h2>
           <dl className={styles.detailList}>
             <DetailItem label="Full Address" value={[order.shippingAddress.line1, order.shippingAddress.line2].filter(Boolean).join(', ')} />
+            <DetailItem label="Landmark" value={order.shippingAddress.landmark} />
             <DetailItem label="City" value={order.shippingAddress.city} />
             <DetailItem label="State" value={order.shippingAddress.state} />
             <DetailItem label="Postal Code" value={order.shippingAddress.pincode} />
             <DetailItem label="Country" value={order.shippingAddress.country || 'India'} />
+            <DetailItem label="Delivery Instructions" value={order.shippingAddress.deliveryInstructions} />
           </dl>
         </section>
       </div>

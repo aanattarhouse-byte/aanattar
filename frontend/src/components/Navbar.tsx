@@ -25,8 +25,13 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { CART_OPEN_EVENT } from "@/lib/cart";
-import { SALIM_WARDROBE_BUNDLE_SLUG, products } from "@/lib/products";
+import { products } from "@/lib/products";
 import { useAuth } from "@/context/AuthContext";
+import SalimComboBuilder from "@/components/SalimComboBuilder";
+import {
+  getSalimComboState,
+  isSalimComboBaseItem,
+} from "@/lib/salimCombo";
 
 const navItems = [
   { label: "About", href: "/about" },
@@ -127,9 +132,7 @@ export default function Navbar() {
     updateQuantity: updateCartQuantity,
     removeItem: removeCartItem,
   } = useCart();
-  const hasSalimProductInCart = cartItems.some(
-    (item) => item.slug === "salim-luxury-attar"
-  );
+  const salimComboState = getSalimComboState(cartItems);
 
   const searchResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -851,119 +854,122 @@ export default function Navbar() {
                     {cartItems.map((item) => (
                       <div
                         key={`${item.id}-${item.variant || "default"}`}
-                        className="rounded-[8px] border border-black/10 bg-white p-3 shadow-sm"
+                        className="space-y-3"
                       >
-                        <div className="grid grid-cols-[84px_1fr_auto] gap-3">
-                          <Link
-                            href={item.slug ? `/product/${item.slug}` : "/build-your-signature"}
-                            onClick={() => setCartOpen(false)}
-                            className="relative h-[86px] overflow-hidden rounded-[8px] bg-[#120b08]"
-                          >
-                            <Image
-                              src={item.image || "/attar-bottle.svg"}
-                              alt={item.name}
-                              fill
-                              sizes="84px"
-                              className="object-cover"
-                            />
-                          </Link>
+                        <div className="rounded-[8px] border border-black/10 bg-white p-3 shadow-sm">
+                          <div className="grid grid-cols-[84px_1fr_auto] gap-3">
+                            <Link
+                              href={item.slug ? `/product/${item.slug}` : "/build-your-signature"}
+                              onClick={() => setCartOpen(false)}
+                              className="relative h-[86px] overflow-hidden rounded-[8px] bg-[#120b08]"
+                            >
+                              <Image
+                                src={item.image || "/attar-bottle.svg"}
+                                alt={item.name}
+                                fill
+                                sizes="84px"
+                                className="object-cover"
+                              />
+                            </Link>
 
-                          <div className="min-w-0">
-                            <h3 className="line-clamp-2 text-sm font-medium leading-snug">
-                              {item.name}
-                            </h3>
-                            {item.variant && (
-                              <p className="mt-1 truncate text-xs text-[#6e6257]">
-                                {item.variant}
+                            <div className="min-w-0">
+                              <h3 className="line-clamp-2 text-sm font-medium leading-snug">
+                                {item.name}
+                              </h3>
+                              {item.variant && (
+                                <p className="mt-1 truncate text-xs text-[#6e6257]">
+                                  {item.variant}
+                                </p>
+                              )}
+                              <p className="mt-2 text-sm font-semibold">
+                                {formatPrice(item.price)}
                               </p>
-                            )}
-                            <p className="mt-2 text-sm font-semibold">
-                              {formatPrice(item.price)}
-                            </p>
 
-                            <div className="mt-3 inline-flex h-9 items-center overflow-hidden rounded-[8px] border border-black/10 bg-[#f7f8fb]">
-                              <button
-                                type="button"
-                                aria-label="Decrease quantity"
-                                onClick={() =>
-                                  updateCartQuantity(
-                                    item.id,
-                                    item.quantity - 1,
-                                    item.variant
-                                  )
-                                }
-                                className="grid h-9 w-9 place-items-center transition hover:bg-black/5"
-                              >
-                                <Minus size={14} />
-                              </button>
-                              <span className="grid h-9 min-w-9 place-items-center border-x border-black/10 text-sm font-semibold">
-                                {item.quantity}
-                              </span>
-                              <button
-                                type="button"
-                                aria-label="Increase quantity"
-                                onClick={() =>
-                                  updateCartQuantity(
-                                    item.id,
-                                    item.quantity + 1,
-                                    item.variant
-                                  )
-                                }
-                                className="grid h-9 w-9 place-items-center transition hover:bg-black/5"
-                              >
-                                <Plus size={14} />
-                              </button>
+                              <div className="mt-3 inline-flex h-9 items-center overflow-hidden rounded-[8px] border border-black/10 bg-[#f7f8fb]">
+                                <button
+                                  type="button"
+                                  aria-label="Decrease quantity"
+                                  onClick={() =>
+                                    updateCartQuantity(
+                                      item.id,
+                                      item.quantity - 1,
+                                      item.variant
+                                    )
+                                  }
+                                  className="grid h-9 w-9 place-items-center transition hover:bg-black/5"
+                                >
+                                  <Minus size={14} />
+                                </button>
+                                <span className="grid h-9 min-w-9 place-items-center border-x border-black/10 text-sm font-semibold">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  type="button"
+                                  aria-label="Increase quantity"
+                                  onClick={() =>
+                                    updateCartQuantity(
+                                      item.id,
+                                      item.quantity + 1,
+                                      item.variant
+                                    )
+                                  }
+                                  className="grid h-9 w-9 place-items-center transition hover:bg-black/5"
+                                >
+                                  <Plus size={14} />
+                                </button>
+                              </div>
                             </div>
-                          </div>
 
-                          <button
-                            type="button"
-                            aria-label="Remove item"
-                            onClick={() => removeCartItem(item.id, item.variant)}
-                            className="grid h-9 w-9 place-items-center rounded-full text-[#371515] transition hover:bg-[#5d1717]/10"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                            <button
+                              type="button"
+                              aria-label="Remove item"
+                              onClick={() => removeCartItem(item.id, item.variant)}
+                              className="grid h-9 w-9 place-items-center rounded-full text-[#371515] transition hover:bg-[#5d1717]/10"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
                         </div>
+                        {isSalimComboBaseItem(item) && <SalimComboBuilder />}
                       </div>
                     ))}
-                    {hasSalimProductInCart && (
-                      <div className="rounded-[8px] border border-[#c0943e]/35 bg-[#fff8e7] p-4 shadow-sm">
-                        <div className="flex items-start gap-3">
-                          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#c0943e] text-black">
-                            <ShoppingBag size={18} />
-                          </span>
-                          <div className="min-w-0">
-                            <p className="font-display text-2xl leading-none">
-                              Build your wardrobe
-                            </p>
-                            <p className="mt-2 text-sm font-semibold text-[#3a2a13]">
-                              Buy 3 products at {formatPrice(799)}
-                            </p>
-                            <p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-[#8a5d12]">
-                              12 ML + 5 ML + 5 ML
-                            </p>
-                            <Link
-                              href={`/product/${SALIM_WARDROBE_BUNDLE_SLUG}`}
-                              onClick={() => setCartOpen(false)}
-                              className="mt-3 inline-flex h-9 items-center rounded-[8px] border border-[#c0943e]/45 bg-white px-4 text-xs font-bold uppercase tracking-[0.08em] text-[#3a2a13] transition hover:bg-[#c0943e] hover:text-black"
-                            >
-                              Choose more
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
 
               <div className="border-t border-black/10 bg-white px-5 py-4">
-                <div className="mb-4 flex items-center justify-between">
-                  <span className="text-sm font-semibold">Estimated Total</span>
-                  <span className="text-lg font-bold">
-                    {formatPrice(cartSubtotal)}
-                  </span>
+                <div className="mb-4 space-y-2">
+                  {salimComboState.active ? (
+                    <>
+                      <div className="rounded-[8px] border border-emerald-600/20 bg-emerald-50 p-3 text-sm">
+                        <p className="font-bold text-emerald-800">
+                          Salim Combo Offer Applied
+                        </p>
+                        <p className="mt-1 text-xs font-semibold text-emerald-700">
+                          You saved {formatPrice(salimComboState.savedAmount)}
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-[#5f554b]">
+                        <span>Subtotal</span>
+                        <span>{formatPrice(cartSubtotal)}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm font-semibold text-emerald-700">
+                        <span>Combo Discount</span>
+                        <span>-{formatPrice(salimComboState.discount)}</span>
+                      </div>
+                      <div className="flex items-center justify-between pt-2 text-base font-bold">
+                        <span>Final Total</span>
+                        <span>{formatPrice(salimComboState.finalTotal)}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold">Estimated Total</span>
+                      <span className="text-lg font-bold">
+                        {formatPrice(cartSubtotal)}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <Link
                   href="/cart"
