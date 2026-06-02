@@ -1,0 +1,27 @@
+{
+  "watch": [
+    "server.js",
+    "app.js",
+    "config",
+    "controllers",
+    "middleware",
+    "models",
+    "routes",
+    "services",
+    "utils",
+    "validations"
+  ],
+  "ext": "js,json",
+  "ignore": [
+    "node_modules",
+    "uploads",
+    "logs",
+    "*.log",
+    "coverage",
+    "dist",
+    "build",
+    ".next",
+    ".cache",
+    "tmp"
+  ]
+}
