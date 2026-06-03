@@ -25,19 +25,20 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { CART_OPEN_EVENT } from "@/lib/cart";
-import { products } from "@/lib/products";
+import { products, signatureProducts } from "@/lib/products";
 import { useAuth } from "@/context/AuthContext";
 import SalimComboBuilder from "@/components/SalimComboBuilder";
-import {
-  getSalimComboState,
-  isSalimComboBaseItem,
-} from "@/lib/salimCombo";
+import { getSalimComboState } from "@/lib/salimCombo";
 
 const navItems = [
   { label: "About", href: "/about" },
   { label: "Premium Collection", href: "/premium-collection" },
   { label: "Build Your Signature", href: "/build-your-signature" },
 ];
+
+const signatureProductSlugs = new Set(
+  signatureProducts.map((product) => product.slug)
+);
 
 function LoginMark({ size = 17 }: { size?: number }) {
   return (
@@ -133,6 +134,9 @@ export default function Navbar() {
     removeItem: removeCartItem,
   } = useCart();
   const salimComboState = getSalimComboState(cartItems);
+  const hasSignatureProductInCart = cartItems.some(
+    (item) => item.slug && signatureProductSlugs.has(item.slug)
+  );
 
   const searchResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -937,9 +941,9 @@ export default function Navbar() {
                             </button>
                           </div>
                         </div>
-                        {isSalimComboBaseItem(item) && <SalimComboBuilder />}
                       </div>
                     ))}
+                    {hasSignatureProductInCart && <SalimComboBuilder />}
                   </div>
                 )}
               </div>
