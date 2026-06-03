@@ -28,7 +28,12 @@ import { CART_OPEN_EVENT } from "@/lib/cart";
 import { products, signatureProducts } from "@/lib/products";
 import { useAuth } from "@/context/AuthContext";
 import SalimComboBuilder from "@/components/SalimComboBuilder";
-import { getSalimComboState } from "@/lib/salimCombo";
+import {
+  getSalimComboState,
+  isSalimComboBaseItem,
+  isSalimComboMiniItem,
+  salimComboConfig,
+} from "@/lib/salimCombo";
 
 const navItems = [
   { label: "About", href: "/about" },
@@ -130,6 +135,7 @@ export default function Navbar() {
     items: cartItems,
     count: cartCount,
     subtotal: cartSubtotal,
+    addItem: addCartItem,
     updateQuantity: updateCartQuantity,
     removeItem: removeCartItem,
   } = useCart();
@@ -137,6 +143,18 @@ export default function Navbar() {
   const hasSignatureProductInCart = cartItems.some(
     (item) => item.slug && signatureProductSlugs.has(item.slug)
   );
+  const hasSalimBaseInCart = cartItems.some(isSalimComboBaseItem);
+  const salimComboMiniItems = hasSalimBaseInCart
+    ? cartItems.filter(isSalimComboMiniItem)
+    : [];
+  const missingSalimComboAddOns = hasSalimBaseInCart
+    ? salimComboConfig.addOns.filter(
+        (addOn) => !salimComboMiniItems.some((item) => item.id === addOn.id)
+      )
+    : [];
+  const cartDrawerItems = hasSalimBaseInCart
+    ? cartItems.filter((item) => !isSalimComboMiniItem(item))
+    : cartItems;
 
   const searchResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -855,7 +873,7 @@ export default function Navbar() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {cartItems.map((item) => (
+                    {cartDrawerItems.map((item) => (
                       <div
                         key={`${item.id}-${item.variant || "default"}-${item.volume || "volume"}`}
                         className="space-y-3"
@@ -940,6 +958,75 @@ export default function Navbar() {
                               <Trash2 size={16} />
                             </button>
                           </div>
+
+                          {isSalimComboBaseItem(item) &&
+                            (salimComboMiniItems.length > 0 ||
+                              missingSalimComboAddOns.length > 0) && (
+                            <div className="mt-3 border-t border-black/10 pt-3">
+                              <p className="text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">
+                                Combo products
+                              </p>
+                              <div className="mt-2 space-y-2">
+                                {salimComboMiniItems.map((miniItem) => (
+                                  <div
+                                    key={`${miniItem.id}-${miniItem.variant || "default"}-${miniItem.volume || "volume"}`}
+                                    className="grid grid-cols-[44px_1fr_auto] items-center gap-2 rounded-[8px] border border-emerald-700/15 bg-emerald-50 p-2"
+                                  >
+                                    <Image
+                                      src={miniItem.image || "/attar-bottle.svg"}
+                                      alt={miniItem.name}
+                                      width={44}
+                                      height={44}
+                                      className="h-11 w-11 rounded-[6px] object-cover"
+                                    />
+                                    <div className="min-w-0">
+                                      <p className="truncate text-xs font-bold text-[#16100c]">
+                                        {miniItem.name}
+                                      </p>
+                                      <p className="mt-0.5 text-[11px] font-semibold text-[#5f554b]">
+                                        Qty {miniItem.quantity} x {formatPrice(miniItem.price)}
+                                      </p>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      aria-label={`Remove ${miniItem.name}`}
+                                      onClick={() =>
+                                        removeCartItem(
+                                          miniItem.id,
+                                          miniItem.variant,
+                                          miniItem.volume
+                                        )
+                                      }
+                                      className="grid h-8 w-8 place-items-center rounded-full text-[#371515] transition hover:bg-[#5d1717]/10"
+                                    >
+                                      <Trash2 size={14} />
+                                    </button>
+                                  </div>
+                                ))}
+                                {missingSalimComboAddOns.map((addOn) => (
+                                  <button
+                                    key={addOn.id}
+                                    type="button"
+                                    onClick={() =>
+                                      addCartItem({
+                                        id: addOn.id,
+                                        name: addOn.name,
+                                        image: addOn.image,
+                                        price: addOn.price,
+                                        quantity: item.quantity,
+                                        variant: "Salim Combo",
+                                        volume: addOn.size.toLowerCase(),
+                                      })
+                                    }
+                                    className="flex w-full items-center justify-between rounded-[8px] border border-dashed border-emerald-700/30 bg-white px-3 py-2 text-left text-xs font-bold text-emerald-800 transition hover:bg-emerald-50"
+                                  >
+                                    <span>Add {addOn.name}</span>
+                                    <Plus size={14} />
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}

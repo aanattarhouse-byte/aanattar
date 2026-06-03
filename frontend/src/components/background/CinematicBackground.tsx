@@ -1,13 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import ParticleField from "@/components/particles/ParticleField";
 import { useMousePosition } from "@/hooks/useMousePosition";
 import type { CSSProperties } from "react";
-
-const ParticleField = dynamic(() => import("@/components/particles/ParticleField"), {
-  ssr: false,
-  loading: () => null,
-});
 
 export default function CinematicBackground() {
   const mouse = useMousePosition();

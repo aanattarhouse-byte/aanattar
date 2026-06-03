@@ -52,6 +52,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${playfair.variable} ${lora.variable} ${spaceGrotesk.variable} h-full scroll-smooth`}
     >
       <body className="min-h-screen flex flex-col bg-[#0B0B0B] text-zinc-100 antialiased selection:bg-amber-400/30 selection:text-white">

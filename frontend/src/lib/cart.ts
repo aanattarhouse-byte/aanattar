@@ -37,12 +37,12 @@ export function getCartCount() {
   return getCartItems().reduce((total, item) => total + item.quantity, 0);
 }
 
-export function addCartItem(item: CartItem) {
+export function addCartItem(item: CartItem, currentItems?: CartItem[]) {
   if (typeof window === "undefined") {
     return [] as CartItem[];
   }
 
-  const items = getCartItems();
+  const items = currentItems ?? getCartItems();
   const existing = items.find(
     (cartItem) =>
       cartItem.id === item.id &&

@@ -14,6 +14,11 @@ import {
   getCartItems,
   type CartItem,
 } from "@/lib/cart";
+import {
+  getSalimComboCartItems,
+  isSalimComboBaseItem,
+  isSalimComboMiniItem,
+} from "@/lib/salimCombo";
 
 type CartContextValue = {
   items: CartItem[];
@@ -60,7 +65,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     count,
     subtotal,
     addItem: (item) => {
-      setItems(addCartItem(item));
+      let nextItems = items;
+
+      for (const cartItem of getSalimComboCartItems(item)) {
+        nextItems = addCartItem(cartItem, nextItems);
+      }
+
+      setItems(nextItems);
     },
     updateQuantity: (id, quantity, variant, volume) => {
       saveItems(
@@ -72,10 +83,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
       );
     },
     removeItem: (id, variant, volume) => {
+      const itemToRemove = items.find(
+        (item) =>
+          item.id === id && item.variant === variant && item.volume === volume
+      );
+
       saveItems(
         items.filter(
-          (item) =>
-            item.id !== id || item.variant !== variant || item.volume !== volume
+          (item) => {
+            if (itemToRemove && isSalimComboBaseItem(itemToRemove)) {
+              return !isSalimComboBaseItem(item) && !isSalimComboMiniItem(item);
+            }
+
+            return item.id !== id || item.variant !== variant || item.volume !== volume;
+          }
         )
       );
     },

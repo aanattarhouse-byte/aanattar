@@ -45,6 +45,25 @@ export function isSalimComboMiniItem(item: CartItem) {
   return eligibleMiniIds.has(item.id);
 }
 
+export function getSalimComboCartItems(item: CartItem) {
+  if (!isSalimComboBaseItem(item)) {
+    return [item];
+  }
+
+  return [
+    item,
+    ...salimComboConfig.addOns.map((addOn) => ({
+      id: addOn.id,
+      name: addOn.name,
+      image: addOn.image,
+      price: addOn.price,
+      quantity: item.quantity,
+      variant: "Salim Combo",
+      volume: addOn.size.toLowerCase(),
+    })),
+  ] satisfies CartItem[];
+}
+
 export function getSalimComboAddOnQuantity(items: CartItem[], addOnId: string) {
   return items
     .filter((item) => item.id === addOnId)
@@ -59,19 +78,26 @@ export function getSalimComboState(items: CartItem[]) {
   const baseItem = items.find(isSalimComboBaseItem);
   const miniItems = items.filter(isSalimComboMiniItem);
   const miniQuantity = miniItems.reduce((total, item) => total + item.quantity, 0);
+  const comboCount = baseItem
+    ? Math.min(
+        baseItem.quantity,
+        Math.floor(miniQuantity / salimComboConfig.requiredMiniQuantity)
+      )
+    : 0;
 
-  if (!baseItem || miniQuantity < salimComboConfig.requiredMiniQuantity) {
+  if (!baseItem || comboCount < 1) {
     return {
       active: false,
       subtotal,
       discount: 0,
       finalTotal: subtotal,
       miniQuantity,
+      comboCount,
       savedAmount: 0,
     };
   }
 
-  let remainingMiniUnits = salimComboConfig.requiredMiniQuantity;
+  let remainingMiniUnits = salimComboConfig.requiredMiniQuantity * comboCount;
   let selectedMiniTotal = 0;
 
   for (const item of miniItems) {
@@ -84,8 +110,11 @@ export function getSalimComboState(items: CartItem[]) {
     remainingMiniUnits -= selectedQuantity;
   }
 
-  const regularComboTotal = baseItem.price + selectedMiniTotal;
-  const discount = Math.max(0, regularComboTotal - salimComboConfig.offerPrice);
+  const regularComboTotal = baseItem.price * comboCount + selectedMiniTotal;
+  const discount = Math.max(
+    0,
+    regularComboTotal - salimComboConfig.offerPrice * comboCount
+  );
 
   return {
     active: discount > 0,
@@ -93,6 +122,7 @@ export function getSalimComboState(items: CartItem[]) {
     discount,
     finalTotal: subtotal - discount,
     miniQuantity,
+    comboCount,
     savedAmount: discount,
   };
 }
