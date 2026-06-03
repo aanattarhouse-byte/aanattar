@@ -39,6 +39,7 @@ export const orderCreateSchema = Joi.object({
       image: Joi.string().allow('', null),
       variant: Joi.string().allow('', null),
       size: Joi.string().allow('', null),
+      volume: Joi.string().allow('', null),
       quantity: Joi.number().integer().min(1).required(),
       price: Joi.number().min(0).required()
     })

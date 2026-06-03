@@ -39,7 +39,7 @@ export default function CartClient() {
       <div className="space-y-4">
         {items.map((item) => (
           <article
-            key={`${item.id}-${item.variant || "default"}`}
+            key={`${item.id}-${item.variant || "default"}-${item.volume || "volume"}`}
             className="grid gap-4 rounded-[8px] border border-white/10 bg-[#15100d]/90 p-4 sm:grid-cols-[120px_1fr_auto]"
           >
             <Link
@@ -57,6 +57,11 @@ export default function CartClient() {
 
             <div>
               <h2 className="text-lg">{item.name}</h2>
+              {item.volume && (
+                <p className="mt-1 font-sans text-xs font-semibold text-zinc-400">
+                  Volume: {item.volume.replace("ml", " ml")}
+                </p>
+              )}
               <p className="mt-2 font-sans text-xs font-bold text-amber-200">
                 {formatPrice(item.price)}
               </p>
@@ -65,7 +70,7 @@ export default function CartClient() {
                   type="button"
                   aria-label="Decrease quantity"
                   onClick={() =>
-                    updateQuantity(item.id, item.quantity - 1, item.variant)
+                    updateQuantity(item.id, item.quantity - 1, item.variant, item.volume)
                   }
                   className="grid h-10 w-10 place-items-center transition hover:bg-white/10"
                 >
@@ -78,7 +83,7 @@ export default function CartClient() {
                   type="button"
                   aria-label="Increase quantity"
                   onClick={() =>
-                    updateQuantity(item.id, item.quantity + 1, item.variant)
+                    updateQuantity(item.id, item.quantity + 1, item.variant, item.volume)
                   }
                   className="grid h-10 w-10 place-items-center transition hover:bg-white/10"
                 >
@@ -94,7 +99,7 @@ export default function CartClient() {
               <button
                 type="button"
                 aria-label={`Remove ${item.name}`}
-                onClick={() => removeItem(item.id, item.variant)}
+                onClick={() => removeItem(item.id, item.variant, item.volume)}
                 className="grid h-10 w-10 place-items-center rounded-full text-amber-100 transition hover:bg-white/10"
               >
                 <Trash2 size={17} />

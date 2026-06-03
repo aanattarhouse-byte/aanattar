@@ -88,6 +88,7 @@ export function getOrderProducts(session: CheckoutSession) {
     image: item.image,
     variant: item.variant,
     size: item.variant,
+    volume: item.volume,
     quantity: item.quantity,
     price: item.price,
   }));

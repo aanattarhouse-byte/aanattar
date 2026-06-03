@@ -346,6 +346,29 @@ export default function PaymentClient() {
           <aside className="h-fit rounded-[8px] border border-amber-300/20 bg-[#1a120d] p-5">
             <h2 className="text-lg font-semibold">Order Summary</h2>
             <div className="mt-5 space-y-3 border-y border-white/10 py-4 text-sm text-zinc-300">
+              <div className="space-y-3">
+                {session.cartItems.map((item) => (
+                  <div
+                    key={`${item.id}-${item.variant || "default"}-${item.volume || "volume"}`}
+                    className="flex justify-between gap-4"
+                  >
+                    <div>
+                      <p className="font-semibold text-white">{item.name}</p>
+                      {item.volume && (
+                        <p className="mt-1 text-xs text-zinc-400">
+                          Volume: {item.volume.replace("ml", " ml")}
+                        </p>
+                      )}
+                      <p className="mt-1 text-xs text-zinc-500">
+                        Qty: {item.quantity}
+                      </p>
+                    </div>
+                    <span className="shrink-0 text-amber-100">
+                      {formatPrice(item.price * item.quantity)}
+                    </span>
+                  </div>
+                ))}
+              </div>
               <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span>{formatPrice(session.subtotal)}</span>

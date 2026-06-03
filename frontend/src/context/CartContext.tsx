@@ -20,8 +20,8 @@ type CartContextValue = {
   count: number;
   subtotal: number;
   addItem: (item: CartItem) => void;
-  updateQuantity: (id: string, quantity: number, variant?: string) => void;
-  removeItem: (id: string, variant?: string) => void;
+  updateQuantity: (id: string, quantity: number, variant?: string, volume?: string) => void;
+  removeItem: (id: string, variant?: string, volume?: string) => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -62,17 +62,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
     addItem: (item) => {
       setItems(addCartItem(item));
     },
-    updateQuantity: (id, quantity, variant) => {
+    updateQuantity: (id, quantity, variant, volume) => {
       saveItems(
         items.map((item) =>
-          item.id === id && item.variant === variant
+          item.id === id && item.variant === variant && item.volume === volume
             ? { ...item, quantity: Math.max(1, quantity) }
             : item
         )
       );
     },
-    removeItem: (id, variant) => {
-      saveItems(items.filter((item) => item.id !== id || item.variant !== variant));
+    removeItem: (id, variant, volume) => {
+      saveItems(
+        items.filter(
+          (item) =>
+            item.id !== id || item.variant !== variant || item.volume !== volume
+        )
+      );
     },
   };
 

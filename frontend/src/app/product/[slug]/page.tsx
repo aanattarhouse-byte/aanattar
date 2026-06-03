@@ -5,9 +5,6 @@ import ProductGrid from "@/components/ProductGrid";
 import ProductReviews from "@/components/ProductReviews";
 import ScrollReveal from "@/components/ScrollReveal";
 import {
-  formatPrice,
-  getCompareAtPrice,
-  getProductDiscountPercent,
   getProductBySlug,
   getRelatedProducts,
   products,
@@ -50,8 +47,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const relatedProducts = getRelatedProducts(product);
-  const discountPercent = getProductDiscountPercent(product);
-  const compareAtPrice = getCompareAtPrice(product.price, discountPercent);
 
   return (
     <main className="bg-[#0b0b0b] text-white">
@@ -77,17 +72,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <h1 className="mt-3 text-4xl leading-none sm:mt-4 sm:text-5xl md:text-6xl lg:text-7xl">
               {product.name}
             </h1>
-            <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-5">
-              <span className="font-sans text-2xl font-bold leading-none text-amber-200">
-                {formatPrice(product.price)}
-              </span>
-              <span className="font-sans text-base font-semibold leading-none text-zinc-500 line-through">
-                {formatPrice(compareAtPrice)}
-              </span>
-              <span className="rounded-[3px] bg-emerald-600 px-2 py-1 font-sans text-xs font-bold leading-none text-white">
-                {discountPercent}% off
-              </span>
-            </div>
             <p className="mt-4 text-base text-zinc-300 sm:mt-6 sm:text-lg">
               {product.description}
             </p>

@@ -15,6 +15,7 @@ const mapOrderProducts = (products) =>
       image: item.image,
       variant: item.variant,
       size: item.size || item.variant,
+      volume: item.volume,
       quantity: item.quantity,
       price: item.price
     };

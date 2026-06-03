@@ -152,7 +152,7 @@ export default function OrderDetailsClient({ initialOrder }: OrderDetailsClientP
                         <span>{item.name || 'Product'}</span>
                       </div>
                     </td>
-                    <td>{item.variant || item.size || '-'}</td>
+                    <td>{item.volume ? item.volume.replace('ml', ' ml') : item.variant || item.size || '-'}</td>
                     <td>{item.quantity}</td>
                     <td>{formatCurrency(item.price)}</td>
                     <td>{formatCurrency(item.price * item.quantity)}</td>

@@ -8,6 +8,7 @@ const orderProductSchema = new mongoose.Schema({
   image: String,
   variant: String,
   size: String,
+  volume: String,
   quantity: { type: Number, required: true },
   price: { type: Number, required: true }
 }, { _id: false });

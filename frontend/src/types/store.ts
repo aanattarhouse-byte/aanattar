@@ -59,6 +59,7 @@ export type OrderProduct = {
   image?: string;
   variant?: string;
   size?: string;
+  volume?: string;
   quantity: number;
   price: number;
 };

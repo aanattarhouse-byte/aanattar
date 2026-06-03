@@ -5,7 +5,20 @@ import { useRouter } from "next/navigation";
 import { Minus, Plus, ShoppingCart, Zap } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
-import type { Product } from "@/lib/products";
+import {
+  formatPrice,
+  getCompareAtPrice,
+  getProductDiscountPercent,
+  type Product,
+} from "@/lib/products";
+import {
+  DEFAULT_PRODUCT_VOLUME_ML,
+  PRODUCT_VOLUME_OPTIONS,
+  formatVolume,
+  getVolumeCartValue,
+  getVolumePrice,
+  type ProductVolumeMl,
+} from "@/lib/productVolume";
 
 export default function ProductDetailActions({
   product,
@@ -13,8 +26,15 @@ export default function ProductDetailActions({
   product: Product;
 }) {
   const [quantity, setQuantity] = useState(1);
+  const [selectedVolume, setSelectedVolume] = useState<ProductVolumeMl>(
+    DEFAULT_PRODUCT_VOLUME_ML
+  );
   const router = useRouter();
   const { addItem } = useCart();
+  const price = getVolumePrice(selectedVolume);
+  const discountPercent = getProductDiscountPercent(product);
+  const compareAtPrice = getCompareAtPrice(price, discountPercent);
+  const selectedVolumeValue = getVolumeCartValue(selectedVolume);
 
   const addProduct = () => {
     addItem({
@@ -22,8 +42,9 @@ export default function ProductDetailActions({
       slug: product.slug,
       name: product.name,
       image: product.image,
-      price: product.price,
+      price,
       quantity,
+      volume: selectedVolumeValue,
     });
   };
 
@@ -39,6 +60,50 @@ export default function ProductDetailActions({
 
   return (
     <div className="mt-5 space-y-3 sm:mt-6 sm:space-y-4">
+      <div className="space-y-2">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 sm:text-xs sm:tracking-[0.2em]">
+          Volume
+        </span>
+        <div className="flex flex-wrap gap-2 sm:gap-3">
+          {PRODUCT_VOLUME_OPTIONS.map((volume) => {
+            const selected = selectedVolume === volume;
+
+            return (
+              <button
+                key={volume}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => setSelectedVolume(volume)}
+                className={`min-w-[92px] rounded-[8px] border px-3 py-2 text-left transition-all duration-200 sm:min-w-[108px] ${
+                  selected
+                    ? "border-amber-300/70 bg-amber-300/15 shadow-[0_0_0_1px_rgba(248,220,123,0.18)]"
+                    : "border-white/10 bg-white/[0.04] hover:border-amber-300/30 hover:bg-white/[0.07]"
+                }`}
+              >
+                <span className="block font-sans text-sm font-bold text-white">
+                  {formatVolume(volume)}
+                </span>
+                <span className="mt-1 block font-sans text-xs font-semibold text-amber-200">
+                  {formatPrice(getVolumePrice(volume))}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-sans text-2xl font-bold leading-none text-amber-200">
+          {formatPrice(price)}
+        </span>
+        <span className="font-sans text-base font-semibold leading-none text-zinc-500 line-through">
+          {formatPrice(compareAtPrice)}
+        </span>
+        <span className="rounded-[3px] bg-emerald-600 px-2 py-1 font-sans text-xs font-bold leading-none text-white">
+          {discountPercent}% off
+        </span>
+      </div>
+
       {/* Quantity Selector */}
       <div className="flex items-center justify-between gap-3 sm:justify-start">
         <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 sm:text-xs sm:tracking-[0.2em]">

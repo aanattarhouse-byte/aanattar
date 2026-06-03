@@ -853,7 +853,7 @@ export default function Navbar() {
                   <div className="space-y-3">
                     {cartItems.map((item) => (
                       <div
-                        key={`${item.id}-${item.variant || "default"}`}
+                        key={`${item.id}-${item.variant || "default"}-${item.volume || "volume"}`}
                         className="space-y-3"
                       >
                         <div className="rounded-[8px] border border-black/10 bg-white p-3 shadow-sm">
@@ -881,6 +881,11 @@ export default function Navbar() {
                                   {item.variant}
                                 </p>
                               )}
+                              {item.volume && (
+                                <p className="mt-1 truncate text-xs text-[#6e6257]">
+                                  Volume: {item.volume.replace("ml", " ml")}
+                                </p>
+                              )}
                               <p className="mt-2 text-sm font-semibold">
                                 {formatPrice(item.price)}
                               </p>
@@ -893,7 +898,8 @@ export default function Navbar() {
                                     updateCartQuantity(
                                       item.id,
                                       item.quantity - 1,
-                                      item.variant
+                                      item.variant,
+                                      item.volume
                                     )
                                   }
                                   className="grid h-9 w-9 place-items-center transition hover:bg-black/5"
@@ -910,7 +916,8 @@ export default function Navbar() {
                                     updateCartQuantity(
                                       item.id,
                                       item.quantity + 1,
-                                      item.variant
+                                      item.variant,
+                                      item.volume
                                     )
                                   }
                                   className="grid h-9 w-9 place-items-center transition hover:bg-black/5"
@@ -923,7 +930,7 @@ export default function Navbar() {
                             <button
                               type="button"
                               aria-label="Remove item"
-                              onClick={() => removeCartItem(item.id, item.variant)}
+                              onClick={() => removeCartItem(item.id, item.variant, item.volume)}
                               className="grid h-9 w-9 place-items-center rounded-full text-[#371515] transition hover:bg-[#5d1717]/10"
                             >
                               <Trash2 size={16} />
