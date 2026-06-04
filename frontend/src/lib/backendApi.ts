@@ -26,7 +26,7 @@ export async function backendFetch(path: string, options: BackendFetchOptions = 
   const { timeoutMs = 15000, headers, ...fetchOptions } = options;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
-  const baseUrl = typeof window === 'undefined' ? SERVER_API_BASE_URL : API_BASE_URL;
+  const baseUrl = typeof window === 'undefined' ? SERVER_API_BASE_URL : '';
 
   if (typeof window === 'undefined' && !baseUrl && process.env.NODE_ENV === 'production') {
     throw new Error('Backend API URL is not configured. Set API_URL or API_BASE_URL to the production backend HTTPS URL.');
