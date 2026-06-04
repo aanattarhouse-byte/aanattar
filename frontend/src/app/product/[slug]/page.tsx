@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import ProductDetailActions from "@/components/ProductDetailActions";
 import ProductGrid from "@/components/ProductGrid";
 import ProductReviews from "@/components/ProductReviews";
@@ -40,6 +40,11 @@ export async function generateMetadata({ params }: ProductPageProps) {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
+
+  if (slug === "salim" || slug === "salim-luxury-attar") {
+    redirect("/products/salim-luxury-attar");
+  }
+
   const product = getProductBySlug(slug);
 
   if (!product) {

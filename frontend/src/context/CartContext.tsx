@@ -18,13 +18,14 @@ import {
   getSalimComboCartItems,
   isSalimComboBaseItem,
   isSalimComboMiniItem,
+  salimComboConfig,
 } from "@/lib/salimCombo";
 
 type CartContextValue = {
   items: CartItem[];
   count: number;
   subtotal: number;
-  addItem: (item: CartItem) => void;
+  addItem: (item: CartItem, selectedAddOnIds?: string[]) => void;
   updateQuantity: (id: string, quantity: number, variant?: string, volume?: string) => void;
   removeItem: (id: string, variant?: string, volume?: string) => void;
 };
@@ -64,11 +65,32 @@ export function CartProvider({ children }: { children: ReactNode }) {
     items,
     count,
     subtotal,
-    addItem: (item) => {
+    addItem: (item, selectedAddOnIds) => {
       let nextItems = items;
 
-      for (const cartItem of getSalimComboCartItems(item)) {
-        nextItems = addCartItem(cartItem, nextItems);
+      if (isSalimComboBaseItem(item)) {
+        const addOnIds = selectedAddOnIds ?? salimComboConfig.addOns.map((a) => a.id);
+        const addOnsToAdd = salimComboConfig.addOns.filter((addOn) =>
+          addOnIds.includes(addOn.id)
+        );
+
+        nextItems = addCartItem(item, nextItems);
+        for (const addOn of addOnsToAdd) {
+          nextItems = addCartItem(
+            {
+              id: addOn.id,
+              name: addOn.name,
+              image: addOn.image,
+              price: addOn.price,
+              quantity: item.quantity,
+              variant: "Salim Combo",
+              volume: addOn.size.toLowerCase(),
+            },
+            nextItems
+          );
+        }
+      } else {
+        nextItems = addCartItem(item, nextItems);
       }
 
       setItems(nextItems);

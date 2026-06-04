@@ -43,7 +43,7 @@ export default function ProductCard({
       className="group flex h-full flex-col overflow-hidden rounded-[8px] border border-white/10 bg-[#15100d]/90 shadow-[0_22px_70px_rgba(0,0,0,0.24)] backdrop-blur"
     >
       <Link
-        href={`/product/${product.slug}`}
+        href={product.slug === "salim-luxury-attar" ? "/products/salim-luxury-attar" : `/product/${product.slug}`}
         className="relative block aspect-[4/3] overflow-hidden bg-[#0f0907]"
         aria-label={`View ${product.name}`}
       >
@@ -105,26 +105,39 @@ export default function ProductCard({
           {product.shortDescription}
         </p>
 
-        <div className={`${compact ? "mt-4" : "mt-5"} grid grid-cols-[1fr_auto] gap-2`}>
-          <Link
-            href={`/product/${product.slug}`}
-            className={`inline-flex items-center justify-center rounded-[8px] border border-amber-300/30 bg-white/5 font-bold text-amber-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-black ${
-              compact ? "h-10 px-3 text-xs" : "h-11 px-4 text-sm"
-            }`}
-          >
-            View Details
-          </Link>
-          <button
-            type="button"
-            onClick={addToCart}
-            aria-label={`Add ${product.name} to cart`}
-            className={`grid place-items-center rounded-[8px] bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] text-black shadow-[0_10px_24px_rgba(212,162,76,0.24)] transition hover:brightness-105 ${
-              compact ? "h-10 w-10" : "h-11 w-11"
-            }`}
-          >
-            <ShoppingCart size={compact ? 16 : 18} strokeWidth={2.4} />
-          </button>
-        </div>
+        {product.slug === "salim-luxury-attar" ? (
+          <div className={`${compact ? "mt-4" : "mt-5"}`}>
+            <Link
+              href="/products/salim-luxury-attar"
+              className={`flex w-full items-center justify-center rounded-[8px] border border-amber-300/30 bg-white/5 font-bold text-amber-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-black ${
+                compact ? "h-10 px-3 text-xs" : "h-11 px-4 text-sm"
+              }`}
+            >
+              View Details
+            </Link>
+          </div>
+        ) : (
+          <div className={`${compact ? "mt-4" : "mt-5"} grid grid-cols-[1fr_auto] gap-2`}>
+            <Link
+              href={`/product/${product.slug}`}
+              className={`inline-flex items-center justify-center rounded-[8px] border border-amber-300/30 bg-white/5 font-bold text-amber-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-black ${
+                compact ? "h-10 px-3 text-xs" : "h-11 px-4 text-sm"
+              }`}
+            >
+              View Details
+            </Link>
+            <button
+              type="button"
+              onClick={addToCart}
+              aria-label={`Add ${product.name} to cart`}
+              className={`grid place-items-center rounded-[8px] bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] text-black shadow-[0_10px_24px_rgba(212,162,76,0.24)] transition hover:brightness-105 ${
+                compact ? "h-10 w-10" : "h-11 w-11"
+              }`}
+            >
+              <ShoppingCart size={compact ? 16 : 18} strokeWidth={2.4} />
+            </button>
+          </div>
+        )}
       </div>
     </motion.article>
   );

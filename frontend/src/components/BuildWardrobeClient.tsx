@@ -120,10 +120,10 @@ export default function BuildWardrobeClient() {
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-amber-300">
             Curated Fragrance Wardrobe
           </p>
-          <h1 className="mt-3 text-4xl leading-none sm:text-5xl lg:text-6xl">
+          <h1 className="mt-3 !text-3xl leading-none sm:!text-4xl lg:!text-5xl">
             Build Your Wardrobe
           </h1>
-          <p className="mt-5 text-base leading-7 text-zinc-300 sm:text-lg">
+          <p className="mt-5 text-sm leading-7 text-zinc-300 sm:text-base">
             Choose by occasion, mood, and the room you are walking into.
           </p>
         </div>
@@ -152,9 +152,10 @@ export default function BuildWardrobeClient() {
               </Link>
 
               <div className="flex flex-1 flex-col p-4">
-                <h2 className="font-display text-2xl leading-tight text-white">
+                <h3 className="font-display !text-lg sm:!text-xl font-semibold leading-tight text-white">
                   {recommendation.name}
-                </h2>
+                </h3>
+
                 <p className="mt-3 min-h-[4.5rem] text-sm leading-6 text-zinc-300">
                   {recommendation.line}
                 </p>
