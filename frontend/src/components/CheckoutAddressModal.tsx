@@ -220,8 +220,8 @@ export default function CheckoutAddressModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-start justify-center overflow-y-auto bg-black/70 px-3 py-4 sm:px-4">
-      <div className="flex max-h-[calc(100dvh-2rem)] w-full max-w-3xl flex-col overflow-hidden rounded-[12px] border border-white/10 bg-[#120d0a] text-white shadow-2xl">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/70 p-3 sm:p-4">
+      <div className="flex max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-3rem)] w-full max-w-3xl flex-col overflow-hidden rounded-[12px] border border-white/10 bg-[#120d0a] text-white shadow-2xl">
         <div className="flex items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-5">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-300">

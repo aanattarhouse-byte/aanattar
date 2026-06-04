@@ -960,7 +960,7 @@ export default function Navbar() {
                         </div>
                       </div>
                     ))}
-                    {hasSignatureProductInCart && <SalimComboBuilder />}
+                    {hasSalimBaseInCart && <SalimComboBuilder />}
                   </div>
                 )}
               </div>

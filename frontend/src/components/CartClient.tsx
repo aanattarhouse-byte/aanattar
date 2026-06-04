@@ -71,13 +71,13 @@ export default function CartClient() {
             </Link>
 
             <div>
-              <h2 className="text-lg">{item.name}</h2>
+              <h2 className="text-xl font-semibold">{item.name}</h2>
               {item.volume && (
-                <p className="mt-1 font-sans text-xs font-semibold text-zinc-400">
+                <p className="mt-1 font-sans text-sm font-semibold text-zinc-400">
                   Volume: {item.volume.replace("ml", " ml")}
                 </p>
               )}
-              <p className="mt-2 font-sans text-xs font-bold text-amber-200">
+              <p className="mt-2 font-sans text-sm font-bold text-amber-200">
                 {formatPrice(item.price)}
               </p>
               <div className="mt-4 inline-flex h-10 items-center overflow-hidden rounded-[8px] border border-white/15 bg-white/5">
@@ -91,7 +91,7 @@ export default function CartClient() {
                 >
                   <Minus size={15} />
                 </button>
-                <span className="grid h-10 min-w-10 place-items-center border-x border-white/15 text-xs font-bold">
+                <span className="grid h-10 min-w-10 place-items-center border-x border-white/15 text-sm font-bold">
                   {item.quantity}
                 </span>
                 <button
@@ -108,7 +108,7 @@ export default function CartClient() {
             </div>
 
             <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
-              <p className="text-sm font-bold text-white">
+              <p className="text-base font-bold text-white">
                 {formatPrice(item.price * item.quantity)}
               </p>
               <button

@@ -314,59 +314,27 @@ export default function SalimDetailsClient() {
                             className="object-cover"
                           />
                         </div>
-                        <p className="text-xs font-bold text-white truncate w-full">{addOn.name}</p>
                         <p className="mt-1 text-xs font-bold text-white">₹150</p>
                         <p className="mt-0.5 text-[10px] text-zinc-400 line-through font-sans">₹250</p>
-                        <div className="mt-1.5 flex items-center gap-1.5">
-                          <span className="text-[9px] rounded bg-zinc-800/80 px-1 py-0.5 font-medium text-zinc-400">5ML</span>
-                          <span className="text-[9px] font-bold text-emerald-400">In stock</span>
+                        
+                        <div className="mt-1.5 flex items-center justify-between w-full">
+                          <div className="flex items-center gap-1">
+                            <span className="text-[9px] rounded bg-zinc-800/80 px-1 py-0.5 font-medium text-zinc-400">5ML</span>
+                            <span className="text-[9px] font-bold text-emerald-400">In stock</span>
+                          </div>
+                          
+                          {/* Selector indicator button */}
+                          <div className={`flex h-4.5 w-4.5 items-center justify-center rounded-full transition-all duration-300 ${
+                            isSelected
+                              ? "bg-sky-500 text-white"
+                              : "border border-zinc-700 bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white"
+                          }`}>
+                            {isSelected ? <Check size={10} strokeWidth={3} /> : <Plus size={10} />}
+                          </div>
                         </div>
                       </button>
                     );
                   })}
-                </div>
-
-                {/* Selected Minis Summary Section */}
-                <div className="mt-6 space-y-2">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-400">
-                    Selected Minis
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {Array.from({ length: 2 }).map((_, index) => {
-                      const mini = selectedMinis[index];
-                      if (mini) {
-                        return (
-                          <div
-                            key={mini.id}
-                            className="flex items-center gap-2 rounded-lg border border-blue-500/30 bg-blue-500/5 px-3 py-2 text-xs text-white"
-                          >
-                            <div className="relative h-6 w-6 shrink-0 overflow-hidden rounded-[2px] bg-black/20">
-                              <Image
-                                src={mini.image}
-                                alt={mini.name}
-                                fill
-                                sizes="24px"
-                                className="object-cover"
-                              />
-                            </div>
-                            <span className="font-medium text-zinc-200">{mini.name}</span>
-                          </div>
-                        );
-                      } else {
-                        return (
-                          <div
-                            key={`empty-${index}`}
-                            className="flex items-center gap-2 rounded-lg border border-dashed border-zinc-800 bg-zinc-900/20 px-3 py-2 text-xs text-zinc-500"
-                          >
-                            <span className="h-4.5 w-4.5 shrink-0 rounded-full border border-dashed border-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-650">
-                              {index + 1}
-                            </span>
-                            <span className="text-zinc-500 font-medium">Choose a 5ML Mini</span>
-                          </div>
-                        );
-                      }
-                    })}
-                  </div>
                 </div>
 
                 {/* Final Price Block */}
