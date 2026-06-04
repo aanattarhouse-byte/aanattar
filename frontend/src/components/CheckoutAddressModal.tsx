@@ -178,8 +178,19 @@ export default function CheckoutAddressModal({
     // Disable background scrolling
     const originalStyle = window.getComputedStyle(document.body).overflow;
     document.body.style.overflow = "hidden";
+
+    // Stop Lenis smooth scroll if active
+    if ((window as any).lenis) {
+      (window as any).lenis.stop();
+    }
+
     return () => {
       document.body.style.overflow = originalStyle;
+
+      // Re-enable Lenis smooth scroll
+      if ((window as any).lenis) {
+        (window as any).lenis.start();
+      }
     };
   }, []);
 
