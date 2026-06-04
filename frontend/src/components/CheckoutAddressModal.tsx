@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { CartItem } from "@/lib/cart";
@@ -123,17 +124,17 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-[11px] font-semibold text-zinc-300">
+      <span className="text-[10px] font-sans font-semibold tracking-wide text-zinc-300">
         {label} {required && <span className="text-amber-300">*</span>}
       </span>
       <input
         type={type}
         value={form[name]}
         onChange={(event) => onChange(name, event.target.value)}
-        className="mt-1.5 h-10 w-full rounded-[8px] border border-white/10 bg-white/[0.06] px-3 text-xs text-white outline-none transition placeholder:text-zinc-500 focus:border-amber-300/60"
+        className="mt-1 h-9 w-full rounded-[6px] border border-white/10 bg-white/[0.06] px-3 text-[11px] text-white outline-none transition placeholder:text-zinc-500 focus:border-amber-300/60"
       />
       {errors[name] && (
-        <span className="mt-1 block text-[11px] font-medium text-red-300">
+        <span className="mt-0.5 block text-[10px] font-sans font-medium text-red-300">
           {errors[name]}
         </span>
       )}
@@ -170,6 +171,17 @@ export default function CheckoutAddressModal({
   const [errors, setErrors] = useState<Partial<Record<keyof CheckoutAddressForm, string>>>({});
   const [statusMessage, setStatusMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    // Disable background scrolling
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
 
   const updateField = (name: keyof CheckoutAddressForm, value: string) => {
     setForm((current) => ({ ...current, [name]: value }));
@@ -210,108 +222,123 @@ export default function CheckoutAddressModal({
       router.push("/checkout/payment");
     } catch (error) {
       setStatusMessage(
-        error instanceof Error
-          ? error.message
-          : "Could not save the address. Please try again."
+          error instanceof Error
+            ? error.message
+            : "Could not save the address. Please try again."
       );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/70 p-3 sm:p-4">
-      <div className="flex max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-3rem)] w-full max-w-3xl flex-col overflow-hidden rounded-[12px] border border-white/10 bg-[#120d0a] text-white shadow-2xl">
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-3 sm:p-4">
+      <div className="flex max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-3rem)] w-full max-w-md flex-col overflow-hidden rounded-[12px] border border-white/10 bg-[#120d0a] text-white shadow-2xl">
         <div className="flex items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-5">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-300">
+            <span className="block text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-amber-300">
               Checkout
-            </p>
-            <h2 className="mt-1 text-lg font-semibold sm:text-xl">Delivery Information</h2>
-            <p className="mt-1 text-xs text-zinc-300">
-              Add your address before payment. Total: {formatPrice(finalAmount)}
-            </p>
+            </span>
+            <div className="mt-0.5 text-base font-sans font-bold text-white">
+              Delivery Information
+            </div>
+            <div className="mt-0.5 text-[11px] font-sans text-zinc-400">
+              Add your address before payment. Total: <span className="font-bold text-amber-200">{formatPrice(finalAmount)}</span>
+            </div>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close checkout"
-            className="grid h-9 w-9 place-items-center rounded-full text-zinc-200 transition hover:bg-white/10"
+            className="grid h-8 w-8 place-items-center rounded-full text-zinc-200 transition hover:bg-white/10"
           >
-            <X size={19} />
+            <X size={17} />
           </button>
         </div>
 
         <form onSubmit={saveAddressAndContinue} className="flex min-h-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-5">
-          <section>
-            <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-amber-200">
-              Receiver Details
-            </h3>
-            <div className="mt-3 grid gap-4 sm:grid-cols-2">
-              <Field label="Receiver Full Name" name="receiverFullName" form={form} errors={errors} onChange={updateField} required />
-              <Field label="Mobile Number" name="mobileNumber" form={form} errors={errors} onChange={updateField} required />
-              <Field label="Alternate Mobile Number" name="alternateMobileNumber" form={form} errors={errors} onChange={updateField} />
-            </div>
-          </section>
+          <div className="min-h-0 flex-1 space-y-3.5 overflow-y-auto px-4 py-3.5 sm:px-5">
+            <section>
+              <h4 className="text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-amber-200">
+                Receiver Details
+              </h4>
+              <div className="mt-2 grid gap-3 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <Field label="Receiver Full Name" name="receiverFullName" form={form} errors={errors} onChange={updateField} required />
+                </div>
+                <Field label="Mobile Number" name="mobileNumber" form={form} errors={errors} onChange={updateField} required />
+                <Field label="Alternate Mobile Number" name="alternateMobileNumber" form={form} errors={errors} onChange={updateField} />
+              </div>
+            </section>
 
-          <section>
-            <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-amber-200">
-              Delivery Address
-            </h3>
-            <div className="mt-3 grid gap-4 sm:grid-cols-2">
-              <Field label="House / Flat / Building No" name="houseFlatBuilding" form={form} errors={errors} onChange={updateField} required />
-              <Field label="Street / Area / Locality" name="streetAreaLocality" form={form} errors={errors} onChange={updateField} required />
-              <Field label="Landmark" name="landmark" form={form} errors={errors} onChange={updateField} />
-              <Field label="City" name="city" form={form} errors={errors} onChange={updateField} required />
-              <Field label="State" name="state" form={form} errors={errors} onChange={updateField} required />
-              <Field label="Pincode" name="pincode" form={form} errors={errors} onChange={updateField} required />
-              <Field label="Country" name="country" form={form} errors={errors} onChange={updateField} required />
-            </div>
-          </section>
+            <section>
+              <h4 className="text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-amber-200">
+                Delivery Address
+              </h4>
+              <div className="mt-2 grid gap-3 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <Field label="House / Flat / Building No" name="houseFlatBuilding" form={form} errors={errors} onChange={updateField} required />
+                </div>
+                <div className="sm:col-span-2">
+                  <Field label="Street / Area / Locality" name="streetAreaLocality" form={form} errors={errors} onChange={updateField} required />
+                </div>
+                <div className="sm:col-span-2">
+                  <Field label="Landmark" name="landmark" form={form} errors={errors} onChange={updateField} />
+                </div>
+                <Field label="City" name="city" form={form} errors={errors} onChange={updateField} required />
+                <Field label="State" name="state" form={form} errors={errors} onChange={updateField} required />
+                <Field label="Pincode" name="pincode" form={form} errors={errors} onChange={updateField} required />
+                <Field label="Country" name="country" form={form} errors={errors} onChange={updateField} required />
+              </div>
+            </section>
 
-          <section>
-            <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-amber-200">
-              Order Notes
-            </h3>
-            <label className="mt-3 block">
-              <span className="text-[11px] font-semibold text-zinc-300">
-                Delivery Instructions
-              </span>
-              <textarea
-                value={form.deliveryInstructions}
-                onChange={(event) => updateField("deliveryInstructions", event.target.value)}
-                rows={2}
-                className="mt-1.5 w-full rounded-[8px] border border-white/10 bg-white/[0.06] px-3 py-2 text-xs text-white outline-none transition placeholder:text-zinc-500 focus:border-amber-300/60"
-              />
-            </label>
-          </section>
+            <section>
+              <h4 className="text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-amber-200">
+                Order Notes
+              </h4>
+              <div className="mt-2">
+                <label className="block">
+                  <span className="text-[10px] font-sans font-semibold tracking-wide text-zinc-300">
+                    Delivery Instructions
+                  </span>
+                  <textarea
+                    value={form.deliveryInstructions}
+                    onChange={(event) => updateField("deliveryInstructions", event.target.value)}
+                    rows={2}
+                    className="mt-1 w-full rounded-[6px] border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[11px] text-white outline-none transition placeholder:text-zinc-500 focus:border-amber-300/60"
+                  />
+                </label>
+              </div>
+            </section>
 
-          {statusMessage && (
-            <p className="rounded-[8px] border border-white/10 bg-white/[0.06] p-3 text-xs text-zinc-100">
-              {statusMessage}
-            </p>
-          )}
+            {statusMessage && (
+              <div className="rounded-[6px] border border-white/10 bg-white/[0.06] p-3 text-xs font-sans text-zinc-100">
+                {statusMessage}
+              </div>
+            )}
           </div>
 
-          <div className="flex shrink-0 flex-col gap-3 border-t border-white/10 bg-[#120d0a] px-4 py-3 sm:flex-row sm:justify-end sm:px-5">
+          <div className="flex shrink-0 gap-3 border-t border-white/10 bg-[#120d0a] px-4 py-3 justify-end sm:px-5">
             <button
               type="button"
               onClick={onClose}
-              className="h-11 rounded-[8px] border border-white/15 px-5 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white/10"
+              className="h-9 rounded-[6px] border border-white/15 px-4 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white/10"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="h-11 rounded-[8px] bg-[#D4A24C] px-5 text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A] disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-9 rounded-[6px] bg-[#D4A24C] px-4 text-[10px] font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? "Saving Address..." : "Continue To Payment"}
             </button>
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
