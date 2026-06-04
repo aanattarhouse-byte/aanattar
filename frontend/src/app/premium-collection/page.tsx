@@ -7,6 +7,6 @@ export const metadata = {
 };
 
 export default function PremiumCollectionPage() {
-  return <BuildWardrobeClient />;
+  return <BuildWardrobeClient isPremiumCollection={true} />;
 }
 

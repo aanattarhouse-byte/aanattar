@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Eye, ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
-import { getProductBySlug, type Product } from "@/lib/products";
+import { getProductBySlug, formatPrice, getCompareAtPrice, type Product } from "@/lib/products";
 
 type WardrobeRecommendation = {
   slug: string;
@@ -87,18 +87,28 @@ function getRecommendationProduct(recommendation: WardrobeRecommendation) {
   return product;
 }
 
-function buildCartItem(product: Product, recommendation: WardrobeRecommendation) {
+function buildCartItem(
+  product: Product,
+  recommendation: WardrobeRecommendation,
+  isPremiumCollection?: boolean
+) {
   return {
     id: product.id,
     slug: product.slug,
     name: recommendation.name,
     image: product.image,
-    price: product.price,
+    price: isPremiumCollection ? 149 : product.price,
     quantity: 1,
+    variant: isPremiumCollection ? "Premium Collection" : undefined,
+    volume: isPremiumCollection ? "5ml" : undefined,
   };
 }
 
-export default function BuildWardrobeClient() {
+export default function BuildWardrobeClient({
+  isPremiumCollection = false,
+}: {
+  isPremiumCollection?: boolean;
+}) {
   const { addItem } = useCart();
   const wardrobe = recommendations.map((recommendation) => ({
     ...recommendation,
@@ -109,7 +119,7 @@ export default function BuildWardrobeClient() {
     product: Product,
     recommendation: WardrobeRecommendation
   ) => {
-    addItem(buildCartItem(product, recommendation));
+    addItem(buildCartItem(product, recommendation, isPremiumCollection));
     requestCartOpen();
   };
 
@@ -129,57 +139,90 @@ export default function BuildWardrobeClient() {
         </div>
 
         <div className="mt-9 grid gap-4 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {wardrobe.map(({ product, ...recommendation }) => (
-            <article
-              key={recommendation.slug}
-              className="group flex h-full flex-col overflow-hidden rounded-[8px] border border-white/10 bg-[#15100d]/90 shadow-[0_22px_70px_rgba(0,0,0,0.24)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-amber-300/35 hover:shadow-[0_28px_80px_rgba(212,162,76,0.14)]"
-            >
-              <Link
-                href={`/product/${product.slug}`}
-                className="relative block aspect-[4/3] overflow-hidden bg-[#0f0907]"
-                aria-label={`View ${recommendation.name}`}
+          {wardrobe.map(({ product, ...recommendation }) => {
+            const cardPrice = isPremiumCollection ? 149 : product.price;
+            const cardDiscountPercent = isPremiumCollection
+              ? Math.round(((product.price - 149) / product.price) * 100)
+              : product.discountPercent || 20;
+            const cardCompareAtPrice = isPremiumCollection
+              ? product.price
+              : getCompareAtPrice(product.price, cardDiscountPercent);
+
+            return (
+              <article
+                key={recommendation.slug}
+                className="group flex h-full flex-col overflow-hidden rounded-[8px] border border-white/10 bg-[#15100d]/90 shadow-[0_22px_70px_rgba(0,0,0,0.24)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-amber-300/35 hover:shadow-[0_28px_80px_rgba(212,162,76,0.14)]"
               >
-                <Image
-                  src={product.image}
-                  alt={recommendation.name}
-                  fill
-                  sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover transition duration-700 ease-out group-hover:scale-105"
-                />
-                <span className="absolute left-3 top-3 rounded-full border border-amber-300/30 bg-black/55 px-3 py-1 font-sans text-[0.62rem] font-bold uppercase tracking-[0.14em] text-amber-200">
-                  {recommendation.occasion}
-                </span>
-              </Link>
+                <Link
+                  href={`/product/${product.slug}${isPremiumCollection ? "?collection=premium" : ""}`}
+                  className="relative block aspect-[4/3] overflow-hidden bg-[#0f0907]"
+                  aria-label={`View ${recommendation.name}`}
+                >
+                  <Image
+                    src={product.image}
+                    alt={recommendation.name}
+                    fill
+                    sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover transition duration-700 ease-out group-hover:scale-105"
+                  />
+                  <span className="absolute left-3 top-3 rounded-full border border-amber-300/30 bg-black/55 px-3 py-1 font-sans text-[0.62rem] font-bold uppercase tracking-[0.14em] text-amber-200">
+                    {recommendation.occasion}
+                  </span>
+                </Link>
 
-              <div className="flex flex-1 flex-col p-4">
-                <h3 className="font-display !text-lg sm:!text-xl font-semibold leading-tight text-white">
-                  {recommendation.name}
-                </h3>
+                <div className="flex flex-1 flex-col p-4">
+                  <h3 className="font-display !text-lg sm:!text-xl font-semibold leading-tight text-white">
+                    {recommendation.name}
+                  </h3>
 
-                <p className="mt-3 min-h-[4.5rem] text-sm leading-6 text-zinc-300">
-                  {recommendation.line}
-                </p>
+                  <p className="mt-3 min-h-[4.5rem] text-sm leading-6 text-zinc-300">
+                    {recommendation.line}
+                  </p>
 
-                <div className="mt-auto grid grid-cols-2 gap-2 pt-5">
-                  <button
-                    type="button"
-                    onClick={() => addRecommendation(product, recommendation)}
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-3 text-[0.68rem] font-bold uppercase tracking-[0.08em] text-black shadow-[0_10px_24px_rgba(212,162,76,0.22)] transition hover:brightness-105"
-                  >
-                    <ShoppingCart size={15} strokeWidth={2.4} />
-                    Add to Cart
-                  </button>
-                  <Link
-                    href={`/product/${product.slug}`}
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-amber-300/30 bg-white/5 px-3 text-[0.68rem] font-bold uppercase tracking-[0.08em] text-amber-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-black"
-                  >
-                    <Eye size={15} />
-                    View Details
-                  </Link>
+                  {/* Price, Stock and Discount info */}
+                  <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-3">
+                    <div className="flex items-center gap-1.5 font-sans">
+                      <span className="font-bold text-amber-200 text-xs">
+                        {formatPrice(cardPrice)}
+                      </span>
+                      {cardCompareAtPrice > cardPrice && (
+                        <>
+                          <span className="line-through text-[10px] text-zinc-500">
+                            {formatPrice(cardCompareAtPrice)}
+                          </span>
+                          <span className="text-[10px] font-bold text-emerald-400">
+                            {cardDiscountPercent}% off
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-medium font-sans">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      In Stock
+                    </span>
+                  </div>
+
+                  <div className="mt-auto grid grid-cols-2 gap-2 pt-5">
+                    <button
+                      type="button"
+                      onClick={() => addRecommendation(product, recommendation)}
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-3 text-[0.68rem] font-bold uppercase tracking-[0.08em] text-black shadow-[0_10px_24px_rgba(212,162,76,0.22)] transition hover:brightness-105"
+                    >
+                      <ShoppingCart size={15} strokeWidth={2.4} />
+                      Add to Cart
+                    </button>
+                    <Link
+                      href={`/product/${product.slug}${isPremiumCollection ? "?collection=premium" : ""}`}
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-amber-300/30 bg-white/5 px-3 text-[0.68rem] font-bold uppercase tracking-[0.08em] text-amber-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-black"
+                    >
+                      <Eye size={15} />
+                      View Details
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </section>
     </main>

@@ -14,6 +14,9 @@ type ProductPageProps = {
   params: Promise<{
     slug: string;
   }>;
+  searchParams?: Promise<{
+    collection?: string;
+  }>;
 };
 
 export function generateStaticParams() {
@@ -38,8 +41,10 @@ export async function generateMetadata({ params }: ProductPageProps) {
   };
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage({ params, searchParams }: ProductPageProps) {
   const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
+  const isPremium = resolvedSearchParams?.collection === "premium";
 
   if (slug === "salim" || slug === "salim-luxury-attar") {
     redirect("/products/salim-luxury-attar");
@@ -116,7 +121,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </div>
             </div>
 
-            <ProductDetailActions product={product} />
+            <ProductDetailActions product={product} isPremium={isPremium} />
           </ScrollReveal>
         </div>
       </section>

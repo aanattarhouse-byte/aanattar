@@ -280,7 +280,7 @@ export default function SalimDetailsClient() {
               <div className="mt-8 space-y-4">
                 <div className="space-y-1">
                   <h3 className="text-sm font-bold uppercase tracking-[0.18em] text-white">
-                    Choose Your 5ML Minis
+                    Complete your wardrobe
                   </h3>
                   <p className="text-xs text-zinc-400">
                     Selected: {selectedCount}/2

@@ -22,8 +22,10 @@ import {
 
 export default function ProductDetailActions({
   product,
+  isPremium = false,
 }: {
   product: Product;
+  isPremium?: boolean;
 }) {
   const [quantity, setQuantity] = useState(1);
   const [selectedVolume, setSelectedVolume] = useState<ProductVolumeMl>(
@@ -31,9 +33,14 @@ export default function ProductDetailActions({
   );
   const router = useRouter();
   const { addItem } = useCart();
-  const price = getVolumePrice(selectedVolume);
-  const discountPercent = getProductDiscountPercent(product);
-  const compareAtPrice = getCompareAtPrice(price, discountPercent);
+  const price = isPremium ? 149 : getVolumePrice(selectedVolume);
+  const regularPriceForVolume = getVolumePrice(selectedVolume);
+  const discountPercent = isPremium
+    ? Math.round(((regularPriceForVolume - 149) / regularPriceForVolume) * 100)
+    : getProductDiscountPercent(product);
+  const compareAtPrice = isPremium
+    ? regularPriceForVolume
+    : getCompareAtPrice(price, discountPercent);
   const selectedVolumeValue = getVolumeCartValue(selectedVolume);
 
   const addProduct = () => {
@@ -44,6 +51,7 @@ export default function ProductDetailActions({
       image: product.image,
       price,
       quantity,
+      variant: isPremium ? "Premium Collection" : undefined,
       volume: selectedVolumeValue,
     });
   };
@@ -64,32 +72,44 @@ export default function ProductDetailActions({
         <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 sm:text-xs sm:tracking-[0.2em]">
           Volume
         </span>
-        <div className="flex flex-wrap gap-2 sm:gap-3">
-          {PRODUCT_VOLUME_OPTIONS.map((volume) => {
-            const selected = selectedVolume === volume;
+        {isPremium ? (
+          <div className="inline-flex items-center gap-2 rounded-[8px] border border-amber-300/30 bg-amber-300/10 px-4 py-2.5">
+            <span className="block font-sans text-sm font-bold text-white">
+              {formatVolume(selectedVolume)}
+            </span>
+            <span className="h-4 w-[1px] bg-amber-300/30" />
+            <span className="block font-sans text-xs font-bold uppercase tracking-[0.1em] text-amber-300">
+              Premium Collection Offer
+            </span>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            {PRODUCT_VOLUME_OPTIONS.map((volume) => {
+              const selected = selectedVolume === volume;
 
-            return (
-              <button
-                key={volume}
-                type="button"
-                aria-pressed={selected}
-                onClick={() => setSelectedVolume(volume)}
-                className={`min-w-[92px] rounded-[8px] border px-3 py-2 text-left transition-all duration-200 sm:min-w-[108px] ${
-                  selected
-                    ? "border-amber-300/70 bg-amber-300/15 shadow-[0_0_0_1px_rgba(248,220,123,0.18)]"
-                    : "border-white/10 bg-white/[0.04] hover:border-amber-300/30 hover:bg-white/[0.07]"
-                }`}
-              >
-                <span className="block font-sans text-sm font-bold text-white">
-                  {formatVolume(volume)}
-                </span>
-                <span className="mt-1 block font-sans text-xs font-semibold text-amber-200">
-                  {formatPrice(getVolumePrice(volume))}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+              return (
+                <button
+                  key={volume}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => setSelectedVolume(volume)}
+                  className={`min-w-[92px] rounded-[8px] border px-3 py-2 text-left transition-all duration-200 sm:min-w-[108px] ${
+                    selected
+                      ? "border-amber-300/70 bg-amber-300/15 shadow-[0_0_0_1px_rgba(248,220,123,0.18)]"
+                      : "border-white/10 bg-white/[0.04] hover:border-amber-300/30 hover:bg-white/[0.07]"
+                  }`}
+                >
+                  <span className="block font-sans text-sm font-bold text-white">
+                    {formatVolume(volume)}
+                  </span>
+                  <span className="mt-1 block font-sans text-xs font-semibold text-amber-200">
+                    {formatPrice(getVolumePrice(volume))}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
