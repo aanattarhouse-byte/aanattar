@@ -38,15 +38,19 @@ export default function VideoStoriesSection() {
         entries.forEach((entry) => {
           const video = entry.target as HTMLVideoElement;
 
-          if (!entry.isIntersecting) {
+          if (entry.isIntersecting) {
+            video.play().catch(() => undefined);
+          } else {
             video.pause();
           }
         });
       },
-      { threshold: 0.45 }
+      { threshold: 0.15 }
     );
 
-    videos.forEach((video) => observer.observe(video));
+    videos.forEach((video) => {
+      if (video) observer.observe(video);
+    });
 
     return () => observer.disconnect();
   }, []);
@@ -119,14 +123,13 @@ export default function VideoStoriesSection() {
                     if (node) videoRefs.current[index] = node;
                   }}
                   className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  src={story.video}
                   autoPlay
                   loop
                   muted
                   playsInline
-                  preload="metadata"
-                >
-                  <source src={story.video} type={story.video.endsWith(".mp4") ? "video/mp4" : undefined} />
-                </video>
+                  preload="auto"
+                />
               ) : (
                 <div
                   className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-105"
