@@ -299,13 +299,13 @@ export default function SalimDetailsClient() {
                         type="button"
                         disabled={isDisabled}
                         onClick={() => toggleAddOn(addOn.id)}
-                        className={`relative flex flex-col p-3 rounded-lg border-2 w-[125px] shrink-0 text-left transition-all duration-300 ${
+                        className={`relative flex flex-col p-3 rounded-lg border-2 w-[130px] shrink-0 text-left transition-all duration-300 ${
                           isSelected
                             ? "border-sky-500 bg-sky-500/5 shadow-[0_0_15px_rgba(56,189,248,0.15)]"
                             : "border-white/10 bg-zinc-900/40 hover:border-white/20"
                         } ${isDisabled ? "opacity-35 cursor-not-allowed" : "cursor-pointer"}`}
                       >
-                        <div className="relative aspect-square w-full overflow-hidden rounded-md bg-[#120b08] mb-3">
+                        <div className="relative aspect-square w-full overflow-hidden rounded-md bg-[#120b08] mb-2">
                           <Image
                             src={addOn.image}
                             alt={addOn.name}
@@ -314,10 +314,17 @@ export default function SalimDetailsClient() {
                             className="object-cover"
                           />
                         </div>
-                        <p className="mt-1 text-xs font-bold text-white">₹150</p>
-                        <p className="mt-0.5 text-[10px] text-zinc-400 line-through font-sans">₹250</p>
                         
-                        <div className="mt-1.5 flex items-center justify-between w-full">
+                        <h4 className="text-[11px] font-semibold text-zinc-100 line-clamp-2 leading-tight h-[2rem] overflow-hidden">
+                          {addOn.name}
+                        </h4>
+
+                        <div className="mt-1 flex items-baseline gap-1.5">
+                          <span className="text-xs font-bold text-white">₹150</span>
+                          <span className="text-[9px] text-zinc-400 line-through">₹250</span>
+                        </div>
+                        
+                        <div className="mt-2 flex items-center justify-between w-full">
                           <div className="flex items-center gap-1">
                             <span className="text-[9px] rounded bg-zinc-800/80 px-1 py-0.5 font-medium text-zinc-400">5ML</span>
                             <span className="text-[9px] font-bold text-emerald-400">In stock</span>

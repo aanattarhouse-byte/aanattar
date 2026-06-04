@@ -7,6 +7,11 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import adminRoutes from './routes/admin.routes.js';
 import authRoutes from './routes/auth.routes.js';
@@ -46,6 +51,33 @@ const allowedOrigins = new Set([
   ...(process.env.NODE_ENV === 'production' ? [] : devOrigins)
 ]);
 
+const isOriginAllowed = (origin) => {
+  if (!origin) return true;
+
+  const normalizedOrigin = origin.toLowerCase().trim().replace(/\/+$/, '');
+
+  if (allowedOrigins.has(normalizedOrigin)) {
+    return true;
+  }
+
+  try {
+    const host = new URL(normalizedOrigin).hostname;
+    if (
+      host === 'aanattar.com' ||
+      host === 'www.aanattar.com' ||
+      host.endsWith('.aanattar.com') ||
+      host === 'aanattar.onrender.com' ||
+      host.endsWith('.vercel.app')
+    ) {
+      return true;
+    }
+  } catch (error) {
+    return false;
+  }
+
+  return false;
+};
+
 app.set('trust proxy', 1);
 app.use(helmet({
   crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' }
@@ -55,12 +87,11 @@ app.use(cors({
   origin(origin, callback) {
     if (!origin) return callback(null, true);
 
-    const normalizedOrigin = origin.replace(/\/+$/, '');
-    if (allowedOrigins.has(normalizedOrigin)) {
+    if (isOriginAllowed(origin)) {
       return callback(null, true);
     }
 
-    return callback(new Error(`CORS origin not allowed: ${origin}`));
+    return callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -74,6 +105,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(hpp());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));

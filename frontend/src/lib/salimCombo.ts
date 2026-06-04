@@ -14,18 +14,32 @@ export const salimComboConfig = {
   requiredMiniQuantity: 2,
   addOns: [
     {
-      id: "salim-5ml-mini",
-      name: "Salim 5ML Mini",
+      id: "armani-prestige",
+      name: "Armani Prestige",
       size: "5ML",
       price: 150,
-      image: "/salim2.jpg",
+      image: "https://unsplash.com/photos/7BfHnIkZv5E/download?force=true&w=900",
     },
     {
-      id: "gifting-5ml",
-      name: "Gifting 5ML",
+      id: "one-man-show-signature",
+      name: "One Man Show Signature",
       size: "5ML",
       price: 150,
-      image: "/salim2.jpg",
+      image: "https://unsplash.com/photos/6X7Kdro6V20/download?force=true&w=900",
+    },
+    {
+      id: "white-musk-pure",
+      name: "White Musk Pure",
+      size: "5ML",
+      price: 150,
+      image: "https://unsplash.com/photos/So4eFi-d1nc/download?force=true&w=900",
+    },
+    {
+      id: "dior-sauvage-intense",
+      name: "Dior Sauvage Intense",
+      size: "5ML",
+      price: 150,
+      image: "https://unsplash.com/photos/XGlB9_jqYec/download?force=true&w=900",
     },
   ],
 } satisfies {

@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import ApiError from '../utils/apiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import { getAuthCookieOptions } from '../utils/cookieOptions.js';
 
 export const protect = asyncHandler(async (req, res, next) => {
   const headerToken = req.headers.authorization?.startsWith('Bearer ')
@@ -11,25 +12,27 @@ export const protect = asyncHandler(async (req, res, next) => {
 
   if (!token) throw new ApiError(401, 'Authentication required');
 
+  const { maxAge, ...clearOptions } = getAuthCookieOptions();
+
   let decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
-    res.clearCookie('token', { path: '/' });
+    res.clearCookie('token', clearOptions);
     throw new ApiError(401, 'Invalid or expired session');
   }
 
   const userId = decoded?.userId || decoded?.id;
 
   if (!userId) {
-    res.clearCookie('token', { path: '/' });
+    res.clearCookie('token', clearOptions);
     throw new ApiError(401, 'Invalid session');
   }
 
   const user = await User.findById(userId).select('-__v');
   if (!user) throw new ApiError(401, 'User no longer exists');
   if (user.blocked) {
-    res.clearCookie('token', { path: '/' });
+    res.clearCookie('token', clearOptions);
     throw new ApiError(403, 'Account is blocked');
   }
 

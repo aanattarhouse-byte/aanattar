@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.758.0",
     "@react-three/fiber": "^9.4.2",
     "firebase": "^11.3.1",
     "framer-motion": "^12.38.0",
