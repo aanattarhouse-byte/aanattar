@@ -132,10 +132,10 @@ export default function AboutPage() {
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/premium-collection"
+                href="/build-your-wardrobe"
                 className="inline-flex h-11 items-center justify-center rounded-[8px] bg-[#D4A24C] px-5 text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A]"
               >
-                Premium Collection
+                Build Your Wardrobe
               </Link>
               <Link
                 href="/build-your-signature"

@@ -37,7 +37,7 @@ import {
 
 const navItems = [
   { label: "About", href: "/about" },
-  { label: "Premium Collection", href: "/premium-collection" },
+  { label: "Build Your Wardrobe", href: "/build-your-wardrobe" },
   { label: "Build Your Signature", href: "/build-your-signature" },
 ];
 

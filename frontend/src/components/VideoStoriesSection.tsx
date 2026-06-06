@@ -2,8 +2,8 @@
 
 import { fadeUp, stagger } from "@/lib/framer/motion";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { Sparkles, Play, Pause } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const stories = [
   {
@@ -30,6 +30,7 @@ const stories = [
 
 export default function VideoStoriesSection() {
   const videoRefs = useRef<HTMLVideoElement[]>([]);
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const videos = videoRefs.current;
@@ -38,10 +39,12 @@ export default function VideoStoriesSection() {
         entries.forEach((entry) => {
           const video = entry.target as HTMLVideoElement;
 
-          if (entry.isIntersecting) {
-            video.play().catch(() => undefined);
-          } else {
+          if (!entry.isIntersecting) {
             video.pause();
+            const idx = videos.indexOf(video);
+            if (idx !== -1) {
+              setPlayingIndex((prev) => (prev === idx ? null : prev));
+            }
           }
         });
       },
@@ -60,8 +63,15 @@ export default function VideoStoriesSection() {
 
     if (!video) return;
 
+    if (playingIndex === index) {
+      video.pause();
+      setPlayingIndex(null);
+      return;
+    }
+
     videoRefs.current.forEach((item, itemIndex) => {
-      if (!item || itemIndex === index) return;
+      if (!item) return;
+      if (itemIndex === index) return;
 
       item.pause();
       item.currentTime = 0;
@@ -70,7 +80,9 @@ export default function VideoStoriesSection() {
     video.muted = false;
     video.defaultMuted = false;
     video.volume = 1;
-    video.play().catch(() => undefined);
+    video.play()
+      .then(() => setPlayingIndex(index))
+      .catch(() => undefined);
   };
 
   return (
@@ -118,18 +130,30 @@ export default function VideoStoriesSection() {
               }`}
             >
               {story.video ? (
-                <video
-                  ref={(node) => {
-                    if (node) videoRefs.current[index] = node;
-                  }}
-                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  src={story.video}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                />
+                <>
+                  <video
+                    ref={(node) => {
+                      if (node) videoRefs.current[index] = node;
+                    }}
+                    className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                    src={story.video}
+                    loop
+                    playsInline
+                    preload="auto"
+                  />
+                  {/* Play/Pause Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">
+                    {playingIndex !== index ? (
+                      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-hover:bg-[#ffcf7a] group-hover:text-black group-hover:border-[#ffcf7a]">
+                        <Play className="ml-0.5 h-6 w-6 fill-current" />
+                      </div>
+                    ) : (
+                      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100">
+                        <Pause className="h-6 w-6 fill-current" />
+                      </div>
+                    )}
+                  </div>
+                </>
               ) : (
                 <div
                   className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-105"

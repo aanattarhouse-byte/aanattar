@@ -27,10 +27,10 @@ export default function BuildYourSignaturePage() {
               inspirations.
             </p>
             <Link
-              href="/premium-collection"
+              href="/build-your-wardrobe"
               className="mt-6 inline-flex h-10 items-center rounded-[8px] border border-amber-300/40 bg-white/5 px-5 text-xs font-bold uppercase tracking-[0.1em] text-amber-100 transition hover:bg-amber-300 hover:text-black"
             >
-              View Premium Picks
+              Build Your Wardrobe
             </Link>
           </ScrollReveal>
 

@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Play, Pause } from "lucide-react";
 
 const copy = [
   "Built from a fascination with identity, desire, and digital craft, Salim Luxury Attar began as a personal search for work that felt rarer than a template and warmer than a campaign.",
@@ -12,54 +13,45 @@ const copy = [
 
 export default function FounderVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
-    let isVisible = false;
-
     if (!video) return;
-
-    const playWithSound = () => {
-      video.muted = false;
-      video.defaultMuted = false;
-      video.volume = 1;
-      video.play().catch(() => undefined);
-    };
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        isVisible = entry.isIntersecting;
-
-        if (isVisible) {
-          playWithSound();
-        } else {
+        if (!entry.isIntersecting) {
           video.pause();
+          setIsPlaying(false);
         }
       },
-      { threshold: 0.45 }
+      { threshold: 0.15 }
     );
-
-    const unlockAudio = () => {
-      if (isVisible) {
-        playWithSound();
-      }
-    };
 
     observer.observe(video);
 
-    window.addEventListener("pointerdown", unlockAudio, { passive: true });
-    window.addEventListener("keydown", unlockAudio);
-    window.addEventListener("touchstart", unlockAudio, { passive: true });
-    window.addEventListener("wheel", unlockAudio, { passive: true });
-
     return () => {
       observer.disconnect();
-      window.removeEventListener("pointerdown", unlockAudio);
-      window.removeEventListener("keydown", unlockAudio);
-      window.removeEventListener("touchstart", unlockAudio);
-      window.removeEventListener("wheel", unlockAudio);
     };
   }, []);
+
+  const togglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      video.pause();
+      setIsPlaying(false);
+    } else {
+      video.muted = false;
+      video.defaultMuted = false;
+      video.volume = 1;
+      video.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => undefined);
+    }
+  };
 
   return (
     <section className="relative isolate overflow-hidden bg-black py-24 sm:py-28 lg:py-36">
@@ -119,20 +111,33 @@ export default function FounderVideo() {
           />
 
           <motion.div
-            className="group relative overflow-hidden rounded-[1.5rem] shadow-[0_32px_110px_rgba(0,0,0,0.58)]"
+            onClick={togglePlay}
+            className="group relative overflow-hidden rounded-[1.5rem] shadow-[0_32px_110px_rgba(0,0,0,0.58)] cursor-pointer"
             whileHover={{ y: -6, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 180, damping: 18 }}
           >
             <video
               ref={videoRef}
               className="aspect-[9/16] max-h-[720px] w-full rounded-[1.5rem] bg-black object-cover transition duration-700 group-hover:scale-[1.02]"
-              autoPlay
               loop
               playsInline
               preload="metadata"
             >
               <source src="/founder.mp4" type="video/mp4" />
             </video>
+
+            {/* Play/Pause Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">
+              {!isPlaying ? (
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md transition-all duration-300 scale-100 group-hover:scale-110 group-hover:bg-[#d4a24c] group-hover:text-black group-hover:border-[#d4a24c]">
+                  <Play className="ml-1 h-8 w-8 fill-current" />
+                </div>
+              ) : (
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100">
+                  <Pause className="h-8 w-8 fill-current" />
+                </div>
+              )}
+            </div>
           </motion.div>
         </motion.div>
       </div>

@@ -105,7 +105,7 @@ function buildCartItem(
 }
 
 export default function BuildWardrobeClient({
-  isPremiumCollection = false,
+  isPremiumCollection = true,
 }: {
   isPremiumCollection?: boolean;
 }) {
