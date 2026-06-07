@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/photo-**",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
+      },
     ],
   },
   async headers() {

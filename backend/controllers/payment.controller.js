@@ -91,7 +91,7 @@ export const verifyPayment = asyncHandler(async (req, res) => {
     products,
     amount,
     paymentStatus: 'Paid',
-    orderStatus: 'Processing',
+    orderStatus: 'Confirmed',
     paymentMethod: 'Razorpay',
     paymentDetails: {
       order_id: razorpay_order_id,
@@ -145,7 +145,7 @@ export const handleRazorpayWebhook = asyncHandler(async (req, res) => {
       { razorpayOrderId },
       {
         paymentStatus: 'Paid',
-        orderStatus: 'Processing',
+        orderStatus: 'Confirmed',
         paymentMethod: 'Razorpay',
         razorpayPaymentId: payment.id,
         $set: {
@@ -200,7 +200,7 @@ export const handleRazorpayWebhook = asyncHandler(async (req, res) => {
       { razorpayOrderId: order.id },
       {
         paymentStatus: 'Paid',
-        orderStatus: 'Processing',
+        orderStatus: 'Confirmed',
         paymentMethod: 'Razorpay',
         $set: {
           'paymentDetails.order_id': order.id,

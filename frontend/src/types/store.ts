@@ -1,5 +1,5 @@
 export type UserRole = 'user' | 'admin';
-export type OrderStatus = 'Pending' | 'Processing' | 'Confirmed' | 'Shipped' | 'Delivered' | 'Cancelled';
+export type OrderStatus = 'Order Placed' | 'Pending' | 'Confirmed' | 'Processing' | 'Packed' | 'Shipped' | 'Out for Delivery' | 'Delivered' | 'Cancelled';
 export type PaymentStatus = 'Pending' | 'Paid' | 'Failed' | 'Refunded';
 
 export type Address = {

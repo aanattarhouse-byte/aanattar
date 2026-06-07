@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 import Order from '../models/Order.js';
+import Cart from '../models/Cart.js';
+import Product from '../models/Product.js';
 import ApiError from '../utils/apiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { getPaginationMeta, getPaginationOptions } from '../utils/queryOptions.js';
@@ -48,7 +50,7 @@ export const createOrder = asyncHandler(async (req, res) => {
     products,
     amount: req.body.amount,
     paymentStatus: req.body.paymentStatus || 'Pending',
-    orderStatus: 'Pending',
+    orderStatus: 'Order Placed',
     paymentMethod: req.body.paymentMethod || 'COD',
     paymentDetails: req.body.paymentDetails,
     shippingAddress: req.body.shippingAddress
@@ -154,7 +156,7 @@ export const verifyCheckoutRazorpayPayment = asyncHandler(async (req, res) => {
     amount: req.body.amount,
     shippingAddress: req.body.shippingAddress,
     paymentStatus: 'Paid',
-    orderStatus: 'Processing',
+    orderStatus: 'Confirmed',
     paymentMethod: 'Razorpay',
     paymentDetails: {
       order_id: razorpay_order_id,
@@ -196,6 +198,20 @@ export const verifyCheckoutRazorpayPayment = asyncHandler(async (req, res) => {
 
 export const getMyOrders = asyncHandler(async (req, res) => {
   const filter = { userId: req.user._id };
+
+  if (req.query.status) {
+    filter.orderStatus = req.query.status;
+  }
+
+  if (req.query.search) {
+    const searchVal = req.query.search.trim();
+    if (mongoose.Types.ObjectId.isValid(searchVal)) {
+      filter._id = searchVal;
+    } else {
+      filter._id = new mongoose.Types.ObjectId();
+    }
+  }
+
   const pagination = getPaginationOptions(req.query);
   const [orders, total] = await Promise.all([
     Order.find(filter)
@@ -208,6 +224,86 @@ export const getMyOrders = asyncHandler(async (req, res) => {
   ]);
 
   res.json({ success: true, orders, pagination: getPaginationMeta(total, pagination) });
+});
+
+export const getMyOrderDetails = asyncHandler(async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    throw new ApiError(404, 'Order not found');
+  }
+
+  const order = await Order.findById(req.params.id).populate('userId', 'name phone email addresses createdAt').lean();
+  if (!order) {
+    throw new ApiError(404, 'Order not found');
+  }
+
+  if (req.user.role !== 'admin' && String(order.userId._id) !== String(req.user._id)) {
+    throw new ApiError(403, 'You are not authorized to view this order');
+  }
+
+  res.json({ success: true, order });
+});
+
+export const cancelOrder = asyncHandler(async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    throw new ApiError(404, 'Order not found');
+  }
+
+  const order = await Order.findOne({ _id: req.params.id, userId: req.user._id });
+  if (!order) {
+    throw new ApiError(404, 'Order not found');
+  }
+
+  const nonCancellableStatuses = ['Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'];
+  if (nonCancellableStatuses.includes(order.orderStatus)) {
+    throw new ApiError(400, `Cannot cancel order at status: ${order.orderStatus}`);
+  }
+
+  order.orderStatus = 'Cancelled';
+  await order.save();
+
+  res.json({ success: true, order });
+});
+
+export const reorderOrder = asyncHandler(async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    throw new ApiError(404, 'Order not found');
+  }
+
+  const order = await Order.findOne({ _id: req.params.id, userId: req.user._id });
+  if (!order) {
+    throw new ApiError(404, 'Order not found');
+  }
+
+  let cart = await Cart.findOne({ user: req.user._id });
+  if (!cart) {
+    cart = await Cart.create({ user: req.user._id, items: [] });
+  }
+
+  for (const item of order.products) {
+    if (!item.product) continue;
+    const product = await Product.findById(item.product).select('price discountPrice stock');
+    if (!product) continue;
+
+    const existing = cart.items.find(
+      (cartItem) => cartItem.product.toString() === item.product.toString() && cartItem.volume === item.volume
+    );
+
+    if (existing) {
+      existing.quantity += item.quantity;
+    } else {
+      cart.items.push({
+        product: product._id,
+        volume: item.volume,
+        quantity: item.quantity,
+        price: item.price
+      });
+    }
+  }
+
+  await cart.save();
+  await cart.populate({ path: 'items.product', select: 'name slug price discountPrice images stock' });
+
+  res.json({ success: true, cart });
 });
 
 export const getAllOrders = asyncHandler(async (req, res) => {

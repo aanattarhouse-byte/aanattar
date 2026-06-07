@@ -511,6 +511,25 @@ export default function Navbar() {
                           </p>
                         </div>
 
+                        <div className="mt-2 divide-y divide-[#e5d8c3]/30 border-y border-[#e5d8c3]/30 py-1">
+                          <Link
+                            href="/profile"
+                            onClick={() => setLoginOpen(false)}
+                            className="flex items-center gap-2 py-2 px-1 text-xs font-semibold text-[#2A1B12] hover:text-[#B88A3D] transition"
+                          >
+                            <User size={14} className="text-[#B88A3D]" />
+                            My Profile
+                          </Link>
+                          <Link
+                            href="/my-orders"
+                            onClick={() => setLoginOpen(false)}
+                            className="flex items-center gap-2 py-2 px-1 text-xs font-semibold text-[#2A1B12] hover:text-[#B88A3D] transition"
+                          >
+                            <ShoppingBag size={14} className="text-[#B88A3D]" />
+                            My Orders
+                          </Link>
+                        </div>
+
                         <button
                           type="button"
                           onClick={handleLogout}
@@ -762,42 +781,73 @@ export default function Navbar() {
               </div>
 
               <div className="mt-3 grid gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (user) {
-                      handleLogout();
-                    } else {
+                {user ? (
+                  <div className="grid gap-2 rounded-2xl bg-[#fffaf3] border border-[#e5d8c3]/40 p-3 text-[#2A1B12] text-left">
+                    <div className="px-1 py-1 border-b border-[#e5d8c3]/30">
+                      <p className="text-xs font-semibold text-[#2A1B12]">{user.displayName || "Fragrance Lover"}</p>
+                      <p className="text-[10px] text-[#7b6b57] truncate">{user.email}</p>
+                    </div>
+                    <Link
+                      href="/profile"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-2 px-1 py-1.5 text-xs font-semibold hover:text-[#B88A3D] transition"
+                    >
+                      <User size={14} className="text-[#B88A3D]" />
+                      My Profile
+                    </Link>
+                    <Link
+                      href="/my-orders"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-2 px-1 py-1.5 text-xs font-semibold hover:text-[#B88A3D] transition"
+                    >
+                      <ShoppingBag size={14} className="text-[#B88A3D]" />
+                      My Orders
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleLogout();
+                        setOpen(false);
+                      }}
+                      className="mt-1 flex items-center justify-center gap-2 rounded-lg border border-[#e5d8c3] bg-white py-2 text-xs font-bold transition hover:border-[#B88A3D] w-full"
+                    >
+                      <LogOut size={13} className="text-red-700" />
+                      Sign out
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
                       setAuthError("");
                       setShowLoginModal(true);
-                    }
-
-                    setOpen(false);
-                  }}
-                  className="
-                    flex
-                    items-center
-                    justify-center
-                    gap-3
-                    rounded-full
-                    border
-                    border-[#d8cbb4]
-                    bg-white
-                    px-5
-                    py-3
-                    text-xs
-                    font-bold
-                    uppercase
-                    tracking-[0.14em]
-                    text-[#2A1B12]
-                    transition
-                    duration-300
-                    hover:border-[#B88A3D]
-                  "
-                >
-                  {user ? <User size={16} /> : <LoginMark size={15} />}
-                  {user ? "Account" : "Login"}
-                </button>
+                      setOpen(false);
+                    }}
+                    className="
+                      flex
+                      items-center
+                      justify-center
+                      gap-3
+                      rounded-full
+                      border
+                      border-[#d8cbb4]
+                      bg-white
+                      px-5
+                      py-3
+                      text-xs
+                      font-bold
+                      uppercase
+                      tracking-[0.14em]
+                      text-[#2A1B12]
+                      transition
+                      duration-300
+                      hover:border-[#B88A3D]
+                    "
+                  >
+                    <LoginMark size={15} />
+                    Login
+                  </button>
+                )}
 
                 <button
                   type="button"
