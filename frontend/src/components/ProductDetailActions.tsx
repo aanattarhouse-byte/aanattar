@@ -20,6 +20,7 @@ import {
   getVolumePrice,
   type ProductVolumeMl,
 } from "@/lib/productVolume";
+import ScrollReveal from "@/components/ScrollReveal";
 
 // Define the 7 bottles and their descriptions
 const BOTTLE_TEMPLATES = [
@@ -86,11 +87,9 @@ export default function ProductDetailActions({
 
   const handleToggleBottle = (index: number) => {
     if (selectedIndices.includes(index)) {
-      setSelectedIndices(selectedIndices.filter((idx) => idx !== index));
+      setSelectedIndices([]);
     } else {
-      if (selectedIndices.length < 7) {
-        setSelectedIndices([...selectedIndices, index]);
-      }
+      setSelectedIndices([index]);
     }
   };
 
@@ -219,151 +218,206 @@ export default function ProductDetailActions({
   };
 
   return (
-    <div className="mt-5 space-y-3 sm:mt-6 sm:space-y-4">
-      {/* Volume Selector */}
-      <div className="space-y-2">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 sm:text-xs sm:tracking-[0.2em]">
-          Volume
-        </span>
-        {isPremium ? (
-          <div className="inline-flex items-center gap-2 rounded-[8px] border border-amber-300/30 bg-amber-300/10 px-4 py-2.5">
-            <span className="block font-sans text-sm font-bold text-white">
-              {formatVolume(selectedVolume)}
-            </span>
-            <span className="h-4 w-[1px] bg-amber-300/30" />
-            <span className="block font-sans text-xs font-bold uppercase tracking-[0.1em] text-amber-300">
-              Premium Collection Offer
-            </span>
+    <div className="mx-auto grid max-w-7xl gap-7 sm:gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start w-full text-left">
+      {/* Left Column: Image & Signature Blend Section */}
+      <div className="space-y-5 sm:space-y-6 w-full">
+        <div className="relative overflow-hidden rounded-[8px] border border-white/10 bg-[#120b08] shadow-[0_30px_90px_rgba(0,0,0,0.32)]">
+          <div className="relative aspect-square">
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              priority
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
           </div>
-        ) : (
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            {PRODUCT_VOLUME_OPTIONS.map((volume) => {
-              const selected = selectedVolume === volume;
+        </div>
 
-              return (
-                <button
-                  key={volume}
-                  type="button"
-                  aria-pressed={selected}
-                  onClick={() => handleVolumeSelect(volume)}
-                  className={`min-w-[92px] rounded-[8px] border px-3 py-2 text-left transition-all duration-200 sm:min-w-[108px] ${
-                    selected
-                      ? "border-amber-300/70 bg-amber-300/15 shadow-[0_0_0_1px_rgba(248,220,123,0.18)]"
-                      : "border-white/10 bg-white/[0.04] hover:border-amber-300/30 hover:bg-white/[0.07]"
-                  }`}
-                >
-                  <span className="block font-sans text-sm font-bold text-white">
-                    {formatVolume(volume)}
-                  </span>
-                  <span className="mt-1 block font-sans text-xs font-semibold text-amber-200">
-                    {formatPrice(getVolumePrice(volume))}
-                  </span>
-                </button>
-              );
-            })}
+        {/* Signature Blend Section */}
+        <div className="border-t border-white/10 pt-4 space-y-2.5">
+
+          {/* Desktop / Tablet Grid: 4 + 3 Layout */}
+          <div className="hidden sm:flex flex-col gap-2">
+            <div className="grid grid-cols-4 gap-2">
+              {[0, 1, 2, 3].map((index) => renderCard(index))}
+            </div>
+            <div className="grid grid-cols-3 gap-2 max-w-[75%] mx-auto w-full">
+              {[4, 5, 6].map((index) => renderCard(index))}
+            </div>
           </div>
-        )}
+
+          {/* Mobile Grid: 2 Columns */}
+          <div className="grid grid-cols-2 gap-2 sm:hidden">
+            {BOTTLE_TEMPLATES.map((_, index) => renderCard(index))}
+          </div>
+        </div>
       </div>
 
-      {/* Dynamic Price Display */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="font-sans text-2xl font-bold leading-none text-amber-200">
-          {formatPrice(currentDisplayPrice)}
-        </span>
-        <span className="font-sans text-base font-semibold leading-none text-zinc-500 line-through">
-          {formatPrice(currentCompareAtPrice)}
-        </span>
-        <span className="rounded-[3px] bg-emerald-600 px-2 py-1 font-sans text-xs font-bold leading-none text-white">
-          {discountPercent}% off
-        </span>
-      </div>
+      {/* Right Column: Details & Actions */}
+      <ScrollReveal className="w-full">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-300 sm:text-sm sm:tracking-[0.24em]">
+          {product.category}
+        </p>
+        <h1 className="mt-3 text-4xl leading-none sm:mt-4 sm:text-5xl md:text-6xl lg:text-7xl">
+          {product.name}
+        </h1>
+        <p className="mt-4 text-base text-zinc-300 sm:mt-6 sm:text-lg">
+          {product.description}
+        </p>
 
-      {/* Signature Blend Section */}
-      <div className="border-t border-white/10 pt-4 space-y-2.5">
-        <div>
-          <span className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[#D4AF37]">
-            <Sparkles size={12} /> Build Your Signature Blend
-          </span>
-          <p className="mt-1 font-serif text-[11px] text-zinc-400">
-            Choose up to 7 complementary attars to create your own signature fragrance.
+        <div className="mt-5 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4">
+          <div className="rounded-[8px] border border-white/10 bg-white/[0.04] p-4 sm:p-5">
+            <p className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-amber-200 sm:text-sm sm:tracking-[0.18em]">
+              Vibe
+            </p>
+            <p className="mt-2 text-sm text-zinc-200 sm:mt-3 sm:text-base">
+              {product.vibe}
+            </p>
+          </div>
+          <div className="rounded-[8px] border border-white/10 bg-white/[0.04] p-4 sm:p-5">
+            <p className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-amber-200 sm:text-sm sm:tracking-[0.18em]">
+              Best For
+            </p>
+            <p className="mt-2 text-sm text-zinc-200 sm:mt-3 sm:text-base">
+              {product.bestFor}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-3 rounded-[8px] border border-white/10 bg-white/[0.04] p-4 sm:mt-6 sm:p-5">
+          <p className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-amber-200 sm:text-sm sm:tracking-[0.18em]">
+            Fragrance Notes
           </p>
-        </div>
-
-        {/* Desktop / Tablet Grid: 4 + 3 Layout */}
-        <div className="hidden sm:flex flex-col gap-2">
-          <div className="grid grid-cols-4 gap-2">
-            {[0, 1, 2, 3].map((index) => renderCard(index))}
+          <div className="mt-3 flex flex-wrap gap-2 sm:mt-4">
+            {product.notes.map((note: string) => (
+              <span
+                key={note}
+                className="rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-xs text-amber-100 sm:px-3 sm:text-sm"
+              >
+                {note}
+              </span>
+            ))}
           </div>
-          <div className="grid grid-cols-3 gap-2 max-w-[75%] mx-auto w-full">
-            {[4, 5, 6].map((index) => renderCard(index))}
-          </div>
         </div>
 
-        {/* Mobile Grid: 2 Columns */}
-        <div className="grid grid-cols-2 gap-2 sm:hidden">
-          {BOTTLE_TEMPLATES.map((_, index) => renderCard(index))}
+        {/* Volume Selector */}
+        <div className="mt-6 space-y-2">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 sm:text-xs sm:tracking-[0.2em]">
+            Volume
+          </span>
+          {isPremium ? (
+            <div className="inline-flex items-center gap-2 rounded-[8px] border border-amber-300/30 bg-amber-300/10 px-4 py-2.5">
+              <span className="block font-sans text-sm font-bold text-white">
+                {formatVolume(selectedVolume)}
+              </span>
+              <span className="h-4 w-[1px] bg-amber-300/30" />
+              <span className="block font-sans text-xs font-bold uppercase tracking-[0.1em] text-amber-300">
+                Premium Collection Offer
+              </span>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              {PRODUCT_VOLUME_OPTIONS.map((volume) => {
+                const selected = selectedVolume === volume;
+
+                return (
+                  <button
+                    key={volume}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => handleVolumeSelect(volume)}
+                    className={`min-w-[92px] rounded-[8px] border px-3 py-2 text-left transition-all duration-200 sm:min-w-[108px] ${
+                      selected
+                        ? "border-amber-300/70 bg-amber-300/15 shadow-[0_0_0_1px_rgba(248,220,123,0.18)]"
+                        : "border-white/10 bg-white/[0.04] hover:border-amber-300/30 hover:bg-white/[0.07]"
+                    }`}
+                  >
+                    <span className="block font-sans text-sm font-bold text-white">
+                      {formatVolume(volume)}
+                    </span>
+                    <span className="mt-1 block font-sans text-xs font-semibold text-amber-200">
+                      {formatPrice(getVolumePrice(volume))}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </div>
 
+        {/* Dynamic Price Display */}
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          <span className="font-sans text-2xl font-bold leading-none text-amber-200">
+            {formatPrice(currentDisplayPrice)}
+          </span>
+          <span className="font-sans text-base font-semibold leading-none text-zinc-500 line-through">
+            {formatPrice(currentCompareAtPrice)}
+          </span>
+          <span className="rounded-[3px] bg-emerald-600 px-2 py-1 font-sans text-xs font-bold leading-none text-white">
+            {discountPercent}% off
+          </span>
+        </div>
 
-      {/* Quantity Selector */}
-      <div className="flex items-center justify-between gap-3 sm:justify-start">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 sm:text-xs sm:tracking-[0.2em]">
-          Quantity
-        </span>
-
-        <div className="flex items-center overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/60 backdrop-blur-sm">
-          <button
-            type="button"
-            aria-label="Decrease quantity"
-            onClick={() => setQuantity((value) => Math.max(1, value - 1))}
-            className="flex h-9 w-9 items-center justify-center text-zinc-300 transition-all duration-200 hover:bg-zinc-800 hover:text-white sm:h-10 sm:w-10"
-          >
-            <Minus size={14} />
-          </button>
-
-          <span className="flex h-9 min-w-10 items-center justify-center border-x border-zinc-800 px-2 text-sm font-semibold text-white sm:h-10 sm:min-w-12 sm:px-3">
-            {quantity}
+        {/* Quantity Selector */}
+        <div className="mt-6 flex items-center justify-between gap-3 sm:justify-start">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 sm:text-xs sm:tracking-[0.2em]">
+            Quantity
           </span>
 
+          <div className="flex items-center overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/60 backdrop-blur-sm">
+            <button
+              type="button"
+              aria-label="Decrease quantity"
+              onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+              className="flex h-9 w-9 items-center justify-center text-zinc-300 transition-all duration-200 hover:bg-zinc-800 hover:text-white sm:h-10 sm:w-10"
+            >
+              <Minus size={14} />
+            </button>
+
+            <span className="flex h-9 min-w-10 items-center justify-center border-x border-zinc-800 px-2 text-sm font-semibold text-white sm:h-10 sm:min-w-12 sm:px-3">
+              {quantity}
+            </span>
+
+            <button
+              type="button"
+              aria-label="Increase quantity"
+              onClick={() => setQuantity((value) => value + 1)}
+              className="flex h-9 w-9 items-center justify-center text-zinc-300 transition-all duration-200 hover:bg-zinc-800 hover:text-white sm:h-10 sm:w-10"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:gap-3">
           <button
             type="button"
-            aria-label="Increase quantity"
-            onClick={() => setQuantity((value) => value + 1)}
-            className="flex h-9 w-9 items-center justify-center text-zinc-300 transition-all duration-200 hover:bg-zinc-800 hover:text-white sm:h-10 sm:w-10"
+            onClick={addProductAndShowCart}
+            className="group flex h-10 min-w-0 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-black shadow-lg shadow-amber-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0 sm:h-11 sm:flex-1 sm:gap-2 sm:px-5 sm:text-sm sm:tracking-[0.12em]"
           >
-            <Plus size={14} />
+            <ShoppingCart
+              size={15}
+              strokeWidth={2.4}
+              className="transition-transform duration-300 group-hover:scale-110"
+            />
+            Add to Cart
+          </button>
+
+          <button
+            type="button"
+            onClick={buyNow}
+            className="group flex h-10 min-w-0 items-center justify-center gap-1.5 rounded-lg border border-amber-400/20 bg-zinc-900/70 px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-100 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/40 hover:bg-zinc-800 active:translate-y-0 sm:h-11 sm:flex-1 sm:gap-2 sm:px-5 sm:text-sm sm:tracking-[0.12em]"
+          >
+            <Zap
+              size={15}
+              className="transition-transform duration-300 group-hover:scale-110"
+            />
+            Buy Now
           </button>
         </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-3">
-        <button
-          type="button"
-          onClick={addProductAndShowCart}
-          className="group flex h-10 min-w-0 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-black shadow-lg shadow-amber-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0 sm:h-11 sm:flex-1 sm:gap-2 sm:px-5 sm:text-sm sm:tracking-[0.12em]"
-        >
-          <ShoppingCart
-            size={15}
-            strokeWidth={2.4}
-            className="transition-transform duration-300 group-hover:scale-110"
-          />
-          Add to Cart
-        </button>
-
-        <button
-          type="button"
-          onClick={buyNow}
-          className="group flex h-10 min-w-0 items-center justify-center gap-1.5 rounded-lg border border-amber-400/20 bg-zinc-900/70 px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-100 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/40 hover:bg-zinc-800 active:translate-y-0 sm:h-11 sm:flex-1 sm:gap-2 sm:px-5 sm:text-sm sm:tracking-[0.12em]"
-        >
-          <Zap
-            size={15}
-            className="transition-transform duration-300 group-hover:scale-110"
-          />
-          Buy Now
-        </button>
-      </div>
+      </ScrollReveal>
     </div>
   );
 }
