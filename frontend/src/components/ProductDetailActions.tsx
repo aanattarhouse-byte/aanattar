@@ -45,8 +45,13 @@ export default function ProductDetailActions({
     DEFAULT_PRODUCT_VOLUME_ML
   );
 
-  // Random prices generated once on mount and persist until refresh
-  const [bottlePrices, setBottlePrices] = useState<number[]>([]);
+  // Stable, deterministic prices generated based on the product ID to prevent hydration mismatches and layout shifts
+  const bottlePrices = useMemo(() => {
+    return BOTTLE_TEMPLATES.map((_, i) => {
+      const seed = product.id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      return ((seed + i * 7) % 21) + 60; // stable integer price between 60 and 80
+    });
+  }, [product.id]);
   
   // Selection state (default selects empty so user can buy plain product, but if they click one, it builds signature)
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
@@ -65,20 +70,7 @@ export default function ProductDetailActions({
     };
   }, [selectedVolume]);
 
-  // Generate random prices between ₹60 and ₹80 on mount
-  useEffect(() => {
-    let prices: number[] = [];
-    let attempts = 0;
-    while (attempts < 100) {
-      prices = Array.from({ length: 7 }, () => Math.floor(Math.random() * (80 - 60 + 1)) + 60);
-      const uniquePrices = new Set(prices);
-      if (uniquePrices.size > 2) {
-        break;
-      }
-      attempts++;
-    }
-    setBottlePrices(prices);
-  }, []);
+
 
   const handleVolumeSelect = (volume: ProductVolumeMl) => {
     setSelectedVolume(volume);
@@ -160,9 +152,7 @@ export default function ProductDetailActions({
     router.push("/cart");
   };
 
-  if (bottlePrices.length === 0) {
-    return null; // Ensure prices are generated first
-  }
+
 
   const renderCard = (index: number) => {
     const template = BOTTLE_TEMPLATES[index];
