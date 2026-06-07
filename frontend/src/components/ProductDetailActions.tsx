@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Minus, Plus, ShoppingCart, Zap } from "lucide-react";
+import Image from "next/image";
+import { Minus, Plus, ShoppingCart, Zap, Check, Sparkles } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
 import {
@@ -20,6 +21,17 @@ import {
   type ProductVolumeMl,
 } from "@/lib/productVolume";
 
+// Define the 7 bottles and their descriptions
+const BOTTLE_TEMPLATES = [
+  { id: "bottle-1", name: "Bottle 1", note: "Ocean Breeze (Sea Salt & Citrus)", image: "/bottle1.jpg" },
+  { id: "bottle-2", name: "Bottle 2", note: "Velvet Rose (Taif Rose & Musk)", image: "/bottle2.jpg" },
+  { id: "bottle-3", name: "Bottle 3", note: "Sandal Gold (Mysore Sandal & Amber)", image: "/bottle3.jpg" },
+  { id: "bottle-4", name: "Bottle 4", note: "Royal Oudh (Cambodian Oud & Woods)", image: "/bottle4.jpg" },
+  { id: "bottle-5", name: "Bottle 5", note: "Saffron Touch (Spicy Saffron & Herbs)", image: "/bottle5.jpg" },
+  { id: "bottle-6", name: "Bottle 6", note: "Musk Supreme (Soft White Velvet Musk)", image: "/bottle6.jpg" },
+  { id: "bottle-7", name: "Bottle 7", note: "Amber Glow (Golden Amber & Labdanum)", image: "/bottle7.jpg" },
+];
+
 export default function ProductDetailActions({
   product,
   isPremium = false,
@@ -31,29 +43,112 @@ export default function ProductDetailActions({
   const [selectedVolume, setSelectedVolume] = useState<ProductVolumeMl>(
     DEFAULT_PRODUCT_VOLUME_ML
   );
+
+  // Random prices generated once on mount and persist until refresh
+  const [bottlePrices, setBottlePrices] = useState<number[]>([]);
+  
+  // Selection state (default selects empty so user can buy plain product, but if they click one, it builds signature)
+  const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
+
+  // Listen to signature volume custom event from other elements if necessary
+  useEffect(() => {
+    const handleSignatureVolume = (e: Event) => {
+      const customEvent = e as CustomEvent<ProductVolumeMl>;
+      if (customEvent.detail && typeof customEvent.detail === "number" && customEvent.detail !== selectedVolume) {
+        setSelectedVolume(customEvent.detail);
+      }
+    };
+    window.addEventListener("signature-volume-changed", handleSignatureVolume);
+    return () => {
+      window.removeEventListener("signature-volume-changed", handleSignatureVolume);
+    };
+  }, [selectedVolume]);
+
+  // Generate random prices between ₹60 and ₹80 on mount
+  useEffect(() => {
+    let prices: number[] = [];
+    let attempts = 0;
+    while (attempts < 100) {
+      prices = Array.from({ length: 7 }, () => Math.floor(Math.random() * (80 - 60 + 1)) + 60);
+      const uniquePrices = new Set(prices);
+      if (uniquePrices.size > 2) {
+        break;
+      }
+      attempts++;
+    }
+    setBottlePrices(prices);
+  }, []);
+
+  const handleVolumeSelect = (volume: ProductVolumeMl) => {
+    setSelectedVolume(volume);
+    window.dispatchEvent(new CustomEvent("product-volume-changed", { detail: volume }));
+  };
+
+  const handleToggleBottle = (index: number) => {
+    if (selectedIndices.includes(index)) {
+      setSelectedIndices(selectedIndices.filter((idx) => idx !== index));
+    } else {
+      if (selectedIndices.length < 7) {
+        setSelectedIndices([...selectedIndices, index]);
+      }
+    }
+  };
+
   const router = useRouter();
   const { addItem } = useCart();
+
   const price = isPremium ? 149 : getVolumePrice(selectedVolume);
+  
+  // Extra cost of selected bottles
+  const extraCost = useMemo(() => {
+    if (bottlePrices.length === 0) return 0;
+    return selectedIndices.reduce((sum, idx) => sum + (bottlePrices[idx] || 0), 0);
+  }, [selectedIndices, bottlePrices]);
+
+  // Grand total
+  const grandTotal = price + extraCost;
+
+  const currentDisplayPrice = grandTotal;
+
   const regularPriceForVolume = getVolumePrice(selectedVolume);
   const discountPercent = isPremium
     ? Math.round(((regularPriceForVolume - 149) / regularPriceForVolume) * 100)
     : getProductDiscountPercent(product);
-  const compareAtPrice = isPremium
+  const baseCompareAtPrice = isPremium
     ? regularPriceForVolume
     : getCompareAtPrice(price, discountPercent);
+  const currentCompareAtPrice = baseCompareAtPrice + extraCost;
+
   const selectedVolumeValue = getVolumeCartValue(selectedVolume);
 
   const addProduct = () => {
-    addItem({
-      id: product.id,
-      slug: product.slug,
-      name: product.name,
-      image: product.image,
-      price,
-      quantity,
-      variant: isPremium ? "Premium Collection" : undefined,
-      volume: selectedVolumeValue,
-    });
+    if (selectedIndices.length > 0) {
+      const selectedBottlesText = selectedIndices
+        .map((idx) => `Bottle ${idx + 1} (₹${bottlePrices[idx]})`)
+        .join(", ");
+
+      addItem({
+        id: `${product.id}-signature-${selectedIndices.sort().join("-")}-${selectedVolume}`,
+        slug: product.slug,
+        name: `${product.name} (Signature Blend)`,
+        image: product.image,
+        price: grandTotal,
+        quantity,
+        variant: `Signature: ${selectedBottlesText}`,
+        volume: selectedVolumeValue,
+      });
+    } else {
+      addItem({
+        id: product.id,
+        slug: product.slug,
+        name: product.name,
+        image: product.image,
+        price,
+        quantity,
+        variant: isPremium ? "Premium Collection" : undefined,
+        volume: selectedVolumeValue,
+      });
+    }
   };
 
   const addProductAndShowCart = () => {
@@ -66,8 +161,66 @@ export default function ProductDetailActions({
     router.push("/cart");
   };
 
+  if (bottlePrices.length === 0) {
+    return null; // Ensure prices are generated first
+  }
+
+  const renderCard = (index: number) => {
+    const template = BOTTLE_TEMPLATES[index];
+    const isSelected = selectedIndices.includes(index);
+    const bPrice = bottlePrices[index] || 0;
+
+    return (
+      <div
+        key={template.id}
+        onClick={() => handleToggleBottle(index)}
+        className={`group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-[8px] p-2 transition-all duration-300 select-none ${
+          isSelected
+            ? "border border-[#D4AF37] bg-gradient-to-b from-[#D4AF37]/10 to-[#D4AF37]/0.01 shadow-[0_6px_16px_rgba(212,175,55,0.12)]"
+            : "border border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]"
+        }`}
+      >
+        {/* Selection Indicator */}
+        <div className="absolute right-1.5 top-1.5 z-10 flex h-4.5 w-4.5 items-center justify-center rounded-full border border-[#D4AF37]/40 transition duration-300">
+          <div
+            className={`flex h-2.5 w-2.5 items-center justify-center rounded-full transition-all duration-300 ${
+              isSelected ? "bg-[#D4AF37] scale-100" : "bg-transparent scale-0"
+            }`}
+          >
+            {isSelected && <Check size={7} className="text-black stroke-[3]" />}
+          </div>
+        </div>
+
+        {/* Small Image */}
+        <div className="relative aspect-square w-full overflow-hidden rounded-[4px] bg-black/45">
+          <Image
+            src={template.image}
+            alt={template.name}
+            fill
+            sizes="80px"
+            className="object-cover transition duration-300 group-hover:scale-105"
+          />
+        </div>
+
+        {/* Details */}
+        <div className="mt-1.5 flex flex-col text-center">
+          <span className="font-sans text-[10px] font-bold text-white leading-none">
+            {template.name}
+          </span>
+          <p className="mt-0.5 font-serif text-[8px] text-zinc-400 leading-tight line-clamp-1">
+            {template.note}
+          </p>
+          <span className="mt-1 block font-sans text-[10px] font-bold text-[#D4AF37] leading-none">
+            {formatPrice(bPrice)}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="mt-5 space-y-3 sm:mt-6 sm:space-y-4">
+      {/* Volume Selector */}
       <div className="space-y-2">
         <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 sm:text-xs sm:tracking-[0.2em]">
           Volume
@@ -92,7 +245,7 @@ export default function ProductDetailActions({
                   key={volume}
                   type="button"
                   aria-pressed={selected}
-                  onClick={() => setSelectedVolume(volume)}
+                  onClick={() => handleVolumeSelect(volume)}
                   className={`min-w-[92px] rounded-[8px] border px-3 py-2 text-left transition-all duration-200 sm:min-w-[108px] ${
                     selected
                       ? "border-amber-300/70 bg-amber-300/15 shadow-[0_0_0_1px_rgba(248,220,123,0.18)]"
@@ -112,17 +265,46 @@ export default function ProductDetailActions({
         )}
       </div>
 
+      {/* Dynamic Price Display */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="font-sans text-2xl font-bold leading-none text-amber-200">
-          {formatPrice(price)}
+          {formatPrice(currentDisplayPrice)}
         </span>
         <span className="font-sans text-base font-semibold leading-none text-zinc-500 line-through">
-          {formatPrice(compareAtPrice)}
+          {formatPrice(currentCompareAtPrice)}
         </span>
         <span className="rounded-[3px] bg-emerald-600 px-2 py-1 font-sans text-xs font-bold leading-none text-white">
           {discountPercent}% off
         </span>
       </div>
+
+      {/* Signature Blend Section */}
+      <div className="border-t border-white/10 pt-4 space-y-2.5">
+        <div>
+          <span className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[#D4AF37]">
+            <Sparkles size={12} /> Build Your Signature Blend
+          </span>
+          <p className="mt-1 font-serif text-[11px] text-zinc-400">
+            Choose up to 7 complementary attars to create your own signature fragrance.
+          </p>
+        </div>
+
+        {/* Desktop / Tablet Grid: 4 + 3 Layout */}
+        <div className="hidden sm:flex flex-col gap-2">
+          <div className="grid grid-cols-4 gap-2">
+            {[0, 1, 2, 3].map((index) => renderCard(index))}
+          </div>
+          <div className="grid grid-cols-3 gap-2 max-w-[75%] mx-auto w-full">
+            {[4, 5, 6].map((index) => renderCard(index))}
+          </div>
+        </div>
+
+        {/* Mobile Grid: 2 Columns */}
+        <div className="grid grid-cols-2 gap-2 sm:hidden">
+          {BOTTLE_TEMPLATES.map((_, index) => renderCard(index))}
+        </div>
+      </div>
+
 
       {/* Quantity Selector */}
       <div className="flex items-center justify-between gap-3 sm:justify-start">

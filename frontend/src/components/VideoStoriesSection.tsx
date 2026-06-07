@@ -18,7 +18,7 @@ const stories = [
   },
   {
     title: "Royal Gifting Moment",
-    poster: "/footer.jpg",
+    video: "/vid3.mp4",
     tag: "Gifting",
   },
   {
@@ -125,9 +125,8 @@ export default function VideoStoriesSection() {
               onClick={() => {
                 if (story.video) playOnlyVideo(index);
               }}
-              className={`group relative min-h-[27rem] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl ${
-                story.video ? "cursor-pointer" : ""
-              }`}
+              className={`group relative min-h-[27rem] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl ${story.video ? "cursor-pointer" : ""
+                }`}
             >
               {story.video ? (
                 <>
@@ -167,13 +166,6 @@ export default function VideoStoriesSection() {
               </div>
 
               <div className="relative z-10 flex h-full min-h-[27rem] flex-col p-5">
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full border border-[#ffcf7a]/30 bg-black/28 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#ffcf7a] backdrop-blur-md">
-                    {story.tag}
-                  </span>
-                  <span className="text-xs font-semibold text-white/46">0{index + 1}</span>
-                </div>
-
                 <div aria-hidden />
               </div>
             </motion.article>

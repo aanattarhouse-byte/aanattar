@@ -72,6 +72,11 @@ export default function CartClient() {
 
             <div>
               <h2 className="text-xl font-semibold">{item.name}</h2>
+              {item.variant && (
+                <p className="mt-1 text-xs text-zinc-400">
+                  {item.variant}
+                </p>
+              )}
               {item.volume && (
                 <p className="mt-1 font-sans text-sm font-semibold text-zinc-400">
                   Volume: {item.volume.replace("ml", " ml")}

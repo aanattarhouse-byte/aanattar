@@ -92,8 +92,16 @@ export function AuthProvider({
       console.error('Failed to log out:', err);
     } finally {
       setUser(null);
+      try {
+        window.localStorage.removeItem('user');
+        window.sessionStorage.clear();
+      } catch (storageErr) {
+        console.error('Failed to clear storage:', storageErr);
+      }
       window.dispatchEvent(new Event('storage'));
       setLoading(false);
+      router.replace('/');
+      router.refresh();
     }
   };
 

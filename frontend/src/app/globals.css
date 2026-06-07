@@ -290,3 +290,29 @@ section {
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-zinc-600;
 }
+
+/* Custom scrollbar for the compact cart drawer */
+.cart-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.cart-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cart-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(42, 27, 18, 0.15);
+  border-radius: 999px;
+}
+
+.cart-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(42, 27, 18, 0.3);
+}
+
+.cart-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(42, 27, 18, 0.15) transparent;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+

@@ -129,6 +129,7 @@ export default function Navbar() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const loginRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+  const originalOverflowRef = useRef<string>("");
 
   const pathname = usePathname();
   const {
@@ -213,6 +214,31 @@ export default function Navbar() {
 
     return () => window.removeEventListener(CART_OPEN_EVENT, openCart);
   }, []);
+
+  useEffect(() => {
+    if (cartOpen) {
+      originalOverflowRef.current = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+      if ((window as any).lenis) {
+        (window as any).lenis.stop();
+      }
+    } else {
+      if (originalOverflowRef.current) {
+        document.body.style.overflow = originalOverflowRef.current;
+      }
+      if ((window as any).lenis) {
+        (window as any).lenis.start();
+      }
+    }
+    return () => {
+      if (cartOpen && originalOverflowRef.current) {
+        document.body.style.overflow = originalOverflowRef.current;
+        if ((window as any).lenis) {
+          (window as any).lenis.start();
+        }
+      }
+    };
+  }, [cartOpen]);
 
 
 
@@ -823,7 +849,7 @@ export default function Navbar() {
               type="button"
               aria-label="Close cart"
               onClick={() => setCartOpen(false)}
-              className="absolute inset-0 bg-black/45"
+              className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
             />
 
             <motion.aside
@@ -831,39 +857,43 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 280, damping: 32 }}
-              className="absolute right-0 top-0 flex h-dvh w-full max-w-[400px] flex-col bg-[#f7f8fb] text-[#16100c] shadow-[-20px_0_70px_rgba(0,0,0,0.24)]"
+              style={{ height: "100vh" }}
+              className="fixed right-0 top-0 flex w-screen sm:w-[320px] lg:w-[350px] lg:max-w-[350px] max-w-full flex-col bg-[#f7f8fb] text-[#16100c] shadow-[-20px_0_70px_rgba(0,0,0,0.24)]"
               role="dialog"
               aria-modal="true"
               aria-label="Shopping cart"
             >
-              <div className="flex items-center justify-between border-b border-black/10 px-5 py-4">
-                <h2 className="text-lg font-semibold">
+              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-black/10 bg-[#f7f8fb] px-4 py-3">
+                <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-[#2A1B12]">
                   Your Cart ({cartCount} {cartCount === 1 ? "item" : "items"})
-                </h2>
+                </span>
                 <button
                   type="button"
                   aria-label="Close cart"
                   onClick={() => setCartOpen(false)}
-                  className="grid h-10 w-10 place-items-center rounded-full transition hover:bg-black/5"
+                  className="grid h-8 w-8 place-items-center rounded-full transition hover:bg-black/5"
                 >
-                  <X size={22} />
+                  <X size={18} />
                 </button>
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4">
+              <div 
+                data-lenis-prevent
+                className="min-h-0 flex-1 overflow-y-auto overscroll-contain cart-scrollbar px-3.5 py-3"
+              >
                 {cartItems.length === 0 ? (
                   <div className="grid h-full place-items-center text-center">
                     <div>
                       <div className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-black/10 bg-white">
                         <ShoppingBag size={22} />
                       </div>
-                      <p className="mt-4 font-display text-2xl">
+                      <div className="mt-4 font-sans text-xs font-semibold text-[#2A1B12]">
                         Your cart is empty
-                      </p>
+                      </div>
                       <Link
                         href="/build-your-signature"
                         onClick={() => setCartOpen(false)}
-                        className="mt-5 inline-flex h-11 items-center rounded-full bg-[#D4A24C] px-5 text-sm font-bold text-black transition hover:bg-[#E0B35A]"
+                        className="mt-5 inline-flex h-11 items-center rounded-full bg-[#D4A24C] px-5 font-sans text-[10px] font-bold text-black transition hover:bg-[#E0B35A]"
                       >
                         Continue Shopping
                       </Link>
@@ -876,41 +906,41 @@ export default function Navbar() {
                         key={`${item.id}-${item.variant || "default"}-${item.volume || "volume"}`}
                         className="space-y-3"
                       >
-                        <div className="rounded-[8px] border border-black/10 bg-white p-3 shadow-sm">
-                          <div className="grid grid-cols-[84px_1fr_auto] gap-3">
+                        <div className="rounded-[8px] border border-black/10 bg-white p-2.5 shadow-sm">
+                          <div className="grid grid-cols-[72px_1fr_auto] gap-2.5">
                             <Link
                               href={item.slug ? `/product/${item.slug}` : "/build-your-signature"}
                               onClick={() => setCartOpen(false)}
-                              className="relative h-[86px] overflow-hidden rounded-[8px] bg-[#120b08]"
+                              className="relative h-[76px] w-[72px] overflow-hidden rounded-[8px] bg-[#120b08]"
                             >
                               <Image
                                 src={item.image || "/attar-bottle.svg"}
                                 alt={item.name}
                                 fill
-                                sizes="84px"
+                                sizes="72px"
                                 className="object-cover"
                               />
                             </Link>
 
                             <div className="min-w-0">
-                              <h3 className="line-clamp-2 text-sm font-medium leading-snug">
+                              <span className="line-clamp-2 font-sans text-[11px] font-semibold leading-tight text-[#2A1B12] block">
                                 {item.name}
-                              </h3>
+                              </span>
                               {item.variant && (
-                                <p className="mt-1 truncate text-xs text-[#6e6257]">
+                                <div className="mt-0.5 truncate font-sans text-[10px] text-[#6e6257]">
                                   {item.variant}
-                                </p>
+                                </div>
                               )}
                               {item.volume && (
-                                <p className="mt-1 truncate text-xs text-[#6e6257]">
+                                <div className="mt-0.5 truncate font-sans text-[10px] text-[#6e6257]">
                                   Volume: {item.volume.replace("ml", " ml")}
-                                </p>
+                                </div>
                               )}
-                              <p className="mt-2 text-sm font-semibold">
+                              <div className="mt-1 font-sans text-[11px] font-bold text-[#8a5f1f]">
                                 {formatPrice(item.price)}
-                              </p>
+                              </div>
 
-                              <div className="mt-3 inline-flex h-9 items-center overflow-hidden rounded-[8px] border border-black/10 bg-[#f7f8fb]">
+                              <div className="mt-2 inline-flex h-8 items-center overflow-hidden rounded-[8px] border border-black/10 bg-[#f7f8fb]">
                                 <button
                                   type="button"
                                   aria-label="Decrease quantity"
@@ -922,11 +952,11 @@ export default function Navbar() {
                                       item.volume
                                     )
                                   }
-                                  className="grid h-9 w-9 place-items-center transition hover:bg-black/5"
+                                  className="grid h-8 w-8 place-items-center transition hover:bg-black/5"
                                 >
-                                  <Minus size={14} />
+                                  <Minus size={12} />
                                 </button>
-                                <span className="grid h-9 min-w-9 place-items-center border-x border-black/10 text-sm font-semibold">
+                                <span className="grid h-8 min-w-8 place-items-center border-x border-black/10 font-sans text-[10px] font-semibold">
                                   {item.quantity}
                                 </span>
                                 <button
@@ -940,9 +970,9 @@ export default function Navbar() {
                                       item.volume
                                     )
                                   }
-                                  className="grid h-9 w-9 place-items-center transition hover:bg-black/5"
+                                  className="grid h-8 w-8 place-items-center transition hover:bg-black/5"
                                 >
-                                  <Plus size={14} />
+                                  <Plus size={12} />
                                 </button>
                               </div>
                             </div>
@@ -951,7 +981,7 @@ export default function Navbar() {
                               type="button"
                               aria-label="Remove item"
                               onClick={() => removeCartItem(item.id, item.variant, item.volume)}
-                              className="grid h-9 w-9 place-items-center rounded-full text-[#371515] transition hover:bg-[#5d1717]/10"
+                              className="grid h-8 w-8 place-items-center rounded-full text-[#371515] transition hover:bg-[#5d1717]/10"
                             >
                               <Trash2 size={16} />
                             </button>
@@ -965,35 +995,35 @@ export default function Navbar() {
                 )}
               </div>
 
-              <div className="border-t border-black/10 bg-white px-5 py-4">
-                <div className="mb-4 space-y-2">
+              <div className="sticky bottom-0 z-10 border-t border-black/10 bg-white px-4 py-3 shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
+                <div className="mb-3 space-y-1.5">
                   {salimComboState.active ? (
                     <>
-                      <div className="rounded-[8px] border border-emerald-600/20 bg-emerald-50 p-3 text-sm">
+                      <div className="rounded-[6px] border border-emerald-600/20 bg-emerald-50 p-2 font-sans text-[10px]">
                         <p className="font-bold text-emerald-800">
                           Salim Combo Offer Applied
                         </p>
-                        <p className="mt-1 text-xs font-semibold text-emerald-700">
+                        <p className="mt-0.5 text-[9px] font-semibold text-emerald-700">
                           You saved {formatPrice(salimComboState.savedAmount)}
                         </p>
                       </div>
-                      <div className="flex items-center justify-between text-sm text-[#5f554b]">
+                      <div className="flex items-center justify-between font-sans text-[10px] text-[#5f554b]">
                         <span>Subtotal</span>
                         <span>{formatPrice(cartSubtotal)}</span>
                       </div>
-                      <div className="flex items-center justify-between text-sm font-semibold text-emerald-700">
+                      <div className="flex items-center justify-between font-sans text-[10px] font-semibold text-emerald-700">
                         <span>Combo Discount</span>
                         <span>-{formatPrice(salimComboState.discount)}</span>
                       </div>
-                      <div className="flex items-center justify-between pt-2 text-base font-bold">
+                      <div className="flex items-center justify-between pt-1 font-sans text-xs font-bold text-[#2A1B12]">
                         <span>Final Total</span>
                         <span>{formatPrice(salimComboState.finalTotal)}</span>
                       </div>
                     </>
                   ) : (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold">Estimated Total</span>
-                      <span className="text-lg font-bold">
+                      <span className="font-sans text-[10px] font-semibold text-[#5f554b]">Estimated Total</span>
+                      <span className="font-sans text-xs font-bold text-[#2A1B12]">
                         {formatPrice(cartSubtotal)}
                       </span>
                     </div>
@@ -1003,9 +1033,7 @@ export default function Navbar() {
                   href="/cart"
                   onClick={() => setCartOpen(false)}
                   aria-disabled={cartItems.length === 0}
-                  className={`flex h-14 w-full items-center justify-center rounded-[8px] bg-[#c0943e] text-base font-bold uppercase tracking-[0.04em] text-black transition hover:bg-[#d2a64d] ${
-                    cartItems.length === 0 ? "pointer-events-none opacity-45" : ""
-                  }`}
+                  className="flex h-11 w-full items-center justify-center rounded-[8px] bg-[#c0943e] font-sans text-[10px] font-bold uppercase tracking-[0.06em] text-black transition hover:bg-[#d2a64d]"
                 >
                   View Cart
                 </Link>
