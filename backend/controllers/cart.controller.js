@@ -3,11 +3,9 @@ import Product from '../models/Product.js';
 import ApiError from '../utils/apiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
-const VOLUME_RATE_PER_ML = 80;
-
-const getVolumePrice = (volume) => {
+const getVolumePrice = (volume, pricePerMl) => {
   const volumeMl = Number(String(volume || '').replace(/ml/i, ''));
-  return volumeMl > 0 ? volumeMl * VOLUME_RATE_PER_ML : null;
+  return volumeMl > 0 ? volumeMl * pricePerMl : null;
 };
 
 export const addToCart = asyncHandler(async (req, res) => {
@@ -29,7 +27,7 @@ export const addToCart = asyncHandler(async (req, res) => {
       product: product._id,
       volume,
       quantity,
-      price: getVolumePrice(volume) ?? product.discountPrice ?? product.price
+      price: getVolumePrice(volume, product.discountPrice ?? product.price) ?? product.discountPrice ?? product.price
     });
   }
 

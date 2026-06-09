@@ -88,7 +88,7 @@ export default function ProductDetailActions({
   const router = useRouter();
   const { addItem } = useCart();
 
-  const price = isPremium ? 149 : getVolumePrice(selectedVolume);
+  const price = isPremium ? 149 : getVolumePrice(selectedVolume, product.price);
   
   // Extra cost of selected bottles
   const extraCost = useMemo(() => {
@@ -101,7 +101,7 @@ export default function ProductDetailActions({
 
   const currentDisplayPrice = grandTotal;
 
-  const regularPriceForVolume = getVolumePrice(selectedVolume);
+  const regularPriceForVolume = getVolumePrice(selectedVolume, product.price);
   const discountPercent = isPremium
     ? Math.round(((regularPriceForVolume - 149) / regularPriceForVolume) * 100)
     : getProductDiscountPercent(product);
@@ -327,7 +327,7 @@ export default function ProductDetailActions({
                       {formatVolume(volume)}
                     </span>
                     <span className="mt-1 block font-sans text-xs font-semibold text-amber-200">
-                      {formatPrice(getVolumePrice(volume))}
+                      {formatPrice(getVolumePrice(volume, product.price))}
                     </span>
                   </button>
                 );
