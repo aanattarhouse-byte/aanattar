@@ -3,193 +3,295 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-FaInstagram,
-FaFacebookF,
-FaEnvelope,
-FaPhoneAlt
+  FaInstagram,
+  FaFacebookF,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaCreditCard
 } from "react-icons/fa";
+import { SiGooglepay, SiPhonepe, SiRazorpay, SiVisa } from "react-icons/si";
+import { MapPin, Phone as PhoneIcon, Mail as MailIcon } from "lucide-react";
+import ParticleField from "@/components/particles/ParticleField";
 
 export default function Footer() {
-
   const currentYear = new Date().getFullYear();
+  const paymentMethods = [
+    {
+      label: "Google Pay",
+      icon: SiGooglepay,
+      className: "bg-white text-[#5f6368]",
+      iconClassName: "text-[#4285F4]",
+    },
+    {
+      label: "PhonePe",
+      icon: SiPhonepe,
+      className: "bg-[#5F259F] text-white",
+      iconClassName: "text-white",
+    },
+    {
+      label: "Visa",
+      icon: SiVisa,
+      className: "bg-white text-[#1A1F71]",
+      iconClassName: "text-[#1A1F71]",
+    },
+    {
+      label: "Debit Card",
+      icon: FaCreditCard,
+      className: "bg-[#F58220] text-white",
+      iconClassName: "text-white",
+    },
+    {
+      label: "Razorpay",
+      icon: SiRazorpay,
+      className: "bg-[#0B72E7] text-white",
+      iconClassName: "text-white",
+    },
+  ];
 
   return (
-    <motion.footer
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
-      className="
-        relative
-        overflow-hidden
-        text-white
-        pt-20
-        pb-8
-        bg-[url('/footer.jpg')]
-        bg-cover
-        bg-center
-      "
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/75 z-0" />
+    <div className="bg-white w-full">
+      <motion.footer
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="
+          relative
+          overflow-hidden
+          text-white
+          pt-16
+          pb-8
+          bg-[#060713]
+          rounded-t-[40px]
+          md:rounded-t-[75px]
+          lg:rounded-t-[90px]
+          border-t
+          border-white/5
+        "
+      >
+        {/* Dynamic moving stars/particles inside footer background */}
+        <ParticleField isAbsolute className="opacity-45" />
 
-      {/* Luxury top curve */}
-      <div className="absolute top-0 left-0 w-full z-10">
-        <svg
-          viewBox="0 0 1440 120"
-          preserveAspectRatio="none"
-          className="w-full h-[60px]"
-        >
-          <path
-            fill="#fff"
-            d="M0,80 C280,20 500,20 720,60 C940,100 1180,100 1440,60 L1440,0 L0,0 Z"
-          />
-        </svg>
-      </div>
+        {/* Subtle dark gradient overlay to ensure text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060713] via-[#060713]/90 to-[#060713]/75 z-0" />
 
-      <div className="relative z-20 max-w-7xl mx-auto px-8 lg:px-12 pt-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-8 pb-6 border-b border-white/5">
-          {/* Brand Side */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-md"
-          >
-            <h2 className="mb-1 whitespace-nowrap text-lg sm:text-xl font-bold tracking-tight text-white uppercase">
-              Aan Attar
-            </h2>
-            <p className="text-zinc-400 text-xs leading-relaxed mb-4">
-              Premium attar and fragrance stories crafted with olfactive artistry.
-            </p>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 pb-12 border-b border-white/10">
+            {/* Column 1: Brand / Logo */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col gap-4"
+            >
+              <div className="flex flex-col leading-none">
+                <span className="font-display text-xl font-bold tracking-tight text-white uppercase sm:text-2xl">
+                  Aan Attar
+                </span>
+                <span className="mt-1.5 text-[8px] font-bold uppercase tracking-[0.25em] text-[#B88A3D]">
+                  Premium Fragrance House
+                </span>
+              </div>
+              <p className="text-zinc-400 text-xs leading-relaxed max-w-xs">
+                Premium attar and fragrance stories crafted with olfactive artistry. Discover a signature scent that lingers with timeless elegance.
+              </p>
 
-            {/* Premium Social & Contact info */}
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="flex gap-2">
+              {/* Social icons */}
+              <div className="flex items-center gap-2.5 mt-2">
                 <a
                   href="#"
+                  aria-label="Instagram"
                   className="
-                    w-8 h-8 rounded-full
+                    w-9 h-9 rounded-full
                     border border-white/10
                     bg-white/5 backdrop-blur-xl
                     flex items-center justify-center
-                    hover:bg-amber-400
+                    text-zinc-400
+                    hover:bg-[#B88A3D]
                     hover:text-black
+                    hover:border-[#B88A3D]
                     hover:scale-105
                     duration-300
+                    transition
                   "
                 >
-                  <FaInstagram size={13} />
+                  <FaInstagram size={14} />
                 </a>
 
                 <a
                   href="#"
+                  aria-label="Facebook"
                   className="
-                    w-8 h-8 rounded-full
+                    w-9 h-9 rounded-full
                     border border-white/10
                     bg-white/5 backdrop-blur-xl
                     flex items-center justify-center
-                    hover:bg-amber-400
+                    text-zinc-400
+                    hover:bg-[#B88A3D]
                     hover:text-black
+                    hover:border-[#B88A3D]
                     hover:scale-105
                     duration-300
+                    transition
                   "
                 >
-                  <FaFacebookF size={12} />
+                  <FaFacebookF size={13} />
                 </a>
 
                 <a
                   href="mailto:hello@theaanstory.com"
+                  aria-label="Email support"
                   className="
-                    w-8 h-8 rounded-full
+                    w-9 h-9 rounded-full
                     border border-white/10
                     bg-white/5 backdrop-blur-xl
                     flex items-center justify-center
-                    hover:bg-amber-400
+                    text-zinc-400
+                    hover:bg-[#B88A3D]
                     hover:text-black
+                    hover:border-[#B88A3D]
                     hover:scale-105
                     duration-300
+                    transition
                   "
                 >
-                  <FaEnvelope size={12} />
+                  <FaEnvelope size={13} />
                 </a>
 
                 <a
-                  href="tel:+9199999888888"
+                  href="tel:+919876543210"
+                  aria-label="Phone hotline"
                   className="
-                    w-8 h-8 rounded-full
+                    w-9 h-9 rounded-full
                     border border-white/10
                     bg-white/5 backdrop-blur-xl
                     flex items-center justify-center
-                    hover:bg-amber-400
+                    text-zinc-400
+                    hover:bg-[#B88A3D]
                     hover:text-black
+                    hover:border-[#B88A3D]
                     hover:scale-105
                     duration-300
+                    transition
                   "
                 >
-                  <FaPhoneAlt size={12} />
+                  <FaPhoneAlt size={13} />
                 </a>
               </div>
+            </motion.div>
 
-              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-zinc-500 border-l border-white/10 pl-4">
-                <a href="mailto:aan.attarhouse@gmail.com" className="hover:text-zinc-300 transition-colors">
-                  aan.attarhouse@gmail.com
-                </a>
-                <span className="text-zinc-700">|</span>
-                <a href="tel:+919876543210" className="hover:text-zinc-300 transition-colors">
-                  +91 9876543210
-                </a>
+
+
+            {/* Column 3: Quick Links */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex flex-col gap-4"
+            >
+              <h3 className="text-[#B88A3D] font-bold tracking-widest uppercase text-[11px]">
+                Quick Links
+              </h3>
+              <ul className="flex flex-col gap-2.5 text-xs text-zinc-400">
+                <li>
+                  <Link href="/about" className="hover:text-amber-300 transition duration-300">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/build-your-signature" className="hover:text-amber-300 transition duration-300">
+                    Build Your Signature
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/build-your-wardrobe" className="hover:text-amber-300 transition duration-300">
+                    Build Your Wardrobe
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-amber-300 transition duration-300">
+                    Contact Support
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/track-order" className="hover:text-amber-300 transition duration-300">
+                    Track Order
+                  </Link>
+                </li>
+              </ul>
+            </motion.div>
+
+            {/* Column 4: Customer Support */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-col gap-4"
+            >
+              <h3 className="text-[#B88A3D] font-bold tracking-widest uppercase text-[11px]">
+                Customer Support
+              </h3>
+              <ul className="flex flex-col gap-3 text-xs text-zinc-400">
+                <li className="flex items-start gap-3">
+                  <MapPin size={15} className="text-[#B88A3D] shrink-0 mt-0.5" />
+                  <span className="leading-relaxed">
+                    Aan Attar House, 3RD, 103C, Ustad Enayet Khan Avenue , 700017, Kolkata, India.
+                  </span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <PhoneIcon size={15} className="text-[#B88A3D] shrink-0" />
+                  <a href="tel:+919876543210" className="hover:text-zinc-200 transition">
+                    +91 9876543210
+                  </a>
+                </li>
+                <li className="flex items-center gap-3">
+                  <MailIcon size={15} className="text-[#B88A3D] shrink-0" />
+                  <a href="mailto:hello@theaanstory.com" className="hover:text-zinc-200 transition">
+                    hello@theaanstory.com
+                  </a>
+                </li>
+
+              </ul>
+            </motion.div>
+          </div>
+
+          {/* Bottom Bar: Copyright & Payment Methods */}
+          <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-zinc-500">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
+              <p>© {currentYear} Aan Attar. All rights reserved.</p>
+              <span className="hidden sm:inline text-zinc-700">|</span>
+              <div className="flex gap-2">
+                <Link href="/privacy" className="hover:text-zinc-400 transition">
+                  Privacy Policy
+                </Link>
+                <span className="text-zinc-800">•</span>
+                <Link href="/terms" className="hover:text-zinc-400 transition">
+                  Terms & Conditions
+                </Link>
               </div>
             </div>
-          </motion.div>
 
-          {/* Links - all one line */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-zinc-400"
-          >
-            <span className="text-amber-400 font-semibold tracking-wider uppercase text-[10px]">Support</span>
-            <span className="text-zinc-600">:</span>
-            <Link href="/contact" className="hover:text-amber-300 duration-300 transition-colors">
-              Contact
-            </Link>
-
-            <span className="text-zinc-700 mx-2">|</span>
-
-            <span className="text-amber-400 font-semibold tracking-wider uppercase text-[10px]">Legal</span>
-            <span className="text-zinc-600">:</span>
-            <Link href="/privacy" className="hover:text-amber-300 duration-300 transition-colors">
-              Privacy
-            </Link>
-            <span className="text-zinc-600">•</span>
-            <Link href="/terms" className="hover:text-amber-300 duration-300 transition-colors">
-              Terms
-            </Link>
-            <span className="text-zinc-600">•</span>
-            <Link href="/cookies" className="hover:text-amber-300 duration-300 transition-colors">
-              Cookies
-            </Link>
-          </motion.div>
+            {/* Payment Method Badges */}
+            <div className="flex items-center justify-center sm:justify-end gap-2 flex-wrap">
+              <span className="text-[10px] text-zinc-500 mr-1.5 uppercase font-medium tracking-wider">Payment Methods:</span>
+              {paymentMethods.map(({ label, icon: Icon, className, iconClassName }) => (
+                <span
+                  key={label}
+                  aria-label={label}
+                  title={label}
+                  className={`${className} inline-flex h-6 min-w-10 items-center justify-center rounded-[4px] border border-white/10 px-2 shadow-sm select-none`}
+                >
+                  <Icon aria-hidden="true" className={`${iconClassName} h-3.5 w-auto`} />
+                  <span className="sr-only">{label}</span>
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
-
-        {/* Bottom */}
-        <div
-          className="
-            pt-4
-            flex flex-col md:flex-row
-            justify-between items-center
-            gap-2
-            text-[11px]
-            text-zinc-500
-          "
-        >
-          <p>(c) {currentYear} Aan Attar. All rights reserved.</p>
-          <p className="italic">Crafted with luxury and precision</p>
-        </div>
-      </div>
-    </motion.footer>
+      </motion.footer>
+    </div>
   );
 }

@@ -105,14 +105,14 @@ export default function VideoStoriesSection() {
             </motion.p>
           </div>
 
-          <motion.a
+          {/* <motion.a
             variants={fadeUp}
             href="/build-your-signature"
             className="inline-flex w-fit items-center gap-2 rounded-full border border-[#ffcf7a]/34 bg-white/[0.05] px-5 py-3 text-xs font-bold uppercase tracking-[0.16em] text-[#ffcf7a] backdrop-blur-xl transition hover:border-[#ffcf7a]/70 hover:bg-[#ffcf7a]/10 hover:shadow-[0_0_36px_rgba(255,179,71,0.18)]"
           >
             Explore Collection
             <Sparkles size={15} />
-          </motion.a>
+          </motion.a> */}
         </div>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

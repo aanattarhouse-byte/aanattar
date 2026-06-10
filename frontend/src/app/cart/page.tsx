@@ -2,7 +2,7 @@ import CartClient from "@/components/CartClient";
 import ScrollReveal from "@/components/ScrollReveal";
 
 export const metadata = {
-  title: "Cart | Salim Luxury Attar",
+  title: "Cart | Aan Attar",
   description: "Review your selected luxury attars and adjust quantities.",
 };
 

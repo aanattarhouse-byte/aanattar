@@ -49,9 +49,14 @@ function EmberCloud() {
   );
 }
 
-export default function ParticleField() {
+interface ParticleFieldProps {
+  className?: string;
+  isAbsolute?: boolean;
+}
+
+export default function ParticleField({ className = "", isAbsolute = false }: ParticleFieldProps) {
   return (
-    <div className="pointer-events-none fixed inset-0 z-[2] opacity-70 mix-blend-screen">
+    <div className={`pointer-events-none ${isAbsolute ? "absolute" : "fixed"} inset-0 z-[2] opacity-70 mix-blend-screen ${className}`}>
       <Canvas camera={{ position: [0, 0, 4.8], fov: 55 }} dpr={[1, 1.5]} gl={{ antialias: false, alpha: true }}>
         <EmberCloud />
       </Canvas>

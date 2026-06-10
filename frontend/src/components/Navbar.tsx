@@ -1,6 +1,9 @@
 "use client";
 
 import {
+  Home,
+  Heart,
+  LayoutGrid,
   LogOut,
   Menu,
   Minus,
@@ -37,8 +40,9 @@ import {
 
 const navItems = [
   { label: "About", href: "/about" },
-  { label: "Build Your Wardrobe", href: "/build-your-wardrobe" },
+  // { label: "Build Your Wardrobe", href: "/build-your-wardrobe" },
   { label: "Build Your Signature", href: "/build-your-signature" },
+    { label: "Contact Us", href: "/contact" },
 ];
 
 const signatureProductSlugs = new Set(
@@ -1194,6 +1198,73 @@ export default function Navbar() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-[100] bg-[#fffaf3]/95 backdrop-blur-md border-t border-[#e5d8c3]/40 shadow-[0_-4px_16px_rgba(42,27,18,0.06)] px-2 py-1.5 md:hidden">
+        <div className="flex justify-around items-center h-12">
+          <Link
+            href="/"
+            className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-[9px] font-bold uppercase tracking-[0.08em] transition duration-300 ${
+              pathname === "/" ? "text-[#B88A3D]" : "text-[#5d1717]"
+            }`}
+          >
+            <Home size={18} className={pathname === "/" ? "text-[#B88A3D]" : "text-[#5d1717]"} />
+            <span>Home</span>
+          </Link>
+
+          <Link
+            href="/build-your-signature"
+            className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-[9px] font-bold uppercase tracking-[0.08em] transition duration-300 ${
+              pathname === "/build-your-signature" ? "text-[#B88A3D]" : "text-[#5d1717]"
+            }`}
+          >
+            <LayoutGrid size={18} className={pathname === "/build-your-signature" ? "text-[#B88A3D]" : "text-[#5d1717]"} />
+            <span>Scent</span>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setCartOpen(true)}
+            className="relative flex flex-col items-center justify-center flex-1 gap-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-[#5d1717] hover:text-[#B88A3D] transition duration-300 animate-none"
+          >
+            <div className="relative">
+              <ShoppingBag size={18} />
+              {cartCount > 0 && (
+                <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#5d1717] px-1 text-[7px] font-bold leading-none text-white">
+                  {cartCount}
+                </span>
+              )}
+            </div>
+            <span>Cart</span>
+          </button>
+
+          <Link
+            href="/my-orders"
+            className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-[9px] font-bold uppercase tracking-[0.08em] transition duration-300 ${
+              pathname === "/my-orders" ? "text-[#B88A3D]" : "text-[#5d1717]"
+            }`}
+          >
+            <Heart size={18} className={pathname === "/my-orders" ? "text-[#B88A3D]" : "text-[#5d1717]"} />
+            <span>Orders</span>
+          </Link>
+
+          <Link
+            href={user ? "/profile" : "#"}
+            onClick={(e) => {
+              if (!user) {
+                e.preventDefault();
+                setShowLoginModal(true);
+              }
+            }}
+            className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-[9px] font-bold uppercase tracking-[0.08em] transition duration-300 ${
+              pathname === "/profile" ? "text-[#B88A3D]" : "text-[#5d1717]"
+            }`}
+          >
+            <User size={18} className={pathname === "/profile" ? "text-[#B88A3D]" : "text-[#5d1717]"} />
+            <span>Profile</span>
+          </Link>
+        </div>
+      </div>
     </header>
   );
 }

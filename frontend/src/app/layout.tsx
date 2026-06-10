@@ -27,11 +27,11 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Salim Luxury Attar | Premium Fragrance House",
-  description: "Luxury attar experience. Curated scents, build your own, and exclusive gift sets crafted around Salim Luxury Attar signature.",
-  keywords: ["attar", "luxury", "perfume", "fragrance", "Salim Luxury Attar"],
+  title: "Aan Attar | Premium Fragrance House",
+  description: "Luxury attar experience. Curated scents, build your own, and exclusive gift sets crafted around Aan Attar signature.",
+  keywords: ["attar", "luxury", "perfume", "fragrance", "Aan Attar"],
   openGraph: {
-    title: "Salim Luxury Attar",
+    title: "Aan Attar",
     description: "Premium luxury attar brand",
     type: "website",
   },
@@ -55,7 +55,7 @@ export default async function RootLayout({
       data-scroll-behavior="smooth"
       className={`${playfair.variable} ${lora.variable} ${spaceGrotesk.variable} h-full scroll-smooth`}
     >
-      <body className="min-h-screen flex flex-col bg-[#0B0B0B] text-zinc-100 antialiased selection:bg-amber-400/30 selection:text-white">
+      <body className="min-h-screen flex flex-col bg-[#0B0B0B] text-zinc-100 antialiased selection:bg-amber-400/30 selection:text-white pb-[60px] md:pb-0">
         <AuthProvider initialUser={initialUser}>
           <CartProvider>
             <CinematicShell />

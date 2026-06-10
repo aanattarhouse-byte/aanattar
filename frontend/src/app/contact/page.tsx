@@ -4,9 +4,9 @@ import { Mail, MessageCircle, Phone, Send, Sparkles } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 
 export const metadata: Metadata = {
-  title: "Contact Salim Luxury Attar | Premium Attar Support",
+  title: "Contact Aan Attar | Premium Attar Support",
   description:
-    "Contact Salim Luxury Attar for premium attar recommendations, gifting help, order support, fragrance guidance, and custom signature scent questions.",
+    "Contact Aan Attar for premium attar recommendations, gifting help, order support, fragrance guidance, and custom signature scent questions.",
   alternates: {
     canonical: "https://theaanstory.com/contact",
   },
