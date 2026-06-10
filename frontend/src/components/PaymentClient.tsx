@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { backendFetch } from "@/lib/backendApi";
+import { useAuth } from "@/context/AuthContext";
 import {
   clearCheckoutSession,
   getCheckoutSession,
@@ -77,6 +78,7 @@ function loadRazorpayScript() {
 }
 
 export default function PaymentClient() {
+  const { user, loading: authLoading, loginWithGoogle } = useAuth();
   const [session, setSession] = useState<CheckoutSession | null>(() =>
     getCheckoutSession()
   );
@@ -249,6 +251,14 @@ export default function PaymentClient() {
   };
 
   const confirmOrder = () => {
+    if (!user) {
+      setStatusMessage("Please login to place your order.");
+      void loginWithGoogle().catch(() => {
+        setStatusMessage("Login is required before placing an order.");
+      });
+      return;
+    }
+
     if (paymentMethod === "COD") {
       createCodOrder();
       return;
@@ -387,10 +397,12 @@ export default function PaymentClient() {
             <button
               type="button"
               onClick={confirmOrder}
-              disabled={isSubmitting}
+              disabled={isSubmitting || authLoading}
               className="mt-6 h-12 w-full rounded-[8px] bg-[#D4A24C] text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {paymentMethod === "COD"
+              {!user
+                ? authLoading ? "Logging In..." : "Login To Order"
+                : paymentMethod === "COD"
                 ? isSubmitting ? "Confirming..." : "Confirm Order"
                 : isVerifying ? "Verifying Payment..." : isSubmitting ? "Opening Payment..." : "Pay Now"}
             </button>

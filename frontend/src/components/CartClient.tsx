@@ -5,29 +5,35 @@ import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { formatPrice } from "@/lib/products";
-import {
-  getSalimComboState,
-  isSalimComboBaseItem,
-  isSalimComboMiniItem,
-  salimComboConfig,
-} from "@/lib/salimCombo";
+import { getSalimComboState } from "@/lib/salimCombo";
 import CheckoutAddressModal from "@/components/CheckoutAddressModal";
 
 export default function CartClient() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const { items, subtotal, addItem, updateQuantity, removeItem } = useCart();
+  const [loginMessage, setLoginMessage] = useState("");
+  const { items, subtotal, updateQuantity, removeItem } = useCart();
+  const { user, loading: authLoading, loginWithGoogle } = useAuth();
   const salimComboState = getSalimComboState(items);
-  const hasSalimBaseInCart = items.some(isSalimComboBaseItem);
-  const salimComboMiniItems = hasSalimBaseInCart
-    ? items.filter(isSalimComboMiniItem)
-    : [];
-  const missingSalimComboAddOns = hasSalimBaseInCart
-    ? salimComboConfig.addOns.filter(
-        (addOn) => !salimComboMiniItems.some((item) => item.id === addOn.id)
-      )
-    : [];
   const visibleItems = items;
+
+  const startCheckout = async () => {
+    setLoginMessage("");
+
+    if (!user) {
+      setLoginMessage("Please login to place your order.");
+      try {
+        await loginWithGoogle();
+        setCheckoutOpen(true);
+      } catch {
+        setLoginMessage("Login is required before placing an order.");
+      }
+      return;
+    }
+
+    setCheckoutOpen(true);
+  };
 
   if (items.length === 0) {
     return (
@@ -164,11 +170,17 @@ export default function CartClient() {
         </div>
         <button
           type="button"
-          onClick={() => setCheckoutOpen(true)}
-          className="mt-6 h-12 w-full rounded-[8px] bg-[#D4A24C] text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A]"
+          onClick={startCheckout}
+          disabled={authLoading}
+          className="mt-6 h-12 w-full rounded-[8px] bg-[#D4A24C] text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Order Now
+          {authLoading ? "Logging In..." : user ? "Order Now" : "Login To Order"}
         </button>
+        {loginMessage && (
+          <p className="mt-3 rounded-[8px] border border-amber-300/20 bg-amber-300/10 p-3 text-xs font-semibold text-amber-100">
+            {loginMessage}
+          </p>
+        )}
       </aside>
       {checkoutOpen && (
         <CheckoutAddressModal
