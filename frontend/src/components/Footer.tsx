@@ -11,236 +11,185 @@ FaPhoneAlt
 
 export default function Footer() {
 
-const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
 
-const footerLinks = [
-{
-title:"Support",
-links:[
-{label:"Contact",href:"/contact"},
-],
-},
-{
-title:"Legal",
-links:[
-{label:"Privacy",href:"/privacy"},
-{label:"Terms",href:"/terms"},
-{label:"Cookies",href:"/cookies"},
-],
-},
-];
+  return (
+    <motion.footer
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true }}
+      className="
+        relative
+        overflow-hidden
+        text-white
+        pt-20
+        pb-8
+        bg-[url('/footer.jpg')]
+        bg-cover
+        bg-center
+      "
+    >
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/75 z-0" />
 
-return (
-<motion.footer
-initial={{opacity:0}}
-whileInView={{opacity:1}}
-transition={{duration:.8}}
-viewport={{once:true}}
-className="
-relative
-overflow-hidden
-text-white
-pt-28
-pb-14
-bg-[url('/footer.jpg')]
-bg-cover
-bg-center
-"
->
+      {/* Luxury top curve */}
+      <div className="absolute top-0 left-0 w-full z-10">
+        <svg
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
+          className="w-full h-[60px]"
+        >
+          <path
+            fill="#fff"
+            d="M0,80 C280,20 500,20 720,60 C940,100 1180,100 1440,60 L1440,0 L0,0 Z"
+          />
+        </svg>
+      </div>
 
-{/* Overlay */}
-<div className="absolute inset-0 bg-black/75 z-0"/>
+      <div className="relative z-20 max-w-7xl mx-auto px-8 lg:px-12 pt-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-8 pb-6 border-b border-white/5">
+          {/* Brand Side */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-md"
+          >
+            <h2 className="mb-1 whitespace-nowrap text-lg sm:text-xl font-bold tracking-tight text-white uppercase">
+              Aan Attar
+            </h2>
+            <p className="text-zinc-400 text-xs leading-relaxed mb-4">
+              Premium attar and fragrance stories crafted with olfactive artistry.
+            </p>
 
+            {/* Premium Social & Contact info */}
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex gap-2">
+                <a
+                  href="#"
+                  className="
+                    w-8 h-8 rounded-full
+                    border border-white/10
+                    bg-white/5 backdrop-blur-xl
+                    flex items-center justify-center
+                    hover:bg-amber-400
+                    hover:text-black
+                    hover:scale-105
+                    duration-300
+                  "
+                >
+                  <FaInstagram size={13} />
+                </a>
 
-{/* Luxury top curve */}
-<div className="absolute top-0 left-0 w-full z-10">
-<svg
-viewBox="0 0 1440 120"
-preserveAspectRatio="none"
-className="w-full h-[120px]"
->
-<path
-fill="#fff"
-d="M0,80 C280,20 500,20 720,60 C940,100 1180,100 1440,60 L1440,0 L0,0 Z"
-/>
-</svg>
-</div>
+                <a
+                  href="#"
+                  className="
+                    w-8 h-8 rounded-full
+                    border border-white/10
+                    bg-white/5 backdrop-blur-xl
+                    flex items-center justify-center
+                    hover:bg-amber-400
+                    hover:text-black
+                    hover:scale-105
+                    duration-300
+                  "
+                >
+                  <FaFacebookF size={12} />
+                </a>
 
+                <a
+                  href="mailto:hello@theaanstory.com"
+                  className="
+                    w-8 h-8 rounded-full
+                    border border-white/10
+                    bg-white/5 backdrop-blur-xl
+                    flex items-center justify-center
+                    hover:bg-amber-400
+                    hover:text-black
+                    hover:scale-105
+                    duration-300
+                  "
+                >
+                  <FaEnvelope size={12} />
+                </a>
 
-<div className="relative z-20 max-w-7xl mx-auto px-8 lg:px-12 pt-14">
+                <a
+                  href="tel:+9199999888888"
+                  className="
+                    w-8 h-8 rounded-full
+                    border border-white/10
+                    bg-white/5 backdrop-blur-xl
+                    flex items-center justify-center
+                    hover:bg-amber-400
+                    hover:text-black
+                    hover:scale-105
+                    duration-300
+                  "
+                >
+                  <FaPhoneAlt size={12} />
+                </a>
+              </div>
 
-<div className="grid md:grid-cols-[1.7fr_1fr_1fr] gap-4 mb-10">
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-zinc-500 border-l border-white/10 pl-4">
+                <a href="mailto:aan.attarhouse@gmail.com" className="hover:text-zinc-300 transition-colors">
+                  aan.attarhouse@gmail.com
+                </a>
+                <span className="text-zinc-700">|</span>
+                <a href="tel:+919876543210" className="hover:text-zinc-300 transition-colors">
+                  +91 9876543210
+                </a>
+              </div>
+            </div>
+          </motion.div>
 
-{/* Brand Side */}
-<motion.div
-initial={{opacity:0,y:30}}
-whileInView={{opacity:1,y:0}}
-className="max-w-md"
->
+          {/* Links - all one line */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-zinc-400"
+          >
+            <span className="text-amber-400 font-semibold tracking-wider uppercase text-[10px]">Support</span>
+            <span className="text-zinc-600">:</span>
+            <Link href="/contact" className="hover:text-amber-300 duration-300 transition-colors">
+              Contact
+            </Link>
 
-<h2 className="mb-3 whitespace-nowrap text-[2.25rem] font-bold leading-[0.95] tracking-tight sm:text-[2.75rem] lg:text-[3.25rem]">
-  Aan Attar
-</h2>
+            <span className="text-zinc-700 mx-2">|</span>
 
-<p className="text-zinc-300 text-xl leading-relaxed mb-8">
-Premium attar and fragrance stories <br/>
-crafted with olfactive artistry.
-</p>
+            <span className="text-amber-400 font-semibold tracking-wider uppercase text-[10px]">Legal</span>
+            <span className="text-zinc-600">:</span>
+            <Link href="/privacy" className="hover:text-amber-300 duration-300 transition-colors">
+              Privacy
+            </Link>
+            <span className="text-zinc-600">•</span>
+            <Link href="/terms" className="hover:text-amber-300 duration-300 transition-colors">
+              Terms
+            </Link>
+            <span className="text-zinc-600">•</span>
+            <Link href="/cookies" className="hover:text-amber-300 duration-300 transition-colors">
+              Cookies
+            </Link>
+          </motion.div>
+        </div>
 
-
-
-{/* Premium Social */}
-<div className="flex gap-5 mb-8">
-
-<a
-href="#"
-className="
-w-14 h-14 rounded-full
-border border-white/10
-bg-white/5 backdrop-blur-xl
-flex items-center justify-center
-hover:bg-amber-400
-hover:text-black
-hover:scale-110
-duration-500
-"
->
-<FaInstagram size={19}/>
-</a>
-
-<a
-href="#"
-className="
-w-14 h-14 rounded-full
-border border-white/10
-bg-white/5 backdrop-blur-xl
-flex items-center justify-center
-hover:bg-amber-400
-hover:text-black
-hover:scale-110
-duration-500
-"
->
-<FaFacebookF size={18}/>
-</a>
-
-<a
-href="mailto:hello@theaanstory.com"
-className="
-w-14 h-14 rounded-full
-border border-white/10
-bg-white/5 backdrop-blur-xl
-flex items-center justify-center
-hover:bg-amber-400
-hover:text-black
-hover:scale-110
-duration-500
-"
->
-<FaEnvelope size={18}/>
-</a>
-
-<a
-href="tel:+9199999888888"
-className="
-w-14 h-14 rounded-full
-border border-white/10
-bg-white/5 backdrop-blur-xl
-flex items-center justify-center
-hover:bg-amber-400
-hover:text-black
-hover:scale-110
-duration-500
-"
->
-<FaPhoneAlt size={18}/>
-</a>
-
-</div>
-
-
-<div className="space-y-3 text-zinc-400">
-<p>aan.attarhouse@gmail.com</p>
-<p>+91 9876543210</p>
-</div>
-
-</motion.div>
-
-
-
-{/* Right Links */}
-{footerLinks.map((column,index)=>(
-
-<motion.div
-key={column.title}
-initial={{opacity:0,y:30}}
-whileInView={{opacity:1,y:0}}
-transition={{delay:index*.1}}
-className="pt-4"
->
-
-<h4 className="
-uppercase
-tracking-[0.25em]
-text-sm
-mb-8
-font-medium
-text-amber-300
-">
-{column.title}
-</h4>
-
-
-<ul className="space-y-5">
-{column.links.map((link)=>(
-
-<li key={link.href}>
-<Link
-href={link.href}
-className="
-text-zinc-300
-text-xl
-font-light
-hover:text-amber-300
-duration-300
-"
->
-{link.label}
-</Link>
-</li>
-
-))}
-</ul>
-
-</motion.div>
-
-))}
-
-</div>
-
-
-
-{/* Bottom */}
-<div className="
-border-t border-white/10
-pt-10
-flex flex-col md:flex-row
-justify-between items-center
-gap-4
-">
-
-<p className="text-zinc-500 text-sm">
-(c) {currentYear} Aan Attar. All rights reserved.
-</p>
-
-<p className="text-zinc-500 italic">
-Crafted with luxury and precision
-</p>
-
-</div>
-
-</div>
-
-</motion.footer>
-);
+        {/* Bottom */}
+        <div
+          className="
+            pt-4
+            flex flex-col md:flex-row
+            justify-between items-center
+            gap-2
+            text-[11px]
+            text-zinc-500
+          "
+        >
+          <p>(c) {currentYear} Aan Attar. All rights reserved.</p>
+          <p className="italic">Crafted with luxury and precision</p>
+        </div>
+      </div>
+    </motion.footer>
+  );
 }
