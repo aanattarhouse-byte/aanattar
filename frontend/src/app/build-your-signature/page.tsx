@@ -5,7 +5,7 @@ import Testimonials from "@/components/Testimonials";
 import { signatureProducts } from "@/lib/products";
 
 export const metadata = {
-  title: "Build Your Signature | Salim Luxury Attar",
+  title: "Build Your Signature | Aan Attar Hosue",
   description: "Explore 35 luxury attars and choose the scent that becomes your signature.",
 };
 
@@ -22,7 +22,7 @@ export default function BuildYourSignaturePage() {
               Choose the attar that enters before you do.
             </h1>
             <p className="mt-4 max-w-xl text-sm text-zinc-300 md:text-base">
-              Explore the full Salim Luxury Attar collection, from royal oudh
+              Explore the full Aan Attar collection, from royal oudh
               blends to clean musks, botanical florals, and modern elite
               inspirations.
             </p>

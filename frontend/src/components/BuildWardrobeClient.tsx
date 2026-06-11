@@ -127,9 +127,7 @@ export default function BuildWardrobeClient({
     <main className="min-h-screen bg-[#0b0b0b] px-4 py-10 text-white sm:px-6 sm:py-14 lg:px-8 lg:py-20">
       <section className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
-          <p className="text-xs font-bold uppercase tracking-[0.24em] text-amber-300">
-            Curated Fragrance Wardrobe
-          </p>
+          
           <h1 className="mt-3 !text-3xl leading-none sm:!text-4xl lg:!text-5xl">
             Build Your Wardrobe
           </h1>
