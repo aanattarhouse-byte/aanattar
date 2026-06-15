@@ -24,8 +24,28 @@
 }
 
 html {
-  scroll-behavior: smooth;
   background: #0b0b0b;
+}
+
+/* Lenis smooth scrolling support styles */
+html.lenis, html.lenis-y {
+  height: auto !important;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 body {

@@ -28,9 +28,9 @@ export const productImages: Record<string, string> = {
   "ameer-al-oudh-reserve": unsplashImage("R5f_kjqxV7c"),
   "one-man-show-signature": unsplashImage("6X7Kdro6V20"),
   "white-musk-pure": "/white musk 1.jpeg",
-  "dior-sauvage-intense": unsplashImage("XGlB9_jqYec"),
-  "creed-aventus-elite": unsplashImage("Pab4yp04_zM"),
-  "giorgio-armani-luxe": unsplashImage("m6-Nbngq2AE"),
+  "dior-sauvage-intense": "/Dioɽ Sauvage Intense 1.jpeg",
+  "creed-aventus-elite": "/Creed Aventus Elite 1.jpeg",
+  "giorgio-armani-luxe": "/GIORGIO AR LUXE 1.jpeg",
   "gucci-guilty-cologne-supreme": unsplashImage("_ju6ZXbNKvY"),
   "signature-noir": unsplashImage("ZnTYRe64GVI"),
   "intemate-velvet": unsplashImage("2rh1U-8WqcE"),
@@ -39,7 +39,7 @@ export const productImages: Record<string, string> = {
   "white-oudh-classic": "/White Oudh Classic 1.jpeg",
   "blue-musk-fresh": "/Blue Musk Fresh 1.jpeg",
   "yellow-musk-gold": unsplashImage("9Obp9d2xiLw"),
-  "denver-danupe-diptique-select": unsplashImage("LkT5-JCePUY"),
+  "denver-danupe-diptique-select": "/Denver Danube Diptyque Select 1.jpeg",
   "majmua-heritage": "/Majmua Heritage 1.jpeg",
   "jannatul-firdaus-royal": unsplashImage("vjZ50T6Rt1c"),
   "t-rose-elegance": "/T Rose Elegance 1.png",
@@ -52,7 +52,7 @@ export const productImages: Record<string, string> = {
   "jasmin-pure": unsplashImage("TZYrqa8KZQE"),
   "lavender-mist": unsplashImage("RbuoieHTGB4"),
   "marigold-blossom": "/Marigold Blossom 1.jpeg",
-  "chocolate-musk-reserve": unsplashImage("bGf5azbQ_ss"),
+  "chocolate-musk-reserve": "/Chocolate Musk Reserve 1.jpeg",
   "1001-nights-exclusive": unsplashImage("AEcgd5ScPyU"),
   "mukhallat-royale": "/Mukhallat Royale 1.jpeg",
 };
@@ -644,6 +644,11 @@ export const productHoverImages: Record<string, string> = {
   "marigold-blossom": "/Marigold Blossom 2.jpeg",
   "black-edition": "/Black Edition 2.jpeg",
   "blue-musk-fresh": "/Blue Musk Fresh 2.jpeg",
+  "creed-aventus-elite": "/Creed Aventus Elite 2.jpeg",
+  "chocolate-musk-reserve": "/Chocolate Musk Reserve 2.jpeg",
+  "dior-sauvage-intense": "/Dioɽ Sauvage Intense 2.jpeg",
+  "giorgio-armani-luxe": "/GIORGIO AR LUXE 2.jpeg",
+  "denver-danupe-diptique-select": "/Denver Danube Diptyque Select 2.jpeg",
 };
 
 export const products: Product[] = productCatalog.map((product) => ({
