@@ -20,13 +20,14 @@ const unsplashImage = (id: string) =>
 
 export const productImages: Record<string, string> = {
   "salim-luxury-attar": "/salim1.jpg",
-  "royal-confidence": unsplashImage("j1vg92xdoX4"),
+  "royal-confidence": "/Royal Confidence 1.png",
+  "purple-oudh-mystique": "/Purple Oudh Mystique 1.jpeg",
   "armani-prestige": unsplashImage("7BfHnIkZv5E"),
   "jannat-essence": unsplashImage("eKjhDOOsb0U"),
   "velvet-oudh-royale": unsplashImage("smVxAu_lqlo"),
   "ameer-al-oudh-reserve": unsplashImage("R5f_kjqxV7c"),
   "one-man-show-signature": unsplashImage("6X7Kdro6V20"),
-  "white-musk-pure": unsplashImage("So4eFi-d1nc"),
+  "white-musk-pure": "/white musk 1.jpeg",
   "dior-sauvage-intense": unsplashImage("XGlB9_jqYec"),
   "creed-aventus-elite": unsplashImage("Pab4yp04_zM"),
   "giorgio-armani-luxe": unsplashImage("m6-Nbngq2AE"),
@@ -35,26 +36,25 @@ export const productImages: Record<string, string> = {
   "intemate-velvet": unsplashImage("2rh1U-8WqcE"),
   "chanel-bleu-de-chanel-reserve": unsplashImage("ZPxO-Zjw1Ms"),
   "gucci-flora-bloom": unsplashImage("N2E6et7fD9E"),
-  "white-oudh-classic": unsplashImage("yoxlQMq-Sbk"),
-  "purple-oudh-mystique": unsplashImage("HZS2xj81zuw"),
-  "blue-musk-fresh": unsplashImage("PvmNN9zh7-8"),
+  "white-oudh-classic": "/White Oudh Classic 1.jpeg",
+  "blue-musk-fresh": "/Blue Musk Fresh 1.jpeg",
   "yellow-musk-gold": unsplashImage("9Obp9d2xiLw"),
   "denver-danupe-diptique-select": unsplashImage("LkT5-JCePUY"),
-  "majmua-heritage": unsplashImage("YQcjFzPrr48"),
+  "majmua-heritage": "/Majmua Heritage 1.jpeg",
   "jannatul-firdaus-royal": unsplashImage("vjZ50T6Rt1c"),
-  "t-rose-elegance": unsplashImage("mhxjuT11W5o"),
-  "sandal-supreme": unsplashImage("00VsJwB5aYE"),
+  "t-rose-elegance": "/T Rose Elegance 1.png",
+  "sandal-supreme": "/Sandal Supreme 1.png",
   "jimmy-choo-desire": unsplashImage("FPAC-vvaV_I"),
   "coach-eau-de-toilette-signature": unsplashImage("V8e6mCiXLz8"),
-  "musk-rizali-premium": unsplashImage("i-yi4Tv7IC4"),
-  "black-edition": unsplashImage("42oXEWx7nmc"),
-  "mogra-garden-bloom": unsplashImage("L_fELqQkW3c"),
+  "musk-rizali-premium": "/Musk Rizali Premium 1.jpeg",
+  "black-edition": "/Black Edition 1.jpeg",
+  "mogra-garden-bloom": "/Mogra Garden Bloom 1.jpeg",
   "jasmin-pure": unsplashImage("TZYrqa8KZQE"),
   "lavender-mist": unsplashImage("RbuoieHTGB4"),
-  "marigold-blossom": unsplashImage("ph0K8hWqRes"),
+  "marigold-blossom": "/Marigold Blossom 1.jpeg",
   "chocolate-musk-reserve": unsplashImage("bGf5azbQ_ss"),
   "1001-nights-exclusive": unsplashImage("AEcgd5ScPyU"),
-  "mukhallat-royale": unsplashImage("PbW5fCWJG4M"),
+  "mukhallat-royale": "/Mukhallat Royale 1.jpeg",
 };
 
 export const productDiscountPercents: Record<string, number> = {
@@ -629,9 +629,27 @@ export function getProductDiscountPercent(
   return product.discountPercent ?? productDiscountPercents[product.slug] ?? 20;
 }
 
+export const productHoverImages: Record<string, string> = {
+  "salim-luxury-attar": "/salim2.jpg",
+  "royal-confidence": "/Royal Confidence 2.png",
+  "purple-oudh-mystique": "/Purple Oudh Mystique 2.jpeg",
+  "sandal-supreme": "/Sandal Supreme 2.png",
+  "t-rose-elegance": "/T Rose Elegance 2.png",
+  "white-musk-pure": "/white musk 2.jpeg",
+  "white-oudh-classic": "/White Oudh Classic 2.jpeg",
+  "musk-rizali-premium": "/Musk Rizali Premium 2.jpeg",
+  "mukhallat-royale": "/Mukhallat Royale 2.jpeg",
+  "majmua-heritage": "/Majmua Heritage 2.jpeg",
+  "mogra-garden-bloom": "/Mogra Garden Bloom 2.jpeg",
+  "marigold-blossom": "/Marigold Blossom 2.jpeg",
+  "black-edition": "/Black Edition 2.jpeg",
+  "blue-musk-fresh": "/Blue Musk Fresh 2.jpeg",
+};
+
 export const products: Product[] = productCatalog.map((product) => ({
   ...product,
   image: productImages[product.slug] ?? product.image,
+  hoverImage: productHoverImages[product.slug] ?? product.hoverImage,
   discountPercent: getProductDiscountPercent(product),
 }));
 

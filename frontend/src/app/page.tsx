@@ -14,7 +14,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
       <Hero />
       <WhyChooseAanStory />
       <VideoStoriesSection />

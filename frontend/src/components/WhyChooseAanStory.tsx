@@ -56,7 +56,7 @@ export default function WhyChooseAanStory() {
 
         <motion.div
           variants={fadeUp}
-          className="mx-auto mt-8 max-w-6xl overflow-hidden"
+          className="-mx-4 sm:mx-auto mt-8 max-w-6xl overflow-hidden"
         >
           <div className="relative aspect-[16/9] overflow-hidden">
             <Image

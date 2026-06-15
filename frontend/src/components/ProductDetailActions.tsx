@@ -3,7 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Minus, Plus, ShoppingCart, Zap, Check, Sparkles } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Zap, Check, Sparkles, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
 import {
@@ -53,8 +54,13 @@ export default function ProductDetailActions({
     });
   }, [product.id]);
   
-  // Selection state (default selects empty so user can buy plain product, but if they click one, it builds signature)
-  const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
+  // Selection state
+  const [selectedBottleIndex, setSelectedBottleIndex] = useState<number | null>(null);
+
+  // Upsell popup states
+  const [isUpsellOpen, setIsUpsellOpen] = useState(false);
+  const [upsellActionType, setUpsellActionType] = useState<"cart" | "buy">("cart");
+  const [tempSelectedIndex, setTempSelectedIndex] = useState<number | null>(null);
 
   // Listen to signature volume custom event from other elements if necessary
   useEffect(() => {
@@ -70,19 +76,29 @@ export default function ProductDetailActions({
     };
   }, [selectedVolume]);
 
-
-
   const handleVolumeSelect = (volume: ProductVolumeMl) => {
     setSelectedVolume(volume);
     window.dispatchEvent(new CustomEvent("product-volume-changed", { detail: volume }));
   };
 
-  const handleToggleBottle = (index: number) => {
-    if (selectedIndices.includes(index)) {
-      setSelectedIndices([]);
+  const handleSelectTempBottle = (index: number) => {
+    if (tempSelectedIndex === index) {
+      setTempSelectedIndex(null);
     } else {
-      setSelectedIndices([index]);
+      setTempSelectedIndex(index);
     }
+  };
+
+  const handleAddToCartClick = () => {
+    setTempSelectedIndex(selectedBottleIndex);
+    setUpsellActionType("cart");
+    setIsUpsellOpen(true);
+  };
+
+  const handleBuyNowClick = () => {
+    setTempSelectedIndex(selectedBottleIndex);
+    setUpsellActionType("buy");
+    setIsUpsellOpen(true);
   };
 
   const router = useRouter();
@@ -90,44 +106,33 @@ export default function ProductDetailActions({
 
   const price = isPremium ? 149 : getVolumePrice(selectedVolume, product.price);
   
-  // Extra cost of selected bottles
-  const extraCost = useMemo(() => {
-    if (bottlePrices.length === 0) return 0;
-    return selectedIndices.reduce((sum, idx) => sum + (bottlePrices[idx] || 0), 0);
-  }, [selectedIndices, bottlePrices]);
-
-  // Grand total
-  const grandTotal = price + extraCost;
-
-  const currentDisplayPrice = grandTotal;
-
   const regularPriceForVolume = getVolumePrice(selectedVolume, product.price);
   const discountPercent = isPremium
     ? Math.round(((regularPriceForVolume - 149) / regularPriceForVolume) * 100)
     : getProductDiscountPercent(product);
-  const baseCompareAtPrice = isPremium
+  const compareAtPrice = isPremium
     ? regularPriceForVolume
     : getCompareAtPrice(price, discountPercent);
-  const currentCompareAtPrice = baseCompareAtPrice + extraCost;
 
   const selectedVolumeValue = getVolumeCartValue(selectedVolume);
 
-  const addProduct = () => {
-    if (selectedIndices.length > 0) {
-      const selectedBottlesText = selectedIndices
-        .map((idx) => `Bottle ${idx + 1} (₹${bottlePrices[idx]})`)
-        .join(", ");
+  const addProductWithSelection = (chosenIndex: number | null, actionType: "cart" | "buy") => {
+    if (chosenIndex !== null) {
+      const bPrice = bottlePrices[chosenIndex] || 0;
+      const itemPrice = price + bPrice;
+      const selectedBottlesText = `Bottle ${chosenIndex + 1} (₹${bPrice})`;
 
       addItem({
-        id: `${product.id}-signature-${selectedIndices.sort().join("-")}-${selectedVolume}`,
+        id: `${product.id}-bottle-${chosenIndex}-${selectedVolume}`,
         slug: product.slug,
-        name: `${product.name} (Signature Blend)`,
+        name: product.name, // Removed "(Signature Blend)" text
         image: product.image,
-        price: grandTotal,
+        price: itemPrice,
         quantity,
-        variant: `Signature: ${selectedBottlesText}`,
+        variant: `Bottle ${chosenIndex + 1} (${formatPrice(bPrice)})`, // Removed "Signature: " text
         volume: selectedVolumeValue,
       });
+      setSelectedBottleIndex(chosenIndex);
     } else {
       addItem({
         id: product.id,
@@ -139,107 +144,46 @@ export default function ProductDetailActions({
         variant: isPremium ? "Premium Collection" : undefined,
         volume: selectedVolumeValue,
       });
+      setSelectedBottleIndex(null);
     }
-  };
 
-  const addProductAndShowCart = () => {
-    addProduct();
-    requestCartOpen();
-  };
-
-  const buyNow = () => {
-    addProduct();
-    router.push("/cart");
-  };
-
-
-
-  const renderCard = (index: number) => {
-    const template = BOTTLE_TEMPLATES[index];
-    const isSelected = selectedIndices.includes(index);
-    const bPrice = bottlePrices[index] || 0;
-
-    return (
-      <div
-        key={template.id}
-        onClick={() => handleToggleBottle(index)}
-        className={`group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-[8px] p-2 transition-all duration-300 select-none ${
-          isSelected
-            ? "border border-[#D4AF37] bg-gradient-to-b from-[#D4AF37]/10 to-[#D4AF37]/0.01 shadow-[0_6px_16px_rgba(212,175,55,0.12)]"
-            : "border border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]"
-        }`}
-      >
-        {/* Selection Indicator */}
-        <div className="absolute right-1.5 top-1.5 z-10 flex h-4.5 w-4.5 items-center justify-center rounded-full border border-[#D4AF37]/40 transition duration-300">
-          <div
-            className={`flex h-2.5 w-2.5 items-center justify-center rounded-full transition-all duration-300 ${
-              isSelected ? "bg-[#D4AF37] scale-100" : "bg-transparent scale-0"
-            }`}
-          >
-            {isSelected && <Check size={7} className="text-black stroke-[3]" />}
-          </div>
-        </div>
-
-        {/* Small Image */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-[4px] bg-black/45">
-          <Image
-            src={template.image}
-            alt={template.name}
-            fill
-            sizes="80px"
-            className="object-cover transition duration-300 group-hover:scale-105"
-          />
-        </div>
-
-        {/* Details */}
-        <div className="mt-1.5 flex flex-col text-center">
-          <span className="font-sans text-[10px] font-bold text-white leading-none">
-            {template.name}
-          </span>
-          <p className="mt-0.5 font-serif text-[8px] text-zinc-400 leading-tight line-clamp-1">
-            {template.note}
-          </p>
-          <span className="mt-1 block font-sans text-[10px] font-bold text-[#D4AF37] leading-none">
-            {formatPrice(bPrice)}
-          </span>
-        </div>
-      </div>
-    );
+    if (actionType === "cart") {
+      requestCartOpen();
+    } else {
+      router.push("/cart");
+    }
+    setIsUpsellOpen(false);
   };
 
   return (
     <div className="mx-auto grid max-w-7xl gap-7 sm:gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start w-full text-left">
-      {/* Left Column: Image & Signature Blend Section */}
+      {/* Left Column: Image */}
       <div className="space-y-5 sm:space-y-6 w-full">
         <div className="relative overflow-hidden rounded-[8px] border border-white/10 bg-[#120b08] shadow-[0_30px_90px_rgba(0,0,0,0.32)]">
-          <div className="relative aspect-square">
+          <div className="relative aspect-square group/image cursor-pointer touch-manipulation">
+            {/* Primary Product Image */}
             <Image
               src={product.image}
               alt={product.name}
               fill
               priority
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
+              className={`object-cover transition-opacity duration-500 ${
+                product.hoverImage
+                  ? "group-hover/image:opacity-0 group-active/image:opacity-0"
+                  : ""
+              }`}
             />
-          </div>
-        </div>
-
-        {/* Signature Blend Section */}
-        <div className="border-t border-white/10 pt-4 space-y-2.5">
-
-          {/* Desktop / Tablet Grid: 4 + 3 Layout */}
-          <div className="hidden sm:flex flex-col gap-2">
-            <div className="grid grid-cols-4 gap-2">
-              {[0, 1, 2, 3].map((index) => renderCard(index))}
-            </div>
-            <div className="grid grid-cols-3 gap-2 max-w-[75%] mx-auto w-full">
-              {[4, 5, 6].map((index) => renderCard(index))}
-            </div>
-          </div>
-
-          {/* Mobile Grid: 2 Columns */}
-          <div className="grid grid-cols-2 gap-2 sm:hidden">
-            {BOTTLE_TEMPLATES.map((_, index) => renderCard(index))}
+            {/* Hover/Touch Product Image */}
+            {product.hoverImage && (
+              <Image
+                src={product.hoverImage}
+                alt={`${product.name} alternate view`}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover absolute inset-0 opacity-0 transition-opacity duration-500 group-hover/image:opacity-100 group-active/image:opacity-100"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -339,11 +283,13 @@ export default function ProductDetailActions({
         {/* Dynamic Price Display */}
         <div className="mt-6 flex flex-wrap items-center gap-2">
           <span className="font-sans text-2xl font-bold leading-none text-amber-200">
-            {formatPrice(currentDisplayPrice)}
+            {formatPrice(price)}
           </span>
-          <span className="font-sans text-base font-semibold leading-none text-zinc-500 line-through">
-            {formatPrice(currentCompareAtPrice)}
-          </span>
+          {compareAtPrice > price && (
+            <span className="font-sans text-base font-semibold leading-none text-zinc-500 line-through">
+              {formatPrice(compareAtPrice)}
+            </span>
+          )}
           <span className="rounded-[3px] bg-emerald-600 px-2 py-1 font-sans text-xs font-bold leading-none text-white">
             {discountPercent}% off
           </span>
@@ -384,7 +330,7 @@ export default function ProductDetailActions({
         <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:gap-3">
           <button
             type="button"
-            onClick={addProductAndShowCart}
+            onClick={handleAddToCartClick}
             className="group flex h-10 min-w-0 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-black shadow-lg shadow-amber-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0 sm:h-11 sm:flex-1 sm:gap-2 sm:px-5 sm:text-sm sm:tracking-[0.12em]"
           >
             <ShoppingCart
@@ -397,7 +343,7 @@ export default function ProductDetailActions({
 
           <button
             type="button"
-            onClick={buyNow}
+            onClick={handleBuyNowClick}
             className="group flex h-10 min-w-0 items-center justify-center gap-1.5 rounded-lg border border-amber-400/20 bg-zinc-900/70 px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-100 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/40 hover:bg-zinc-800 active:translate-y-0 sm:h-11 sm:flex-1 sm:gap-2 sm:px-5 sm:text-sm sm:tracking-[0.12em]"
           >
             <Zap
@@ -408,6 +354,156 @@ export default function ProductDetailActions({
           </button>
         </div>
       </ScrollReveal>
+
+      {/* eCommerce Upsell Modal Popup */}
+      <AnimatePresence>
+        {isUpsellOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop Blur Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsUpsellOpen(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+
+            {/* Modal Dialog (Compact size: max-w-2xl, smaller paddings) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="relative z-10 w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[#0d0a08]/95 p-5 shadow-2xl backdrop-blur-2xl md:p-6"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsUpsellOpen(false)}
+                className="absolute right-4 top-4 text-zinc-400 hover:text-white transition duration-200"
+                aria-label="Close modal"
+              >
+                <X size={18} />
+              </button>
+
+              {/* Progress Indicator & Title (Compact typography) */}
+              <div className="text-center space-y-1">
+                <div className="mx-auto flex max-w-xs items-center gap-2 justify-center">
+                  <div className="h-0.5 w-8 rounded bg-amber-400/80" />
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-amber-300">
+                    Step 1 of 2: Customization
+                  </span>
+                  <div className="h-0.5 w-8 rounded bg-zinc-800" />
+                </div>
+
+                <h2 className="font-display text-xl font-bold uppercase tracking-wider text-white sm:text-2xl drop-shadow-[0_4px_12px_rgba(212,175,55,0.15)]">
+                  Choose Your Preferred Bottle
+                </h2>
+                <p className="mx-auto max-w-md text-[11px] text-zinc-400">
+                  Elevate your fragrance with our hand-crafted, luxury signature bottles. Select a bottle design below.
+                </p>
+              </div>
+
+              {/* Swipeable Carousel of 7 Bottle Option Cards (Compact sizes: w-[125px], text sizes reduced) */}
+              <div className="mt-6 flex gap-3 overflow-x-auto pb-4 pt-1 px-1 scrollbar-none snap-x snap-mandatory cursor-grab active:cursor-grabbing">
+                {BOTTLE_TEMPLATES.map((template, index) => {
+                  const isSelected = tempSelectedIndex === index;
+                  const bPrice = bottlePrices[index] || 0;
+
+                  return (
+                    <div
+                      key={template.id}
+                      onClick={() => handleSelectTempBottle(index)}
+                      className={`group relative snap-center shrink-0 w-[125px] md:w-[135px] cursor-pointer flex flex-col justify-between overflow-hidden rounded-lg p-2.5 border transition-all duration-300 select-none ${
+                        isSelected
+                          ? "border-[#D4AF37] bg-gradient-to-b from-[#D4AF37]/15 to-[#D4AF37]/0.02 shadow-[0_0_20px_rgba(212,175,55,0.22)] -translate-y-1 ring-2 ring-[#d4af37]"
+                          : "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] hover:-translate-y-0.5"
+                      }`}
+                    >
+                      {/* Glow ring effect under selected card */}
+                      {isSelected && (
+                        <div className="absolute inset-0 -z-10 bg-[#d4af37]/5 blur-md rounded-lg" />
+                      )}
+
+                      {/* Checkmark Indicator */}
+                      <div className="absolute right-2 top-2 z-10 flex h-4.5 w-4.5 items-center justify-center rounded-full border border-[#D4AF37]/40 transition duration-300 bg-black/60">
+                        <div
+                          className={`flex h-2.5 w-2.5 items-center justify-center rounded-full transition-all duration-300 ${
+                            isSelected ? "bg-[#D4AF37] scale-100" : "bg-transparent scale-0"
+                          }`}
+                        >
+                          {isSelected && <Check size={7} className="text-black stroke-[3]" />}
+                        </div>
+                      </div>
+
+                      {/* Image */}
+                      <div className="relative aspect-square w-full overflow-hidden rounded-md bg-black/45">
+                        <Image
+                          src={template.image}
+                          alt={template.name}
+                          fill
+                          sizes="100px"
+                          className="object-cover transition duration-300 group-hover:scale-105"
+                        />
+                      </div>
+
+                      {/* Bottle Details */}
+                      <div className="mt-2.5 flex flex-col text-center">
+                        <span className="font-sans text-[10px] font-bold text-white leading-tight">
+                          {template.name}
+                        </span>
+                        <p className="mt-0.5 font-serif text-[8px] text-zinc-400 leading-tight line-clamp-2 min-h-[22px]">
+                          {template.note}
+                        </p>
+                        <span className="mt-1.5 block font-sans text-[10px] font-bold text-[#D4AF37] leading-none">
+                          +{formatPrice(bPrice)}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Progress/Selection Dots Indicator */}
+              <div className="mt-3 flex justify-center gap-1.5">
+                {BOTTLE_TEMPLATES.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setTempSelectedIndex(index)}
+                    className={`h-1 rounded-full transition-all duration-300 ${
+                      tempSelectedIndex === index ? "w-4 bg-amber-400" : "w-1 bg-zinc-800"
+                    }`}
+                    aria-label={`Select bottle ${index + 1}`}
+                  />
+                ))}
+              </div>
+
+              {/* Upsell Dialog Action Buttons */}
+              <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
+                <button
+                  type="button"
+                  onClick={() => addProductWithSelection(tempSelectedIndex, upsellActionType)}
+                  disabled={tempSelectedIndex === null}
+                  className={`group flex h-11 items-center justify-center gap-2 rounded-lg px-6 text-xs font-bold uppercase tracking-wider transition-all duration-300 sm:min-w-[200px] ${
+                    tempSelectedIndex === null
+                      ? "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700/50"
+                      : "bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] text-black shadow-lg shadow-amber-500/20 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0"
+                  }`}
+                >
+                  Continue with Selected Bottle
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => addProductWithSelection(null, upsellActionType)}
+                  className="group flex h-11 items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.02] px-6 text-xs font-bold uppercase tracking-wider text-zinc-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.05] active:translate-y-0 sm:min-w-[150px]"
+                >
+                  Skip & Continue
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
