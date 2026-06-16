@@ -894,7 +894,7 @@ export default function Navbar() {
       <AnimatePresence>
         {cartOpen && (
           <motion.div
-            className="fixed inset-0 z-[90]"
+            className="fixed inset-0 z-[120]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -911,29 +911,30 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 280, damping: 32 }}
-              style={{ height: "100vh" }}
-              className="fixed right-0 top-0 flex w-screen sm:w-[320px] lg:w-[350px] lg:max-w-[350px] max-w-full flex-col bg-[#f7f8fb] text-[#16100c] shadow-[-20px_0_70px_rgba(0,0,0,0.24)]"
+              className="fixed bottom-3 right-3 top-3 flex h-[calc(100dvh-1.5rem)] max-h-[calc(100dvh-1.5rem)] w-[calc(100vw-3rem)] max-w-[320px] flex-col overflow-hidden rounded-l-[10px] rounded-r-[4px] bg-[#f7f8fb] text-[#16100c] shadow-[-20px_0_70px_rgba(0,0,0,0.24)] sm:bottom-0 sm:right-0 sm:top-0 sm:h-[100dvh] sm:max-h-[100dvh] sm:w-[320px] sm:rounded-none lg:w-[350px] lg:max-w-[350px]"
               role="dialog"
               aria-modal="true"
               aria-label="Shopping cart"
             >
-              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-black/10 bg-[#f7f8fb] px-4 py-3">
-                <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-[#2A1B12]">
-                  Your Cart ({cartCount} {cartCount === 1 ? "item" : "items"})
-                </span>
-                <button
-                  type="button"
-                  aria-label="Close cart"
-                  onClick={() => setCartOpen(false)}
-                  className="grid h-8 w-8 place-items-center rounded-full transition hover:bg-black/5"
-                >
-                  <X size={18} />
-                </button>
+              <div className="shrink-0 border-b border-black/10 bg-[#f7f8fb] px-3.5 py-2.5 sm:px-4 sm:py-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-[#2A1B12]">
+                    Your Cart ({cartCount} {cartCount === 1 ? "item" : "items"})
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="Close cart"
+                    onClick={() => setCartOpen(false)}
+                    className="grid h-8 w-8 place-items-center rounded-full transition hover:bg-black/5"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
               </div>
 
               <div 
                 data-lenis-prevent
-                className="min-h-0 flex-1 overflow-y-auto overscroll-contain cart-scrollbar px-3.5 py-3"
+                className="min-h-0 flex-1 overflow-y-auto overscroll-contain cart-scrollbar px-3 py-2.5 sm:px-3.5 sm:py-3"
               >
                 {cartItems.length === 0 ? (
                   <div className="grid h-full place-items-center text-center">
@@ -960,18 +961,18 @@ export default function Navbar() {
                         key={`${item.id}-${item.variant || "default"}-${item.volume || "volume"}`}
                         className="space-y-3"
                       >
-                        <div className="rounded-[8px] border border-black/10 bg-white p-2.5 shadow-sm">
-                          <div className="grid grid-cols-[72px_1fr_auto] gap-2.5">
+                        <div className="rounded-[8px] border border-black/10 bg-white p-2 shadow-sm sm:p-2.5">
+                          <div className="grid grid-cols-[64px_1fr_auto] gap-2 sm:grid-cols-[72px_1fr_auto] sm:gap-2.5">
                             <Link
                               href={item.slug ? `/product/${item.slug}` : "/build-your-signature"}
                               onClick={() => setCartOpen(false)}
-                              className="relative h-[76px] w-[72px] overflow-hidden rounded-[8px] bg-[#120b08]"
+                              className="relative h-[68px] w-[64px] overflow-hidden rounded-[8px] bg-[#120b08] sm:h-[76px] sm:w-[72px]"
                             >
                               <Image
                                 src={item.image || "/attar-bottle.svg"}
                                 alt={item.name}
                                 fill
-                                sizes="72px"
+                                sizes="(max-width: 639px) 64px, 72px"
                                 className="object-cover"
                               />
                             </Link>
@@ -994,7 +995,7 @@ export default function Navbar() {
                                 {formatPrice(item.price)}
                               </div>
 
-                              <div className="mt-2 inline-flex h-8 items-center overflow-hidden rounded-[8px] border border-black/10 bg-[#f7f8fb]">
+                              <div className="mt-1.5 inline-flex h-7 items-center overflow-hidden rounded-[8px] border border-black/10 bg-[#f7f8fb] sm:mt-2 sm:h-8">
                                 <button
                                   type="button"
                                   aria-label="Decrease quantity"
@@ -1006,11 +1007,11 @@ export default function Navbar() {
                                       item.volume
                                     )
                                   }
-                                  className="grid h-8 w-8 place-items-center transition hover:bg-black/5"
+                                  className="grid h-7 w-7 place-items-center transition hover:bg-black/5 sm:h-8 sm:w-8"
                                 >
                                   <Minus size={12} />
                                 </button>
-                                <span className="grid h-8 min-w-8 place-items-center border-x border-black/10 font-sans text-[10px] font-semibold">
+                                <span className="grid h-7 min-w-7 place-items-center border-x border-black/10 font-sans text-[10px] font-semibold sm:h-8 sm:min-w-8">
                                   {item.quantity}
                                 </span>
                                 <button
@@ -1024,7 +1025,7 @@ export default function Navbar() {
                                       item.volume
                                     )
                                   }
-                                  className="grid h-8 w-8 place-items-center transition hover:bg-black/5"
+                                  className="grid h-7 w-7 place-items-center transition hover:bg-black/5 sm:h-8 sm:w-8"
                                 >
                                   <Plus size={12} />
                                 </button>
@@ -1049,8 +1050,8 @@ export default function Navbar() {
                 )}
               </div>
 
-              <div className="sticky bottom-0 z-10 border-t border-black/10 bg-white px-4 py-3 shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
-                <div className="mb-3 space-y-1.5">
+              <div className="shrink-0 border-t border-black/10 bg-white px-3.5 pb-[max(0.65rem,env(safe-area-inset-bottom))] pt-2.5 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] sm:px-4 sm:pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pt-3">
+                <div className="mb-2.5 space-y-1.5 sm:mb-3">
                   {salimComboState.active ? (
                     <>
                       <div className="rounded-[6px] border border-emerald-600/20 bg-emerald-50 p-2 font-sans text-[10px]">
@@ -1087,7 +1088,7 @@ export default function Navbar() {
                   href="/cart"
                   onClick={() => setCartOpen(false)}
                   aria-disabled={cartItems.length === 0}
-                  className="flex h-11 w-full items-center justify-center rounded-[8px] bg-[#c0943e] font-sans text-[10px] font-bold uppercase tracking-[0.06em] text-black transition hover:bg-[#d2a64d]"
+                  className="flex h-10 w-full items-center justify-center rounded-[8px] bg-[#c0943e] font-sans text-[10px] font-bold uppercase tracking-[0.06em] text-black transition hover:bg-[#d2a64d] sm:h-11"
                 >
                   View Cart
                 </Link>
