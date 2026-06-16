@@ -26,16 +26,13 @@ import {
 } from "@/lib/products";
 import { getSalimComboState, salimComboConfig } from "@/lib/salimCombo";
 import ProductReviews from "@/components/ProductReviews";
-import ScrollReveal from "@/components/ScrollReveal";
-
-const galleryImages = ["/salim1.jpg", "/salim2.jpg"];
 
 export default function SalimDetailsClient() {
   const router = useRouter();
   const { addItem } = useCart();
   const salimProduct = getProductBySlug("salim-luxury-attar");
 
-  const [activeImage, setActiveImage] = useState(galleryImages[0]);
+  const [activeImage, setActiveImage] = useState("/salim1.jpg");
   const [quantity, setQuantity] = useState(1);
   const [selectedAddOns, setSelectedAddOns] = useState<Record<string, boolean>>({});
 
@@ -58,6 +55,12 @@ export default function SalimDetailsClient() {
   const basePrice = salimProduct.price;
   const discountPercent = getProductDiscountPercent(salimProduct);
   const compareAtPrice = getCompareAtPrice(basePrice, discountPercent);
+  const galleryImages = Array.from(
+    new Set([salimProduct.image, salimProduct.hoverImage].filter(Boolean))
+  ) as string[];
+  const displayedActiveImage = galleryImages.includes(activeImage)
+    ? activeImage
+    : galleryImages[0];
 
   // Toggle add-on selection
   const toggleAddOn = (id: string) => {
@@ -133,27 +136,29 @@ export default function SalimDetailsClient() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0b0b0b] pb-16 font-sans text-white md:pb-0">
+    <main className="w-full max-w-full overflow-x-hidden bg-[#0b0b0b] pb-16 font-sans text-white md:pb-0">
       {/* Hero section */}
-      <section className="px-4 py-5 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-        <div className="mx-auto grid max-w-7xl gap-7 sm:gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+      <section className="w-full max-w-full overflow-x-hidden px-0 py-0 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
+        <div className="mx-auto grid w-full max-w-7xl min-w-0 gap-5 sm:gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           
           {/* Gallery component */}
-          <div className="space-y-2 sm:space-y-4">
-            <div className="relative h-[min(72vw,300px)] overflow-hidden rounded-[8px] border border-white/10 bg-[#120b08] shadow-[0_30px_90px_rgba(0,0,0,0.32)] sm:aspect-square sm:h-auto">
+          <div className="w-full min-w-0 space-y-2 sm:space-y-4">
+            <div className="relative h-[min(82vw,340px)] w-full overflow-hidden bg-white sm:aspect-square sm:h-auto sm:rounded-[8px] sm:border sm:border-white/10 sm:bg-[#120b08] sm:shadow-[0_30px_90px_rgba(0,0,0,0.32)]">
               <Image
-                src={activeImage}
+                key={displayedActiveImage}
+                src={displayedActiveImage}
                 alt="Salim Luxury Attar main view"
                 fill
+                unoptimized
                 priority
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover transition-all duration-700 hover:scale-105"
+                className="object-contain transition-all duration-700 hover:scale-105 sm:object-cover"
               />
             </div>
             {/* Thumbnails */}
-            <div className="flex gap-2 sm:gap-4">
+            <div className="flex w-full gap-2 overflow-x-auto px-2 sm:max-w-none sm:gap-4 sm:overflow-visible sm:px-0">
               {galleryImages.map((img, i) => {
-                const isActive = activeImage === img;
+                const isActive = displayedActiveImage === img;
                 return (
                   <button
                     key={img}
@@ -167,8 +172,9 @@ export default function SalimDetailsClient() {
                       src={img}
                       alt={`Salim Luxury Attar view ${i + 1}`}
                       fill
+                      unoptimized
                       sizes="96px"
-                      className="object-cover"
+                      className="object-contain sm:object-cover"
                     />
                   </button>
                 );
@@ -177,8 +183,7 @@ export default function SalimDetailsClient() {
           </div>
 
           {/* Details & Actions */}
-          <ScrollReveal>
-            <div>
+          <div className="w-full min-w-0 px-3 pb-5 sm:px-0 sm:pb-0">
               {/* Premium Tag */}
               <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-amber-200">
                 <Sparkles size={12} className="text-amber-300" />
@@ -186,13 +191,13 @@ export default function SalimDetailsClient() {
               </span>
 
               {/* Title & Ratings */}
-              <h1 className="mt-3 font-display text-3xl font-bold leading-tight text-white sm:mt-4 sm:text-5xl md:text-6xl lg:text-7xl">
+              <h1 className="mt-3 max-w-full break-words font-display text-[2rem] font-bold leading-tight text-white sm:mt-4 sm:text-5xl md:text-6xl lg:text-7xl">
                 {salimProduct.name}
               </h1>
 
               {/* Quick Stars */}
-              <div className="mt-3 flex items-center gap-2">
-                <div className="flex text-amber-300">
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <div className="flex shrink-0 text-amber-300">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star key={i} size={15} fill="currentColor" />
                   ))}
@@ -203,7 +208,7 @@ export default function SalimDetailsClient() {
               </div>
 
               {/* Short Description */}
-              <p className="mt-4 text-sm leading-relaxed text-zinc-300 sm:mt-5 sm:text-lg">
+              <p className="mt-4 max-w-full break-words text-sm leading-relaxed text-zinc-300 sm:mt-5 sm:text-lg">
                 {salimProduct.description}
               </p>
 
@@ -212,8 +217,8 @@ export default function SalimDetailsClient() {
                 <span className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500">
                   Volume / Size
                 </span>
-                <div className="flex">
-                  <div className="rounded-[8px] border border-amber-300/70 bg-amber-300/15 px-5 py-3 text-left shadow-[0_0_0_1px_rgba(248,220,123,0.18)]">
+                <div className="flex max-w-full">
+                  <div className="max-w-full rounded-[8px] border border-amber-300/70 bg-amber-300/15 px-4 py-3 text-left shadow-[0_0_0_1px_rgba(248,220,123,0.18)] sm:px-5">
                     <span className="block font-sans text-sm font-bold text-white">
                       12 ML (Signature)
                     </span>
@@ -280,7 +285,8 @@ export default function SalimDetailsClient() {
                 </div>
 
                 {/* Cards List */}
-                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                <div className="max-w-full overflow-hidden">
+                  <div className="flex max-w-full gap-2 overflow-x-auto px-0.5 pb-2 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent sm:gap-3">
                   {salimComboConfig.addOns.map((addOn) => {
                     const isSelected = !!selectedAddOns[addOn.id];
                     const isDisabled = !isSelected && selectedCount >= 2;
@@ -291,7 +297,7 @@ export default function SalimDetailsClient() {
                         type="button"
                         disabled={isDisabled}
                         onClick={() => toggleAddOn(addOn.id)}
-                        className={`relative flex flex-col p-3 rounded-lg border-2 w-[130px] shrink-0 text-left transition-all duration-300 ${
+                        className={`relative flex w-[112px] shrink-0 flex-col rounded-lg border-2 p-2.5 text-left transition-all duration-300 sm:w-[130px] sm:p-3 ${
                           isSelected
                             ? "border-sky-500 bg-sky-500/5 shadow-[0_0_15px_rgba(56,189,248,0.15)]"
                             : "border-white/10 bg-zinc-900/40 hover:border-white/20"
@@ -334,6 +340,7 @@ export default function SalimDetailsClient() {
                       </button>
                     );
                   })}
+                  </div>
                 </div>
 
                 {/* Final Price Block */}
@@ -370,8 +377,7 @@ export default function SalimDetailsClient() {
                 </button>
               </div>
 
-            </div>
-          </ScrollReveal>
+          </div>
         </div>
       </section>
 
