@@ -100,7 +100,7 @@ function MobileCard({
                     if (node) videoRefs.current[i] = node;
                   }}
                   className="absolute inset-0 h-full w-full object-cover"
-                  src={video}
+                  src={`${video}#t=0.001`}
                   loop
                   playsInline
                   preload="auto"
@@ -303,7 +303,7 @@ export default function VideoStoriesSection() {
                         if (node) videoRefs.current[index] = node;
                       }}
                       className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                      src={story.video}
+                      src={`${story.video}#t=0.001`}
                       loop
                       playsInline
                       preload="auto"

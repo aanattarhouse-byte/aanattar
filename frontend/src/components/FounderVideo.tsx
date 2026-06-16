@@ -123,7 +123,7 @@ export default function FounderVideo() {
               playsInline
               preload="metadata"
             >
-              <source src="/founder.mp4" type="video/mp4" />
+              <source src="/founder.mp4#t=0.001" type="video/mp4" />
             </video>
 
             {/* Play/Pause Overlay */}
