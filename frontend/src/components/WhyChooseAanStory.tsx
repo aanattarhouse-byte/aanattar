@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { fadeUp, stagger } from "@/lib/framer/motion";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import ShopSalimButton from "@/components/ShopSalimButton";
-import gsap from "gsap";
 
 const particles = [
   "left-[8%] top-[18%] h-1.5 w-1.5 opacity-70",
@@ -19,46 +17,6 @@ const particles = [
 ];
 
 export default function WhyChooseAanStory() {
-  const headingRef = useRef<HTMLHeadingElement>(null);
-
-  useEffect(() => {
-    if (!headingRef.current) return;
-
-    const words = headingRef.current.querySelectorAll(".word-span");
-
-    // Timeline setup
-    const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
-
-    // Initial setup state (hidden above viewport)
-    tl.set(headingRef.current, { y: 0, opacity: 1, filter: "blur(0px)" });
-    tl.set(words, { y: -150, opacity: 0, filter: "blur(12px)" });
-
-    // 1. Drop down with stagger and bounce landing
-    tl.to(words, {
-      y: 0,
-      opacity: 1,
-      filter: "blur(0px)",
-      duration: 1.0,
-      stagger: 0.15,
-      ease: "back.out(1.5)",
-    });
-
-    // 2. Hold for 2 seconds
-    tl.to({}, { duration: 2 });
-
-    // 3. Entire heading slides down and fades out
-    tl.to(headingRef.current, {
-      y: 80,
-      opacity: 0,
-      filter: "blur(12px)",
-      duration: 0.8,
-      ease: "power2.inOut",
-    });
-
-    return () => {
-      tl.kill();
-    };
-  }, []);
 
   return (
     <section
@@ -89,20 +47,13 @@ export default function WhyChooseAanStory() {
         viewport={{ once: true, margin: "-120px" }}
       >
         <div className="mx-auto max-w-3xl text-center">
-          <h2
+          <motion.h2
             id="why-customers-love"
-            ref={headingRef}
-            className="relative z-20 font-display text-3xl font-semibold leading-tight text-white drop-shadow-[0_8px_34px_rgba(255,179,71,0.18)] sm:text-4xl lg:text-5xl flex flex-wrap justify-center gap-x-[0.25em]"
+            variants={fadeUp}
+            className="relative z-20 font-display text-3xl font-semibold leading-tight text-white drop-shadow-[0_8px_34px_rgba(255,179,71,0.18)] sm:text-4xl lg:text-5xl"
           >
-            {"Why Customers Love Salim".split(" ").map((word, wordIndex) => (
-              <span
-                key={wordIndex}
-                className="word-span inline-block whitespace-nowrap opacity-0"
-              >
-                {word}
-              </span>
-            ))}
-          </h2>
+            Why Customers Love Salim
+          </motion.h2>
         </div>
 
         <motion.div

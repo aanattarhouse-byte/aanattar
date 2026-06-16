@@ -56,13 +56,13 @@ function MobileCard({
   videoRefs,
 }: MobileCardProps) {
   const container = useRef<HTMLDivElement>(null);
-  
+
   // Reveal scaling as the card scrolls up into viewport
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ["start end", "start start"],
   });
-  
+
   const imageScale = useTransform(scrollYProgress, [0, 1], [2, 1]);
   const scale = useTransform(progress, range, [1, targetScale]);
 
@@ -83,9 +83,8 @@ function MobileCard({
         onClick={() => {
           if (video) playVideo(i);
         }}
-        className={`group relative h-[27rem] min-h-[27rem] w-full max-w-[340px] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl transition-shadow duration-300 ${
-          video ? "cursor-pointer" : ""
-        }`}
+        className={`group relative h-[27rem] min-h-[27rem] w-full max-w-[340px] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl transition-shadow duration-300 ${video ? "cursor-pointer" : ""
+          }`}
       >
         {/* Video / Image Asset */}
         <div className="absolute inset-0 w-full h-full z-0">
@@ -162,7 +161,7 @@ export default function VideoStoriesSection() {
   }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   // Stacking scroll progress across the entire cards container
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -243,8 +242,8 @@ export default function VideoStoriesSection() {
   };
 
   return (
-    <section 
-      aria-labelledby="video-stories-heading" 
+    <section
+      aria-labelledby="video-stories-heading"
       className="cinematic-section relative isolate py-20 sm:py-24"
       style={{ overflow: "visible" }}
     >

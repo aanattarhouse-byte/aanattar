@@ -14,7 +14,6 @@ import {
   Award,
   Sparkles,
   ShieldCheck,
-  Heart,
   RotateCcw,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
@@ -108,10 +107,6 @@ export default function SalimDetailsClient() {
   );
   const selectedCount = selectedMinis.length;
 
-  const totalComparePrice = (compareAtPrice + (selectedCount * 150)) * quantity;
-  const currentTotal = comboState.finalTotal;
-  const currentDiscountPercent = totalComparePrice > 0 ? Math.round(((totalComparePrice - currentTotal) / totalComparePrice) * 100) : 0;
-
   // Add selected products to cart
   const handleAddToCart = (buyNow = false) => {
     const selectedIds = salimComboConfig.addOns
@@ -137,18 +132,15 @@ export default function SalimDetailsClient() {
     }
   };
 
-  // Compute normal item cost without combo discount (if discount not active)
-  const normalTotal = mockItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-
   return (
-    <main className="min-h-screen bg-[#0b0b0b] font-sans text-white">
+    <main className="min-h-screen bg-[#0b0b0b] pb-16 font-sans text-white md:pb-0">
       {/* Hero section */}
-      <section className="px-4 py-8 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+      <section className="px-4 py-5 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-7 sm:gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           
           {/* Gallery component */}
-          <div className="space-y-4">
-            <div className="relative aspect-square overflow-hidden rounded-[8px] border border-white/10 bg-[#120b08] shadow-[0_30px_90px_rgba(0,0,0,0.32)]">
+          <div className="space-y-2 sm:space-y-4">
+            <div className="relative h-[min(72vw,300px)] overflow-hidden rounded-[8px] border border-white/10 bg-[#120b08] shadow-[0_30px_90px_rgba(0,0,0,0.32)] sm:aspect-square sm:h-auto">
               <Image
                 src={activeImage}
                 alt="Salim Luxury Attar main view"
@@ -159,7 +151,7 @@ export default function SalimDetailsClient() {
               />
             </div>
             {/* Thumbnails */}
-            <div className="flex gap-4">
+            <div className="flex gap-2 sm:gap-4">
               {galleryImages.map((img, i) => {
                 const isActive = activeImage === img;
                 return (
@@ -167,7 +159,7 @@ export default function SalimDetailsClient() {
                     key={img}
                     type="button"
                     onClick={() => setActiveImage(img)}
-                    className={`relative aspect-square w-24 overflow-hidden rounded-[6px] border bg-[#120b08] transition-all duration-300 ${
+                    className={`relative aspect-square w-16 overflow-hidden rounded-[6px] border bg-[#120b08] transition-all duration-300 sm:w-24 ${
                       isActive ? "border-amber-300 ring-1 ring-amber-300/30" : "border-white/10 opacity-70 hover:opacity-100"
                     }`}
                   >
@@ -194,7 +186,7 @@ export default function SalimDetailsClient() {
               </span>
 
               {/* Title & Ratings */}
-              <h1 className="mt-4 font-display text-4xl font-bold leading-tight sm:text-5xl md:text-6xl lg:text-7xl text-white">
+              <h1 className="mt-3 font-display text-3xl font-bold leading-tight text-white sm:mt-4 sm:text-5xl md:text-6xl lg:text-7xl">
                 {salimProduct.name}
               </h1>
 
@@ -211,7 +203,7 @@ export default function SalimDetailsClient() {
               </div>
 
               {/* Short Description */}
-              <p className="mt-5 text-base leading-relaxed text-zinc-300 sm:text-lg">
+              <p className="mt-4 text-sm leading-relaxed text-zinc-300 sm:mt-5 sm:text-lg">
                 {salimProduct.description}
               </p>
 
@@ -233,11 +225,11 @@ export default function SalimDetailsClient() {
               </div>
 
               {/* Base Pricing */}
-              <div className="mt-6 flex items-center gap-3">
-                <span className="font-sans text-3xl font-bold text-amber-200">
+              <div className="mt-6 flex flex-wrap items-center gap-2 sm:gap-3">
+                <span className="font-sans text-2xl font-bold text-amber-200 sm:text-3xl">
                   {formatPrice(basePrice)}
                 </span>
-                <span className="font-sans text-lg font-semibold text-zinc-500 line-through">
+                <span className="font-sans text-base font-semibold text-zinc-500 line-through sm:text-lg">
                   {formatPrice(compareAtPrice)}
                 </span>
                 <span className="rounded-[3px] bg-emerald-600 px-2 py-1 font-sans text-xs font-bold text-white">
@@ -246,7 +238,7 @@ export default function SalimDetailsClient() {
               </div>
 
               {/* Quantity Selector */}
-              <div className="mt-6 flex items-center gap-4">
+              <div className="mt-6 flex items-center justify-between gap-4 sm:justify-start">
                 <span className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500">
                   Quantity
                 </span>
@@ -345,7 +337,7 @@ export default function SalimDetailsClient() {
                 </div>
 
                 {/* Final Price Block */}
-                <div className="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
+                <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-4">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-400">Total Price</p>
                     <p className="text-[10px] text-zinc-500 mt-0.5">Includes base attar + selected minis</p>
@@ -359,11 +351,11 @@ export default function SalimDetailsClient() {
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-8 grid grid-cols-2 gap-4">
+              <div className="mt-7 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4">
                 <button
                   type="button"
                   onClick={() => handleAddToCart(false)}
-                  className="group flex h-12 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-5 text-xs font-bold uppercase tracking-[0.14em] text-black shadow-lg shadow-amber-500/10 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0"
+                  className="group flex h-11 min-w-0 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-3 text-[11px] font-bold uppercase tracking-[0.06em] text-black shadow-lg shadow-amber-500/10 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0 sm:h-12 sm:gap-2 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
                 >
                   <ShoppingCart size={16} strokeWidth={2.4} />
                   Add to Cart
@@ -371,7 +363,7 @@ export default function SalimDetailsClient() {
                 <button
                   type="button"
                   onClick={() => handleAddToCart(true)}
-                  className="group flex h-12 items-center justify-center gap-2 rounded-lg border border-amber-400/20 bg-zinc-900/70 px-5 text-xs font-bold uppercase tracking-[0.14em] text-amber-100 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/40 hover:bg-zinc-800 active:translate-y-0"
+                  className="group flex h-11 min-w-0 items-center justify-center gap-1.5 rounded-lg border border-amber-400/20 bg-zinc-900/70 px-3 text-[11px] font-bold uppercase tracking-[0.06em] text-amber-100 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/40 hover:bg-zinc-800 active:translate-y-0 sm:h-12 sm:gap-2 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
                 >
                   <Zap size={16} />
                   Buy Now
