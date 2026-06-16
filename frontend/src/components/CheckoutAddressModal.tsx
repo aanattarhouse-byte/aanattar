@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 
 import { useState, useEffect, type FormEvent } from "react";
 import { createPortal } from "react-dom";
@@ -124,17 +124,17 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-[10px] font-sans font-semibold tracking-wide text-zinc-300">
+      <span className="text-[9px] sm:text-[10px] font-sans font-semibold tracking-wide text-zinc-300">
         {label} {required && <span className="text-amber-300">*</span>}
       </span>
       <input
         type={type}
         value={form[name]}
         onChange={(event) => onChange(name, event.target.value)}
-        className="mt-1 h-9 w-full rounded-[6px] border border-white/10 bg-white/[0.06] px-3 text-[11px] text-white outline-none transition placeholder:text-zinc-500 focus:border-amber-300/60"
+        className="mt-1 h-10 sm:h-9 w-full rounded-[6px] border border-white/10 bg-white/[0.06] px-3 text-[11px] text-white outline-none transition placeholder:text-zinc-500 focus:border-amber-300/60"
       />
       {errors[name] && (
-        <span className="mt-0.5 block text-[10px] font-sans font-medium text-red-300">
+        <span className="mt-0.5 block text-[9px] sm:text-[10px] font-sans font-medium text-red-300">
           {errors[name]}
         </span>
       )}
@@ -245,17 +245,17 @@ export default function CheckoutAddressModal({
   if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-3 sm:p-4">
-      <div className="flex max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-3rem)] w-full max-w-md flex-col overflow-hidden rounded-[12px] border border-white/10 bg-[#120d0a] text-white shadow-2xl">
-        <div className="flex items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-5">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-2 sm:p-4">
+      <div className="flex max-h-[calc(100vh-1rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-sm sm:max-w-md flex-col overflow-hidden rounded-[8px] sm:rounded-[12px] border border-white/10 bg-[#120d0a] text-white shadow-2xl">
+        <div className="flex items-start justify-between gap-3 border-b border-white/10 px-3 py-2.5 sm:px-5 sm:py-3">
           <div>
-            <span className="block text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-amber-300">
+            <span className="block text-[8px] sm:text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-amber-300">
               Checkout
             </span>
-            <div className="mt-0.5 text-base font-sans font-bold text-white">
+            <div className="mt-0.5 text-sm sm:text-base font-sans font-bold text-white">
               Delivery Information
             </div>
-            <div className="mt-0.5 text-[11px] font-sans text-zinc-400">
+            <div className="mt-0.5 text-[10px] sm:text-[11px] font-sans text-zinc-400">
               Add your address before payment. Total: <span className="font-bold text-amber-200">{formatPrice(finalAmount)}</span>
             </div>
           </div>
@@ -263,19 +263,20 @@ export default function CheckoutAddressModal({
             type="button"
             onClick={onClose}
             aria-label="Close checkout"
-            className="grid h-8 w-8 place-items-center rounded-full text-zinc-200 transition hover:bg-white/10"
+            className="grid h-7 w-7 sm:h-8 sm:w-8 shrink-0 place-items-center rounded-full text-zinc-200 transition hover:bg-white/10"
           >
-            <X size={17} />
+            <X size={16} className="sm:hidden" />
+            <X size={17} className="hidden sm:block" />
           </button>
         </div>
 
         <form onSubmit={saveAddressAndContinue} className="flex min-h-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1 space-y-3.5 overflow-y-auto px-4 py-3.5 sm:px-5">
+          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-2.5 sm:px-5 sm:py-3.5 sm:space-y-3.5">
             <section>
-              <h4 className="text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-amber-200">
+              <h4 className="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-amber-200">
                 Receiver Details
               </h4>
-              <div className="mt-2 grid gap-3 sm:grid-cols-2">
+              <div className="mt-2 grid gap-2.5 sm:gap-3 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <Field label="Receiver Full Name" name="receiverFullName" form={form} errors={errors} onChange={updateField} required />
                 </div>
@@ -285,10 +286,10 @@ export default function CheckoutAddressModal({
             </section>
 
             <section>
-              <h4 className="text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-amber-200">
+              <h4 className="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-amber-200">
                 Delivery Address
               </h4>
-              <div className="mt-2 grid gap-3 sm:grid-cols-2">
+              <div className="mt-2 grid gap-2.5 sm:gap-3 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <Field label="House / Flat / Building No" name="houseFlatBuilding" form={form} errors={errors} onChange={updateField} required />
                 </div>
@@ -306,12 +307,12 @@ export default function CheckoutAddressModal({
             </section>
 
             <section>
-              <h4 className="text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-amber-200">
+              <h4 className="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-amber-200">
                 Order Notes
               </h4>
               <div className="mt-2">
                 <label className="block">
-                  <span className="text-[10px] font-sans font-semibold tracking-wide text-zinc-300">
+                  <span className="text-[9px] sm:text-[10px] font-sans font-semibold tracking-wide text-zinc-300">
                     Delivery Instructions
                   </span>
                   <textarea
@@ -331,20 +332,20 @@ export default function CheckoutAddressModal({
             )}
           </div>
 
-          <div className="flex shrink-0 gap-3 border-t border-white/10 bg-[#120d0a] px-4 py-3 justify-end sm:px-5">
+          <div className="flex shrink-0 gap-2 sm:gap-3 border-t border-white/10 bg-[#120d0a] px-3 py-2.5 justify-end sm:px-5 sm:py-3">
             <button
               type="button"
               onClick={onClose}
-              className="h-9 rounded-[6px] border border-white/15 px-4 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white/10"
+              className="h-10 sm:h-9 rounded-[6px] border border-white/15 px-3 sm:px-4 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white/10 min-w-max"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="h-9 rounded-[6px] bg-[#D4A24C] px-4 text-[10px] font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A] disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-10 sm:h-9 rounded-[6px] bg-[#D4A24C] px-3 sm:px-4 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A] disabled:cursor-not-allowed disabled:opacity-60 min-w-max"
             >
-              {isSubmitting ? "Saving Address..." : "Continue To Payment"}
+              {isSubmitting ? "Saving..." : "Continue"}
             </button>
           </div>
         </form>

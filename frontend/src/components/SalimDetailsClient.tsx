@@ -55,12 +55,23 @@ export default function SalimDetailsClient() {
   const basePrice = salimProduct.price;
   const discountPercent = getProductDiscountPercent(salimProduct);
   const compareAtPrice = getCompareAtPrice(basePrice, discountPercent);
-  const galleryImages = Array.from(
-    new Set([salimProduct.image, salimProduct.hoverImage].filter(Boolean))
+  const galleryMedia = Array.from(
+    new Set(
+      [
+        salimProduct.image,
+        salimProduct.hoverImage,
+        "/salim3.png",
+        "/salim4.jpeg",
+        "/salim5.png",
+        "/salim6.jpeg",
+        "/salim7.mp4",
+      ].filter(Boolean)
+    )
   ) as string[];
-  const displayedActiveImage = galleryImages.includes(activeImage)
+  const displayedActiveImage = galleryMedia.includes(activeImage)
     ? activeImage
-    : galleryImages[0];
+    : galleryMedia[0];
+  const activeMediaIsVideo = displayedActiveImage.endsWith(".mp4");
 
   // Toggle add-on selection
   const toggleAddOn = (id: string) => {
@@ -143,22 +154,36 @@ export default function SalimDetailsClient() {
           
           {/* Gallery component */}
           <div className="w-full min-w-0 space-y-2 sm:space-y-4">
-            <div className="relative h-[min(82vw,340px)] w-full overflow-hidden bg-white sm:aspect-square sm:h-auto sm:rounded-[8px] sm:border sm:border-white/10 sm:bg-[#120b08] sm:shadow-[0_30px_90px_rgba(0,0,0,0.32)]">
-              <Image
-                key={displayedActiveImage}
-                src={displayedActiveImage}
-                alt="Salim Luxury Attar main view"
-                fill
-                unoptimized
-                priority
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-contain transition-all duration-700 hover:scale-105 sm:object-cover"
-              />
+            <div className="relative h-[100vw] sm:aspect-square sm:h-auto sm:rounded-[8px] sm:border sm:border-white/10 sm:bg-[#120b08] sm:shadow-[0_30px_90px_rgba(0,0,0,0.32)] overflow-hidden bg-white">
+              {activeMediaIsVideo ? (
+                <video
+                  key={displayedActiveImage}
+                  src={displayedActiveImage}
+                  className="h-full w-full object-contain transition-all duration-700 hover:scale-105 sm:object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  controls
+                />
+              ) : (
+                <Image
+                  key={displayedActiveImage}
+                  src={displayedActiveImage}
+                  alt="Salim Luxury Attar main view"
+                  fill
+                  unoptimized
+                  priority
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-contain transition-all duration-700 hover:scale-105 sm:object-cover"
+                />
+              )}
             </div>
             {/* Thumbnails */}
             <div className="flex w-full gap-2 overflow-x-auto px-2 sm:max-w-none sm:gap-4 sm:overflow-visible sm:px-0">
-              {galleryImages.map((img, i) => {
+              {galleryMedia.map((img, i) => {
                 const isActive = displayedActiveImage === img;
+                const isVideo = img.endsWith(".mp4");
                 return (
                   <button
                     key={img}
@@ -168,14 +193,23 @@ export default function SalimDetailsClient() {
                       isActive ? "border-amber-300 ring-1 ring-amber-300/30" : "border-white/10 opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <Image
-                      src={img}
-                      alt={`Salim Luxury Attar view ${i + 1}`}
-                      fill
-                      unoptimized
-                      sizes="96px"
-                      className="object-contain sm:object-cover"
-                    />
+                    {isVideo ? (
+                      <video
+                        src={img}
+                        className="h-full w-full object-contain sm:object-cover"
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <Image
+                        src={img}
+                        alt={`Salim Luxury Attar view ${i + 1}`}
+                        fill
+                        unoptimized
+                        sizes="96px"
+                        className="object-contain sm:object-cover"
+                      />
+                    )}
                   </button>
                 );
               })}

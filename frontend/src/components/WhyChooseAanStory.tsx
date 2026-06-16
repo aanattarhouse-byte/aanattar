@@ -3,6 +3,8 @@
 import { fadeUp, stagger } from "@/lib/framer/motion";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useState } from "react";
+import { X } from "lucide-react";
 import ShopSalimButton from "@/components/ShopSalimButton";
 
 const particles = [
@@ -17,6 +19,7 @@ const particles = [
 ];
 
 export default function WhyChooseAanStory() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <section
@@ -60,17 +63,56 @@ export default function WhyChooseAanStory() {
           variants={fadeUp}
           className="-mx-4 sm:mx-auto mt-8 max-w-6xl overflow-hidden"
         >
-          <div className="relative aspect-[16/9] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="relative w-full aspect-video sm:aspect-[16/9] overflow-hidden cursor-pointer group"
+          >
             <Image
               src="/hero2.png"
               alt="Salim benefits visual"
               fill
               sizes="(min-width: 1024px) 1152px, 92vw"
-              className="object-cover"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/48 via-black/8 to-transparent" />
-          </div>
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/30">
+              <div className="text-white text-xs sm:text-sm font-bold uppercase tracking-widest bg-black/50 px-4 py-2 rounded-lg backdrop-blur-sm">
+                Click to Zoom
+              </div>
+            </div>
+          </button>
         </motion.div>
+
+        {/* Zoom Modal */}
+        {isModalOpen && (
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4"
+            onClick={() => setIsModalOpen(false)}
+          >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsModalOpen(false);
+              }}
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors z-10"
+              aria-label="Close zoom"
+            >
+              <X size={24} />
+            </button>
+            <div className="relative w-full max-w-4xl max-h-[90vh] aspect-video sm:aspect-[16/9]">
+              <Image
+                src="/hero2.png"
+                alt="Salim benefits visual - zoomed"
+                fill
+                sizes="(min-width: 1024px) 1024px, 90vw"
+                className="object-contain"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          </div>
+        )}
 
         <motion.div variants={fadeUp} className="mt-14 flex justify-center">
           <ShopSalimButton
