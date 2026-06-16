@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
 import { getProductBySlug, formatPrice, getCompareAtPrice, type Product } from "@/lib/products";
+import GalaxyParticleField from "@/components/particles/GalaxyParticleField";
 
 type WardrobeRecommendation = {
   slug: string;
@@ -109,6 +111,7 @@ export default function BuildWardrobeClient({
 }: {
   isPremiumCollection?: boolean;
 }) {
+  const [touchedSlug, setTouchedSlug] = useState<string | null>(null);
   const { addItem } = useCart();
   const wardrobe = recommendations.map((recommendation) => ({
     ...recommendation,
@@ -124,19 +127,30 @@ export default function BuildWardrobeClient({
   };
 
   return (
-    <main className="min-h-screen bg-[#0b0b0b] px-4 py-10 text-white sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-      <section className="mx-auto max-w-7xl">
-        <div className="max-w-3xl">
-          
-          <h1 className="mt-3 !text-3xl leading-none sm:!text-4xl lg:!text-5xl">
-            Build Your Wardrobe
-          </h1>
-          <p className="mt-5 text-sm leading-7 text-zinc-300 sm:text-base">
-            Choose by occasion, mood, and the room you are walking into.
-          </p>
-        </div>
+    <main className="min-h-screen bg-[#0b0b0b] text-white">
+      {/* Top Hero Section with swirling galaxy background */}
+      <section className="relative isolate overflow-hidden px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20 w-full border-b border-white/5">
+        <GalaxyParticleField className="absolute inset-0 -z-10 h-full w-full" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0b0b0b] to-transparent pointer-events-none -z-10" />
 
-        <div className="mt-9 grid gap-4 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="mx-auto max-w-7xl relative z-10">
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+              Curated Selection
+            </p>
+            <h1 className="mt-3 !text-3xl leading-none sm:!text-4xl lg:!text-5xl text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+              Build Your Wardrobe
+            </h1>
+            <p className="mt-5 text-sm leading-7 text-zinc-300 sm:text-base drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+              Choose by occasion, mood, and the room you are walking into.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Grid Content Section */}
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20 w-full">
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {wardrobe.map(({ product, ...recommendation }) => {
             const cardPrice = isPremiumCollection ? 149 : product.price;
             const cardDiscountPercent = isPremiumCollection
@@ -145,6 +159,8 @@ export default function BuildWardrobeClient({
             const cardCompareAtPrice = isPremiumCollection
               ? product.price
               : getCompareAtPrice(product.price, cardDiscountPercent);
+
+            const isTouched = touchedSlug === recommendation.slug;
 
             return (
               <article
@@ -155,14 +171,30 @@ export default function BuildWardrobeClient({
                   href={`/product/${product.slug}${isPremiumCollection ? "?collection=premium" : ""}`}
                   className="relative block aspect-[4/3] overflow-hidden bg-[#0f0907]"
                   aria-label={`View ${recommendation.name}`}
+                  onTouchStart={() => setTouchedSlug(recommendation.slug)}
+                  onTouchEnd={() => setTouchedSlug(null)}
+                  onTouchCancel={() => setTouchedSlug(null)}
                 >
                   <Image
                     src={product.image}
                     alt={recommendation.name}
                     fill
                     sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition duration-700 ease-out group-hover:scale-105"
+                    className={`object-cover transition duration-700 ease-out md:group-hover:scale-105 ${
+                      isTouched ? "scale-105 opacity-0" : ""
+                    } ${product.hoverImage ? "md:group-hover:opacity-0" : ""}`}
                   />
+                  {product.hoverImage ? (
+                    <Image
+                      src={product.hoverImage}
+                      alt={`${recommendation.name} packaging`}
+                      fill
+                      sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className={`object-cover transition duration-700 ease-out md:group-hover:scale-105 md:group-hover:opacity-100 ${
+                        isTouched ? "scale-105 opacity-100" : "opacity-0"
+                      }`}
+                    />
+                  ) : null}
                   <span className="absolute left-3 top-3 rounded-full border border-amber-300/30 bg-black/55 px-3 py-1 font-sans text-[0.62rem] font-bold uppercase tracking-[0.14em] text-amber-200">
                     {recommendation.occasion}
                   </span>
@@ -200,7 +232,7 @@ export default function BuildWardrobeClient({
                     </span>
                   </div>
 
-                  <div className="mt-auto grid grid-cols-2 gap-2 pt-5">
+                  <div className="mt-auto grid grid-cols-1 gap-2 pt-5 sm:grid-cols-2">
                     <button
                       type="button"
                       onClick={() => addRecommendation(product, recommendation)}

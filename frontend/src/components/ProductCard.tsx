@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
@@ -20,6 +21,7 @@ export default function ProductCard({
   product: Product;
   compact?: boolean;
 }) {
+  const [isTouched, setIsTouched] = useState(false);
   const { addItem } = useCart();
   const discountPercent = getProductDiscountPercent(product);
   const compareAtPrice = getCompareAtPrice(product.price, discountPercent);
@@ -46,15 +48,18 @@ export default function ProductCard({
         href={product.slug === "salim-luxury-attar" ? "/products/salim-luxury-attar" : `/product/${product.slug}`}
         className="relative block aspect-[4/3] overflow-hidden bg-[#0f0907]"
         aria-label={`View ${product.name}`}
+        onTouchStart={() => setIsTouched(true)}
+        onTouchEnd={() => setIsTouched(false)}
+        onTouchCancel={() => setIsTouched(false)}
       >
         <Image
           src={product.image}
           alt={product.name}
           fill
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-          className={`object-cover transition duration-700 ease-out group-hover:scale-105 ${
-            product.hoverImage ? "group-hover:opacity-0" : ""
-          }`}
+          className={`object-cover transition duration-700 ease-out md:group-hover:scale-105 ${
+            isTouched ? "scale-105 opacity-0" : ""
+          } ${product.hoverImage ? "md:group-hover:opacity-0" : ""}`}
         />
         {product.hoverImage ? (
           <Image
@@ -62,7 +67,9 @@ export default function ProductCard({
             alt={`${product.name} packaging`}
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover opacity-0 transition duration-700 ease-out group-hover:scale-105 group-hover:opacity-100"
+            className={`object-cover transition duration-700 ease-out md:group-hover:scale-105 md:group-hover:opacity-100 ${
+              isTouched ? "scale-105 opacity-100" : "opacity-0"
+            }`}
           />
         ) : null}
         <span className={`absolute left-4 top-4 rounded-full border border-amber-300/30 bg-black/50 font-bold uppercase tracking-[0.16em] text-amber-200 ${

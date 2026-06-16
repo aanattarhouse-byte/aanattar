@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Mail, MessageCircle, Phone, Send, Sparkles } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
+import GalaxyParticleField from "@/components/particles/GalaxyParticleField";
 
 export const metadata: Metadata = {
   title: "Contact Aan Attar | Premium Attar Support",
@@ -43,20 +44,26 @@ const quickTopics = [
 export default function ContactPage() {
   return (
     <main className="bg-[#0b0b0b] text-white">
-      <section className="px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+      <section className="relative isolate overflow-hidden px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
+        {/* Swirling 3D WebGL Galaxy Background */}
+        <GalaxyParticleField className="absolute inset-0 -z-10 h-full w-full" />
+        
+        {/* Bottom vignette/fade mask */}
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0b0b0b] to-transparent pointer-events-none -z-10" />
+
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end relative z-10">
           <ScrollReveal>
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-amber-300">
               Contact Aan Attar
             </p>
-            <h1 className="mt-4 text-4xl leading-none sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="mt-4 text-4xl leading-none sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
               Need help choosing the right attar?
             </h1>
           </ScrollReveal>
 
           <ScrollReveal
             delay={0.12}
-            className="max-w-2xl text-base text-zinc-300 sm:text-lg lg:ml-auto"
+            className="max-w-2xl text-base text-zinc-300 sm:text-lg lg:ml-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
           >
             Tell us the mood, occasion, or person you are shopping for. We will
             help you find a long-lasting attar, premium oudh, musk, floral oil,

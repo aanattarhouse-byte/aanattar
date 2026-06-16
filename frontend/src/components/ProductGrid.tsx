@@ -9,7 +9,7 @@ export default function ProductGrid({
   compact?: boolean;
 }) {
   return (
-    <div className={`grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${
+    <div className={`grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${
       compact ? "gap-4" : "gap-5"
     }`}>
       {products.map((product) => (

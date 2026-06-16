@@ -45,6 +45,12 @@ export default function ProductDetailActions({
   const [selectedVolume, setSelectedVolume] = useState<ProductVolumeMl>(
     DEFAULT_PRODUCT_VOLUME_ML
   );
+  const [showAlternate, setShowAlternate] = useState(false);
+
+  // Reset image view when product changes
+  useEffect(() => {
+    setShowAlternate(false);
+  }, [product.id]);
 
   // Stable, deterministic prices generated based on the product ID to prevent hydration mismatches and layout shifts
   const bottlePrices = useMemo(() => {
@@ -160,7 +166,14 @@ export default function ProductDetailActions({
       {/* Left Column: Image */}
       <div className="space-y-5 sm:space-y-6 w-full">
         <div className="relative overflow-hidden rounded-[8px] border border-white/10 bg-[#120b08] shadow-[0_30px_90px_rgba(0,0,0,0.32)]">
-          <div className="relative aspect-square group/image cursor-pointer touch-manipulation">
+          <div
+            onClick={() => {
+              if (product.hoverImage) {
+                setShowAlternate((prev) => !prev);
+              }
+            }}
+            className="relative aspect-square group/image cursor-pointer touch-manipulation select-none"
+          >
             {/* Primary Product Image */}
             <Image
               src={product.image}
@@ -170,7 +183,7 @@ export default function ProductDetailActions({
               sizes="(min-width: 1024px) 50vw, 100vw"
               className={`object-cover transition-opacity duration-500 ${
                 product.hoverImage
-                  ? "group-hover/image:opacity-0 group-active/image:opacity-0"
+                  ? `md:group-hover/image:opacity-0 ${showAlternate ? "opacity-0" : "opacity-100"}`
                   : ""
               }`}
             />
@@ -181,15 +194,49 @@ export default function ProductDetailActions({
                 alt={`${product.name} alternate view`}
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover absolute inset-0 opacity-0 transition-opacity duration-500 group-hover/image:opacity-100 group-active/image:opacity-100"
+                className={`object-cover absolute inset-0 transition-opacity duration-500 md:group-hover/image:opacity-100 ${
+                  showAlternate ? "opacity-100" : "opacity-0"
+                }`}
               />
+            )}
+            {/* Mobile Image Indicator Dots */}
+            {product.hoverImage && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 md:hidden z-10 bg-black/40 backdrop-blur-sm px-2.5 py-1.5 rounded-full">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAlternate(false);
+                  }}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    !showAlternate ? "w-4 bg-amber-300" : "w-1.5 bg-white/40"
+                  }`}
+                  aria-label="View main image"
+                />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAlternate(true);
+                  }}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    showAlternate ? "w-4 bg-amber-300" : "w-1.5 bg-white/40"
+                  }`}
+                  aria-label="View alternate image"
+                />
+              </div>
             )}
           </div>
         </div>
       </div>
 
       {/* Right Column: Details & Actions */}
-      <ScrollReveal className="w-full">
+      <motion.div
+        className="w-full"
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-300 sm:text-sm sm:tracking-[0.24em]">
           {product.category}
         </p>
@@ -353,7 +400,7 @@ export default function ProductDetailActions({
             Buy Now
           </button>
         </div>
-      </ScrollReveal>
+      </motion.div>
 
       {/* eCommerce Upsell Modal Popup */}
       <AnimatePresence>
