@@ -25,7 +25,7 @@ export const salimComboConfig = {
       name: "One Man Show Signature",
       size: "5ML",
       price: 150,
-      image: "https://unsplash.com/photos/6X7Kdro6V20/download?force=true&w=900",
+      image: "/One Man Show Signature 1.jpeg",
     },
     {
       id: "white-musk-pure",
