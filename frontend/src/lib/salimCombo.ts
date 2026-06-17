@@ -18,7 +18,7 @@ export const salimComboConfig = {
       name: "Armani Prestige",
       size: "5ML",
       price: 150,
-      image: "https://unsplash.com/photos/7BfHnIkZv5E/download?force=true&w=900",
+      image: "/Armani Prestige 1.jpeg",
     },
     {
       id: "one-man-show-signature",

@@ -22,10 +22,10 @@ export const productImages: Record<string, string> = {
   "salim-luxury-attar": "/salim1.jpg",
   "royal-confidence": "/Royal Confidence 1.png",
   "purple-oudh-mystique": "/Purple Oudh Mystique 1.jpeg",
-  "armani-prestige": unsplashImage("7BfHnIkZv5E"),
+  "armani-prestige": "/Armani Prestige 1.jpeg",
   "jannat-essence": unsplashImage("eKjhDOOsb0U"),
   "velvet-oudh-royale": unsplashImage("smVxAu_lqlo"),
-  "ameer-al-oudh-reserve": unsplashImage("R5f_kjqxV7c"),
+  "ameer-al-oudh-reserve": "/Ameer Al Oudh Reserve 1.jpeg",
   "one-man-show-signature": unsplashImage("6X7Kdro6V20"),
   "white-musk-pure": "/white musk 1.jpeg",
   "dior-sauvage-intense": "/Dioɽ Sauvage Intense 1.jpeg",
@@ -34,7 +34,7 @@ export const productImages: Record<string, string> = {
   "gucci-guilty-cologne-supreme": unsplashImage("_ju6ZXbNKvY"),
   "signature-noir": unsplashImage("ZnTYRe64GVI"),
   "intemate-velvet": unsplashImage("2rh1U-8WqcE"),
-  "chanel-bleu-de-chanel-reserve": unsplashImage("ZPxO-Zjw1Ms"),
+  "chanel-bleu-de-chanel-reserve": "/Chanel Bleu de Chanel Reserve 1.jpeg",
   "gucci-flora-bloom": unsplashImage("N2E6et7fD9E"),
   "white-oudh-classic": "/White Oudh Classic 1.jpeg",
   "blue-musk-fresh": "/Blue Musk Fresh 1.jpeg",
@@ -53,7 +53,7 @@ export const productImages: Record<string, string> = {
   "lavender-mist": unsplashImage("RbuoieHTGB4"),
   "marigold-blossom": "/Marigold Blossom 1.jpeg",
   "chocolate-musk-reserve": "/Chocolate Musk Reserve 1.jpeg",
-  "1001-nights-exclusive": unsplashImage("AEcgd5ScPyU"),
+  "1001-nights-exclusive": "/1001 Nights Exclusive 1.jpeg",
   "mukhallat-royale": "/Mukhallat Royale 1.jpeg",
 };
 
@@ -649,6 +649,10 @@ export const productHoverImages: Record<string, string> = {
   "dior-sauvage-intense": "/Dioɽ Sauvage Intense 2.jpeg",
   "giorgio-armani-luxe": "/GIORGIO AR LUXE 2.jpeg",
   "denver-danupe-diptique-select": "/Denver Danube Diptyque Select 2.jpeg",
+  "armani-prestige": "/Armani Prestige 2.jpeg",
+  "ameer-al-oudh-reserve": "/Ameer Al Oudh Reserve 2.jpeg",
+  "chanel-bleu-de-chanel-reserve": "/Chanel Bleu de Chanel Reserve 2.jpeg",
+  "1001-nights-exclusive": "/1001 Nights Exclusive 2.jpeg",
 };
 
 export const products: Product[] = productCatalog.map((product) => ({
