@@ -23,7 +23,7 @@ export const productImages: Record<string, string> = {
   "royal-confidence": "/Royal Confidence 1.png",
   "purple-oudh-mystique": "/Purple Oudh Mystique 1.jpeg",
   "armani-prestige": "/Armani Prestige 1.jpeg",
-  "jannat-essence": unsplashImage("eKjhDOOsb0U"),
+  "jannat-essence": "/Jannat Essence 1.jpeg",
   "velvet-oudh-royale": "/Velvet Oudh Royal 1.jpeg",
   "ameer-al-oudh-reserve": "/Ameer Al Oudh Reserve 1.jpeg",
   "one-man-show-signature": unsplashImage("6X7Kdro6V20"),
@@ -32,7 +32,7 @@ export const productImages: Record<string, string> = {
   "creed-aventus-elite": "/Creed Aventus Elite 1.jpeg",
   "giorgio-armani-luxe": "/GIORGIO AR LUXE 1.jpeg",
   "gucci-guilty-cologne-supreme": unsplashImage("_ju6ZXbNKvY"),
-  "signature-noir": unsplashImage("ZnTYRe64GVI"),
+  "signature-noir": "/Signature Noir 1.jpeg",
   "intemate-velvet": unsplashImage("2rh1U-8WqcE"),
   "chanel-bleu-de-chanel-reserve": "/Chanel Bleu de Chanel Reserve 1.jpeg",
   "gucci-flora-bloom": unsplashImage("N2E6et7fD9E"),
@@ -655,6 +655,8 @@ export const productHoverImages: Record<string, string> = {
   "1001-nights-exclusive": "/1001 Nights Exclusive 2.jpeg",
   "yellow-musk-gold": "/Yellow Musk Gold 2.jpeg",
   "velvet-oudh-royale": "/Velvet Oudh Royal 2.jpeg",
+  "signature-noir": "/Signature Noir 2.jpeg",
+  "jannat-essence": "/Jannat Essence 2.jpeg",
 };
 
 export const products: Product[] = productCatalog.map((product) => ({
