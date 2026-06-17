@@ -41,15 +41,15 @@ export const productImages: Record<string, string> = {
   "yellow-musk-gold": "/Yellow Musk Gold 1.jpeg",
   "denver-danupe-diptique-select": "/Denver Danube Diptyque Select 1.jpeg",
   "majmua-heritage": "/Majmua Heritage 1.jpeg",
-  "jannatul-firdaus-royal": unsplashImage("vjZ50T6Rt1c"),
+  "jannatul-firdaus-royal": "/Jannatul Firdaus Royal 1.jpeg",
   "t-rose-elegance": "/T Rose Elegance 1.png",
   "sandal-supreme": "/Sandal Supreme 1.png",
   "jimmy-choo-desire": "/Jimmy Choo Desire 1.jpeg",
-  "coach-eau-de-toilette-signature": unsplashImage("V8e6mCiXLz8"),
+  "coach-eau-de-toilette-signature": "/Coach Eau de Toilette Signature 1.jpeg",
   "musk-rizali-premium": "/Musk Rizali Premium 1.jpeg",
   "black-edition": "/Black Edition 1.jpeg",
   "mogra-garden-bloom": "/Mogra Garden Bloom 1.jpeg",
-  "jasmin-pure": unsplashImage("TZYrqa8KZQE"),
+  "jasmin-pure": "/Jasmin Pure 1.jpeg",
   "lavender-mist": "/Lavender Mist 1.jpeg",
   "marigold-blossom": "/Marigold Blossom 1.jpeg",
   "chocolate-musk-reserve": "/Chocolate Musk Reserve 1.jpeg",
@@ -663,6 +663,9 @@ export const productHoverImages: Record<string, string> = {
   "one-man-show-signature": "/One Man Show Signature 2.jpeg",
   "jimmy-choo-desire": "/Jimmy Choo Desire 2.jpeg",
   "lavender-mist": "/Lavender Mist 2.jpeg",
+  "jannatul-firdaus-royal": "/Jannatul Firdaus Royal 2.jpeg",
+  "jasmin-pure": "/Jasmin Pure 2.jpg",
+  "coach-eau-de-toilette-signature": "/Coach Eau de Toilette Signature 2.jpeg",
 };
 
 export const products: Product[] = productCatalog.map((product) => ({
