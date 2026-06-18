@@ -1,36 +1,57 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+
+const heroImages = [
+  { src: "/hero1.png", alt: "Luxury Perfume Banner 1" },
+  { src: "/hero3.jpeg", alt: "Luxury Perfume Banner 3" },
+  { src: "/hero4.jpeg", alt: "Luxury Perfume Banner 4" },
+];
 
 export default function Hero() {
-  const heroImages = [
-    { src: "/hero1.png", alt: "Luxury Perfume Banner 1" },
-    { src: "/hero3.jpeg", alt: "Luxury Perfume Banner 3" },
-    { src: "/hero4.jpeg", alt: "Luxury Perfume Banner 4" },
-  ];
-
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-    }, 2000); // Change image every 2 seconds
-
-    return () => clearInterval(interval);
-  }, [heroImages.length]);
+  const scrollingImages = [...heroImages, heroImages[0]];
 
   return (
-    <section className="relative w-full overflow-hidden bg-[#eee6d9]">
-      <Image
-        src={heroImages[currentImageIndex].src}
-        alt={heroImages[currentImageIndex].alt}
-        width={6000}
-        height={2813}
-        priority
-        sizes="100vw"
-        className="w-full h-auto"
-      />
+    <section className="relative w-full overflow-hidden">
+      <div className="hero-scroll-track flex">
+        {scrollingImages.map((image, index) => (
+          <div key={`${image.src}-${index}`} className="relative w-full shrink-0">
+            <Image
+              src={image.src}
+              alt={image.alt}
+              width={6000}
+              height={2813}
+              priority={index === 0}
+              sizes="100vw"
+              className="w-full h-auto"
+            />
+          </div>
+        ))}
+      </div>
+
+      <style jsx>{`
+        .hero-scroll-track {
+          animation: hero-scroll-right-to-left 12s infinite ease-in-out;
+        }
+
+        @keyframes hero-scroll-right-to-left {
+          0%,
+          27% {
+            transform: translateX(0%);
+          }
+          33%,
+          60% {
+            transform: translateX(-100%);
+          }
+          66%,
+          93% {
+            transform: translateX(-200%);
+          }
+          100% {
+            transform: translateX(-300%);
+          }
+        }
+      `}</style>
     </section>
   );
 }

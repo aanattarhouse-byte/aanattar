@@ -3,8 +3,7 @@
 import { fadeUp, stagger } from "@/lib/framer/motion";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
-import { X } from "lucide-react";
+import Link from "next/link";
 import ShopSalimButton from "@/components/ShopSalimButton";
 
 const particles = [
@@ -19,12 +18,10 @@ const particles = [
 ];
 
 export default function WhyChooseAanStory() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   return (
     <section
       aria-labelledby="why-customers-love"
-      className="cinematic-section relative isolate overflow-hidden py-20 sm:py-24 lg:py-28"
+      className="cinematic-section relative isolate overflow-hidden py-5 md:py-12 lg:py-14"
     >
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_18%_8%,rgba(255,179,71,0.18),transparent_34rem),radial-gradient(ellipse_at_82%_18%,rgba(255,107,53,0.14),transparent_30rem),linear-gradient(180deg,#070605_0%,#0f0c08_46%,#050505_100%)]" />
       <div className="absolute left-1/2 top-10 -z-10 h-64 w-[min(42rem,80vw)] -translate-x-1/2 rounded-full bg-[#ffb347]/10 blur-3xl" />
@@ -61,67 +58,30 @@ export default function WhyChooseAanStory() {
 
         <motion.div
           variants={fadeUp}
-          className="-mx-4 sm:mx-auto mt-8 max-w-6xl overflow-hidden"
+          className="relative -mx-4 mt-3 max-w-6xl overflow-visible md:mx-auto md:mt-6 md:overflow-hidden"
         >
-          <button
-            type="button"
-            onClick={() => setIsModalOpen(true)}
-            className="relative w-full aspect-video sm:aspect-[16/9] overflow-hidden cursor-pointer group"
+          <Link
+            href="/products/salim-luxury-attar"
+            className="group relative block w-full cursor-pointer overflow-hidden"
+            aria-label="Shop Salim Luxury Attar"
           >
             <Image
               src="/hero2.png"
               alt="Salim benefits visual"
-              fill
-              sizes="(min-width: 1024px) 1152px, 92vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              width={1672}
+              height={941}
+              priority
+              className="h-auto w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/48 via-black/8 to-transparent" />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/30">
-              <div className="text-white text-xs sm:text-sm font-bold uppercase tracking-widest bg-black/50 px-4 py-2 rounded-lg backdrop-blur-sm">
-                Click to Zoom
-              </div>
-            </div>
-          </button>
-        </motion.div>
-
-        {/* Zoom Modal */}
-        {isModalOpen && (
-          <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4"
-            onClick={() => setIsModalOpen(false)}
-          >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsModalOpen(false);
-              }}
-              className="absolute top-4 right-4 sm:top-6 sm:right-6 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors z-10"
-              aria-label="Close zoom"
-            >
-              <X size={24} />
-            </button>
-            <div className="relative w-full max-w-4xl max-h-[90vh] aspect-video sm:aspect-[16/9]">
-              <Image
-                src="/hero2.png"
-                alt="Salim benefits visual - zoomed"
-                fill
-                sizes="(min-width: 1024px) 1024px, 90vw"
-                className="object-contain"
-                onClick={(e) => e.stopPropagation()}
-              />
-            </div>
-          </div>
-        )}
-
-        <motion.div variants={fadeUp} className="mt-14 flex justify-center">
+          </Link>
           <ShopSalimButton
-            className="group relative overflow-hidden rounded-full border border-[#fff0bd]/45 bg-gradient-to-r from-[#ff7a38] via-[#ffb347] to-[#c89b3c] px-8 py-4 text-center text-xs font-bold uppercase tracking-[0.18em] text-[#090705] shadow-[0_18px_70px_rgba(255,179,71,0.26)] transition duration-300 hover:scale-[1.025] hover:shadow-[0_24px_90px_rgba(255,179,71,0.38)]"
+            className="absolute bottom-4 left-[45px] z-20 flex h-[40px] w-[68px] items-center justify-center overflow-hidden rounded-[20px] border-2 border-[#db9e19] bg-[linear-gradient(180deg,#143B72_0%,#0D2C59_60%,#081F43_100%)] text-center text-[9px] font-bold uppercase tracking-[0.08em] text-[#D9BE7A] shadow-[0_4px_12px_rgba(0,0,0,0.3)] md:h-[42px] md:w-[130px] md:rounded-[14px] md:text-[12px] md:tracking-[0.1em]"
           >
-            <span className="absolute inset-0 translate-x-[-120%] bg-gradient-to-r from-transparent via-white/55 to-transparent transition duration-700 group-hover:translate-x-[120%]" />
             <span className="relative">Shop Salim</span>
           </ShopSalimButton>
         </motion.div>
+
       </motion.div>
     </section>
   );
