@@ -83,8 +83,8 @@ function MobileCard({
         onClick={() => {
           if (video) playVideo(i);
         }}
-        className={`group relative h-[27rem] min-h-[27rem] w-full max-w-[340px] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl transition-shadow duration-300 ${video ? "cursor-pointer" : ""
-          }`}
+        className={`group relative h-[27rem] min-h-[27rem] w-full max-w-[340px] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] md:backdrop-blur-2xl backdrop-blur-sm transition-shadow duration-300 ${video ? "cursor-pointer" : ""
+          }`} 
       >
         {/* Video / Image Asset */}
         <div className="absolute inset-0 w-full h-full z-0">
@@ -99,10 +99,10 @@ function MobileCard({
                     if (node) videoRefs.current[i] = node;
                   }}
                   className="absolute inset-0 h-full w-full object-cover"
-                  src={`${video}#t=0.001`}
+                  data-src={video}
                   loop
                   playsInline
-                  preload="auto"
+                  preload="none"
                 />
                 {/* Play/Pause Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">
@@ -161,6 +161,36 @@ export default function VideoStoriesSection() {
   }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Lazy-load video sources only when the element is near the viewport to reduce
+  // initial network and decoding work that can cause slow scrolling.
+  useEffect(() => {
+    const videos = videoRefs.current.filter(Boolean) as HTMLVideoElement[];
+    if (!videos.length) return;
+
+    const loader = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const video = entry.target as HTMLVideoElement;
+          const src = (video.dataset?.src as string) || "";
+          if (src && !video.src) {
+            video.src = `${src}#t=0.001`;
+            video.preload = "metadata";
+          }
+          obs.unobserve(video);
+        });
+      },
+      { threshold: 0.25 }
+    );
+
+    videos.forEach((v) => {
+      // Only observe videos that have a data-src attribute
+      if (v.dataset && v.dataset.src) loader.observe(v);
+    });
+
+    return () => loader.disconnect();
+  }, [mounted]);
 
   // Stacking scroll progress across the entire cards container
   const { scrollYProgress } = useScroll({
@@ -259,8 +289,8 @@ export default function VideoStoriesSection() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
       >
-        {/* Header */}
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        {/* Header: sticky on mobile so text remains visible during sticky card scroll */}
+        <div className="sticky md:static top-4 md:top-auto z-40 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.42em] text-[#ffb347]">
               Cinematic Stories
@@ -293,20 +323,21 @@ export default function VideoStoriesSection() {
                 onClick={() => {
                   if (story.video) playOnlyVideo(index);
                 }}
-                className={`group relative min-h-[27rem] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl ${story.video ? "cursor-pointer" : ""}`}
+                className={`group relative min-h-[27rem] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] md:backdrop-blur-2xl backdrop-blur-sm ${story.video ? "cursor-pointer" : ""}`}
               >
                 {story.video ? (
                   <>
-                    <video
-                      ref={(node) => {
-                        if (node) videoRefs.current[index] = node;
-                      }}
-                      className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                      src={`${story.video}#t=0.001`}
-                      loop
-                      playsInline
-                      preload="auto"
-                    />
+                        <video
+                          ref={(node) => {
+                            if (node) videoRefs.current[index] = node;
+                          }}
+                          className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                          // defer loading until near viewport; actual src is populated by the loader effect
+                          data-src={story.video}
+                          loop
+                          playsInline
+                          preload="none"
+                        />
                     {/* Play/Pause Overlay */}
                     <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">
                       {playingIndex !== index ? (

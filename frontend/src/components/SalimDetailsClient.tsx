@@ -60,11 +60,10 @@ export default function SalimDetailsClient() {
       [
         salimProduct.image,
         salimProduct.hoverImage,
-        "/salim3.png",
+        "/salim3.jpeg",
         "/salim4.jpeg",
-        "/salim5.png",
-        "/salim6.jpeg",
-        "/salim7.mp4",
+        "/salim5.mp4",
+        "/salim6.mp4",
       ].filter(Boolean)
     )
   ) as string[];

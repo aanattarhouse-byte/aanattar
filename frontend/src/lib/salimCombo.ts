@@ -32,14 +32,14 @@ export const salimComboConfig = {
       name: "White Musk Pure",
       size: "5ML",
       price: 150,
-      image: "https://unsplash.com/photos/So4eFi-d1nc/download?force=true&w=900",
+      image: "/white musk 1.jpeg",
     },
     {
       id: "dior-sauvage-intense",
       name: "Dior Sauvage Intense",
       size: "5ML",
       price: 150,
-      image: "https://unsplash.com/photos/XGlB9_jqYec/download?force=true&w=900",
+      image: "/Dioɽ Sauvage Intense 1.jpeg",
     },
   ],
 } satisfies {
