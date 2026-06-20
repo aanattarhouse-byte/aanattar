@@ -3,9 +3,9 @@
 import Image from "next/image";
 
 const heroImages = [
-  { src: "/hero1.png", alt: "Luxury Perfume Banner 1" },
-  { src: "/hero3.jpeg", alt: "Luxury Perfume Banner 3" },
-  { src: "/hero4.jpeg", alt: "Luxury Perfume Banner 4" },
+  { src: "/hero5.jpeg", alt: "Luxury Perfume Banner 1" },
+  { src: "/hero6.jpeg", alt: "Luxury Perfume Banner 3" },
+  { src: "/hero7.jpeg", alt: "Luxury Perfume Banner 4" },
 ];
 
 export default function Hero() {
@@ -19,9 +19,11 @@ export default function Hero() {
             <Image
               src={image.src}
               alt={image.alt}
-              width={6000}
-              height={2813}
+              width={1820}
+              height={800}
               priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              quality={75}
               sizes="100vw"
               className="w-full h-auto"
             />
