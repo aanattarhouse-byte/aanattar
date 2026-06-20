@@ -20,10 +20,10 @@ export default function Hero() {
               src={image.src}
               alt={image.alt}
               width={1820}
-              height={800}
+              height={900}
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
-              quality={75}
+              quality={100}
               sizes="100vw"
               className="w-full h-auto"
             />
