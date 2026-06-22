@@ -2,25 +2,37 @@
 
 import Image from "next/image";
 
-const heroImages = [
-  { src: "/hero5.jpeg", alt: "Luxury Perfume Banner 1" },
-  { src: "/hero6.jpeg", alt: "Luxury Perfume Banner 3" },
-  { src: "/hero7.jpeg", alt: "Luxury Perfume Banner 4" },
+const heroSlides = [
+  {
+    desktopSrc: "/desktop1.jpg",
+    mobileSrc: "/mobile1.jpeg",
+    alt: "Luxury Perfume Banner 1",
+  },
+  {
+    desktopSrc: "/desktop2.jpg",
+    mobileSrc: "/mobile2.jpeg",
+    alt: "Luxury Perfume Banner 2",
+  },
+  {
+    desktopSrc: "/desktop3.jpg",
+    mobileSrc: "/mobile3.jpeg",
+    alt: "Luxury Perfume Banner 3",
+  },
 ];
 
 export default function Hero() {
-  const scrollingImages = [...heroImages, heroImages[0]];
+  const scrollingImages = [...heroSlides, heroSlides[0]];
 
   return (
     <section className="relative w-full overflow-hidden bg-black md:h-[75vh] lg:h-[calc(100vh-82px)] lg:max-h-screen">
       <div className="hero-scroll-track flex md:h-full">
         {scrollingImages.map((image, index) => (
           <div
-            key={`${image.src}-${index}`}
-            className="relative w-full shrink-0 md:h-full"
+            key={`${image.desktopSrc}-${image.mobileSrc}-${index}`}
+            className="relative h-[560px] w-full shrink-0 sm:h-[640px] md:h-full"
           >
             <Image
-              src={image.src}
+              src={image.desktopSrc}
               alt={image.alt}
               width={1820}
               height={1000}
@@ -28,7 +40,18 @@ export default function Hero() {
               loading={index === 0 ? "eager" : "lazy"}
               quality={100}
               sizes="100vw"
-              className="h-auto w-full md:h-full md:object-cover md:object-center"
+              className="hidden h-full w-full object-cover object-center md:block"
+            />
+            <Image
+              src={image.mobileSrc}
+              alt={image.alt}
+              width={780}
+              height={1500}
+              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              quality={100}
+              sizes="100vw"
+              className="h-full w-full object-cover object-center md:hidden"
             />
           </div>
         ))}
