@@ -3,7 +3,7 @@
 import { fadeUp, stagger } from "@/lib/framer/motion";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { Play, Pause } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 const stories = [
   {
@@ -26,11 +26,28 @@ const stories = [
   },
   {
     title: "Attar Craft Notes",
-    poster: "/bottle1.jpg",
+    video: "/vid3.mp4",
     tag: "Craft",
     description: "Discover the painstaking process behind our distillations. Sourcing the finest raw ingredients from across the globe.",
   },
 ];
+
+const loadVideoBackground = (video: HTMLVideoElement, eager = false) => {
+  const src = video.dataset?.src || "";
+  if (!src) return;
+
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.preload = eager ? "auto" : "metadata";
+
+  if (!video.src) {
+    video.src = `${src}#t=0.001`;
+    video.load();
+  }
+
+  video.play().catch(() => undefined);
+};
 
 interface MobileCardProps {
   i: number;
@@ -38,10 +55,9 @@ interface MobileCardProps {
   range: [number, number];
   targetScale: number;
   video?: string;
-  poster?: string;
   playingIndex: number | null;
   playVideo: (index: number) => void;
-  videoRefs: React.MutableRefObject<(HTMLVideoElement | null)[]>;
+  setVideoRef: (index: number, node: HTMLVideoElement | null) => void;
 }
 
 function MobileCard({
@@ -50,10 +66,9 @@ function MobileCard({
   range,
   targetScale,
   video,
-  poster,
   playingIndex,
   playVideo,
-  videoRefs,
+  setVideoRef,
 }: MobileCardProps) {
   const container = useRef<HTMLDivElement>(null);
 
@@ -96,13 +111,15 @@ function MobileCard({
               <>
                 <video
                   ref={(node) => {
-                    if (node) videoRefs.current[i] = node;
+                    setVideoRef(i, node);
                   }}
                   className="absolute inset-0 h-full w-full object-cover"
                   data-src={video}
+                  autoPlay
                   loop
+                  muted
                   playsInline
-                  preload="none"
+                  preload={i === 0 ? "auto" : "metadata"}
                 />
                 {/* Play/Pause Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">
@@ -117,14 +134,7 @@ function MobileCard({
                   )}
                 </div>
               </>
-            ) : (
-              poster && (
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${poster})` }}
-                />
-              )
-            )}
+            ) : null}
           </motion.div>
         </div>
 
@@ -150,38 +160,45 @@ export default function VideoStoriesSection() {
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  const setVideoRef = useCallback((index: number, node: HTMLVideoElement | null) => {
+    videoRefs.current[index] = node;
+  }, []);
+
   useEffect(() => {
-    setMounted(true);
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    handleResize();
+    const frame = window.requestAnimationFrame(() => {
+      setMounted(true);
+      handleResize();
+    });
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Lazy-load video sources only when the element is near the viewport to reduce
-  // initial network and decoding work that can cause slow scrolling.
+  // Start video backgrounds before the card reaches the viewport so mobile users
+  // see motion immediately instead of a blank or poster-like frame.
   useEffect(() => {
     const videos = videoRefs.current.filter(Boolean) as HTMLVideoElement[];
     if (!videos.length) return;
+
+    loadVideoBackground(videos[0], true);
 
     const loader = new IntersectionObserver(
       (entries, obs) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const video = entry.target as HTMLVideoElement;
-          const src = (video.dataset?.src as string) || "";
-          if (src && !video.src) {
-            video.src = `${src}#t=0.001`;
-            video.preload = "metadata";
-          }
+          loadVideoBackground(video, true);
           obs.unobserve(video);
         });
       },
-      { threshold: 0.25 }
+      { rootMargin: "900px 0px", threshold: 0.01 }
     );
 
     videos.forEach((v) => {
@@ -207,6 +224,11 @@ export default function VideoStoriesSection() {
       if (activeIndex >= total) activeIndex = total - 1;
       if (activeIndex < 0) activeIndex = 0;
 
+      const activeVideo = videoRefs.current[activeIndex];
+      if (activeVideo && playingIndex !== activeIndex) {
+        loadVideoBackground(activeVideo, true);
+      }
+
       videoRefs.current.forEach((video, idx) => {
         if (video && idx !== activeIndex && !video.paused) {
           video.pause();
@@ -216,7 +238,7 @@ export default function VideoStoriesSection() {
     });
 
     return () => unsubscribe();
-  }, [scrollYProgress, isMobile]);
+  }, [scrollYProgress, isMobile, playingIndex]);
 
   // Pause videos when they exit viewport bounds completely
   useEffect(() => {
@@ -263,6 +285,9 @@ export default function VideoStoriesSection() {
       item.currentTime = 0;
     });
 
+    if (!video.src) {
+      loadVideoBackground(video, true);
+    }
     video.muted = false;
     video.defaultMuted = false;
     video.volume = 1;
@@ -329,14 +354,15 @@ export default function VideoStoriesSection() {
                   <>
                         <video
                           ref={(node) => {
-                            if (node) videoRefs.current[index] = node;
+                            setVideoRef(index, node);
                           }}
                           className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                          // defer loading until near viewport; actual src is populated by the loader effect
                           data-src={story.video}
+                          autoPlay
                           loop
+                          muted
                           playsInline
-                          preload="none"
+                          preload={index === 0 ? "auto" : "metadata"}
                         />
                     {/* Play/Pause Overlay */}
                     <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">
@@ -351,14 +377,7 @@ export default function VideoStoriesSection() {
                       )}
                     </div>
                   </>
-                ) : (
-                  story.poster && (
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-105"
-                      style={{ backgroundImage: `url(${story.poster})` }}
-                    />
-                  )
-                )}
+                ) : null}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/12 via-black/20 to-black/86" />
                 <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100">
                   <div className="absolute left-6 top-10 h-28 w-28 rounded-full bg-[#ffb347]/18 blur-3xl pointer-events-none" />
@@ -383,10 +402,9 @@ export default function VideoStoriesSection() {
                   range={[startProgress, 1]}
                   targetScale={targetScale}
                   video={story.video}
-                  poster={story.poster}
                   playingIndex={playingIndex}
                   playVideo={playOnlyVideo}
-                  videoRefs={videoRefs}
+                  setVideoRef={setVideoRef}
                 />
               );
             })
