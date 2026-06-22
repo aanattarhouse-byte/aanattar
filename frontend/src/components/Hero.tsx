@@ -12,10 +12,13 @@ export default function Hero() {
   const scrollingImages = [...heroImages, heroImages[0]];
 
   return (
-    <section className="relative w-full overflow-hidden">
-      <div className="hero-scroll-track flex">
+    <section className="relative w-full overflow-hidden bg-black md:h-[75vh] lg:h-[calc(100vh-82px)] lg:max-h-screen">
+      <div className="hero-scroll-track flex md:h-full">
         {scrollingImages.map((image, index) => (
-          <div key={`${image.src}-${index}`} className="relative w-full shrink-0">
+          <div
+            key={`${image.src}-${index}`}
+            className="relative w-full shrink-0 md:h-full"
+          >
             <Image
               src={image.src}
               alt={image.alt}
@@ -25,7 +28,7 @@ export default function Hero() {
               loading={index === 0 ? "eager" : "lazy"}
               quality={100}
               sizes="100vw"
-              className="w-full h-auto"
+              className="h-auto w-full md:h-full md:object-cover md:object-center"
             />
           </div>
         ))}
