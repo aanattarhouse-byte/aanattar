@@ -23,15 +23,18 @@ import {
 } from "@/lib/productVolume";
 import ScrollReveal from "@/components/ScrollReveal";
 
-// Define the 7 bottles and their descriptions
+// Define the 10 bottles and their descriptions
 const BOTTLE_TEMPLATES = [
-  { id: "bottle-1", name: "Bottle 1", note: "Ocean Breeze (Sea Salt & Citrus)", image: "/bottle1.jpg" },
-  { id: "bottle-2", name: "Bottle 2", note: "Velvet Rose (Taif Rose & Musk)", image: "/bottle2.jpg" },
-  { id: "bottle-3", name: "Bottle 3", note: "Sandal Gold (Mysore Sandal & Amber)", image: "/bottle3.jpg" },
-  { id: "bottle-4", name: "Bottle 4", note: "Royal Oudh (Cambodian Oud & Woods)", image: "/bottle4.jpg" },
-  { id: "bottle-5", name: "Bottle 5", note: "Saffron Touch (Spicy Saffron & Herbs)", image: "/bottle5.jpg" },
-  { id: "bottle-6", name: "Bottle 6", note: "Musk Supreme (Soft White Velvet Musk)", image: "/bottle6.jpg" },
-  { id: "bottle-7", name: "Bottle 7", note: "Amber Glow (Golden Amber & Labdanum)", image: "/bottle7.jpg" },
+  { id: "bottle-1", name: "Bottle 1", note: "Ocean Breeze (Sea Salt & Citrus)", image: "/bottle1.jpeg" },
+  { id: "bottle-2", name: "Bottle 2", note: "Velvet Rose (Taif Rose & Musk)", image: "/bottle2.jpeg" },
+  { id: "bottle-3", name: "Bottle 3", note: "Sandal Gold (Mysore Sandal & Amber)", image: "/bottle3.jpeg" },
+  { id: "bottle-4", name: "Bottle 4", note: "Royal Oudh (Cambodian Oud & Woods)", image: "/bottle4.jpeg" },
+  { id: "bottle-5", name: "Bottle 5", note: "Saffron Touch (Spicy Saffron & Herbs)", image: "/bottle5.jpeg" },
+  { id: "bottle-6", name: "Bottle 6", note: "Musk Supreme (Soft White Velvet Musk)", image: "/bottle6.jpeg" },
+  { id: "bottle-7", name: "Bottle 7", note: "Amber Glow (Golden Amber & Labdanum)", image: "/bottle7.jpeg" },
+  { id: "bottle-8", name: "Bottle 8", note: "Jasmine Noir (Night Jasmine & Vanilla)", image: "/bottle8.jpeg" },
+  { id: "bottle-9", name: "Bottle 9", note: "Cedar Mist (Cedarwood & Green Vetiver)", image: "/bottle9.jpeg" },
+  { id: "bottle-10", name: "Bottle 10", note: "Royal Spice (Cardamom & Warm Woods)", image: "/bottle10.jpeg" },
 ];
 
 export default function ProductDetailActions({

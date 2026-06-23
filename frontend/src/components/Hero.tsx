@@ -65,7 +65,7 @@ export default function Hero() {
               className="h-full w-full object-cover object-center md:hidden"
             />
             <Link
-              href="/salim"
+              href="/products/salim-luxury-attar"
               className={`absolute z-10 mt-4 inline-block cursor-pointer bg-transparent text-[16px] font-semibold transition duration-300 ease-in-out hover:translate-x-1 sm:text-[17px] md:mt-5 md:text-[18px] ${image.linkColorClassName} ${image.linkClassName}`}
             >
               Shop Salim &gt;&gt;
