@@ -43,15 +43,23 @@ const navItems = [
     { label: "Contact Us", href: "/contact" },
 ];
 
-type WindowWithLenis = Window & {
-  lenis?: {
-    start: () => void;
-    stop: () => void;
-  };
+type LenisController = {
+  start: () => void;
+  stop: () => void;
 };
 
 function getLenis() {
-  return (window as WindowWithLenis).lenis;
+  const lenis = (window as unknown as { lenis?: Partial<LenisController> }).lenis;
+
+  if (
+    lenis &&
+    typeof lenis.start === "function" &&
+    typeof lenis.stop === "function"
+  ) {
+    return lenis as LenisController;
+  }
+
+  return undefined;
 }
 
 function LoginMark({ size = 17 }: { size?: number }) {
