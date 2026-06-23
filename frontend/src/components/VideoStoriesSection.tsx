@@ -26,7 +26,7 @@ const stories = [
   },
   {
     title: "Attar Craft Notes",
-    video: "/vid3.mp4",
+    video: "/vid4.mp4",
     tag: "Craft",
     description: "Discover the painstaking process behind our distillations. Sourcing the finest raw ingredients from across the globe.",
   },

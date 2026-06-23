@@ -28,14 +28,12 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { CART_OPEN_EVENT } from "@/lib/cart";
-import { products, signatureProducts } from "@/lib/products";
+import { products } from "@/lib/products";
 import { useAuth } from "@/context/AuthContext";
 import SalimComboBuilder from "@/components/SalimComboBuilder";
 import {
   getSalimComboState,
   isSalimComboBaseItem,
-  isSalimComboMiniItem,
-  salimComboConfig,
 } from "@/lib/salimCombo";
 
 const navItems = [
@@ -45,9 +43,16 @@ const navItems = [
     { label: "Contact Us", href: "/contact" },
 ];
 
-const signatureProductSlugs = new Set(
-  signatureProducts.map((product) => product.slug)
-);
+type WindowWithLenis = Window & {
+  lenis?: {
+    start: () => void;
+    stop: () => void;
+  };
+};
+
+function getLenis() {
+  return (window as WindowWithLenis).lenis;
+}
 
 function LoginMark({ size = 17 }: { size?: number }) {
   return (
@@ -140,23 +145,11 @@ export default function Navbar() {
     items: cartItems,
     count: cartCount,
     subtotal: cartSubtotal,
-    addItem: addCartItem,
     updateQuantity: updateCartQuantity,
     removeItem: removeCartItem,
   } = useCart();
   const salimComboState = getSalimComboState(cartItems);
-  const hasSignatureProductInCart = cartItems.some(
-    (item) => item.slug && signatureProductSlugs.has(item.slug)
-  );
   const hasSalimBaseInCart = cartItems.some(isSalimComboBaseItem);
-  const salimComboMiniItems = hasSalimBaseInCart
-    ? cartItems.filter(isSalimComboMiniItem)
-    : [];
-  const missingSalimComboAddOns = hasSalimBaseInCart
-    ? salimComboConfig.addOns.filter(
-        (addOn) => !salimComboMiniItems.some((item) => item.id === addOn.id)
-      )
-    : [];
   const cartDrawerItems = cartItems;
 
   const searchResults = useMemo(() => {
@@ -223,23 +216,17 @@ export default function Navbar() {
     if (cartOpen) {
       originalOverflowRef.current = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = "hidden";
-      if ((window as any).lenis) {
-        (window as any).lenis.stop();
-      }
+      getLenis()?.stop();
     } else {
       if (originalOverflowRef.current) {
         document.body.style.overflow = originalOverflowRef.current;
       }
-      if ((window as any).lenis) {
-        (window as any).lenis.start();
-      }
+      getLenis()?.start();
     }
     return () => {
       if (cartOpen && originalOverflowRef.current) {
         document.body.style.overflow = originalOverflowRef.current;
-        if ((window as any).lenis) {
-          (window as any).lenis.start();
-        }
+        getLenis()?.start();
       }
     };
   }, [cartOpen]);
@@ -1045,7 +1032,9 @@ export default function Navbar() {
                         </div>
                       </div>
                     ))}
-                    {hasSalimBaseInCart && <SalimComboBuilder />}
+                    {hasSalimBaseInCart && (
+                      <SalimComboBuilder onChooseMore={() => setCartOpen(false)} />
+                    )}
                   </div>
                 )}
               </div>

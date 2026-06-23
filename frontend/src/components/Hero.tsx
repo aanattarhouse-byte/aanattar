@@ -1,22 +1,33 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 const heroSlides = [
   {
     desktopSrc: "/desktop1.jpg",
     mobileSrc: "/mobile1.jpeg",
     alt: "Luxury Perfume Banner 1",
+    linkClassName:
+      "left-[64%] top-[72%] sm:left-[66%] sm:top-[70%] md:left-[63%] md:top-[73%]",
+    linkColorClassName:
+      "text-white/85 drop-shadow-[0_1px_3px_rgba(0,0,0,0.45)] hover:text-white",
   },
   {
     desktopSrc: "/desktop2.jpg",
     mobileSrc: "/mobile2.jpeg",
     alt: "Luxury Perfume Banner 2",
+    linkClassName:
+      "left-[57%] top-[64%] sm:left-[56%] sm:top-[62%] md:left-[59%] md:top-[71%]",
+    linkColorClassName: "text-[#2A1B12]/85 hover:text-[#2A1B12]",
   },
   {
     desktopSrc: "/desktop3.jpg",
     mobileSrc: "/mobile3.jpeg",
     alt: "Luxury Perfume Banner 3",
+    linkClassName:
+      "left-[9%] top-[47%] sm:left-[10%] sm:top-[46%] md:left-[19%] md:top-[70%]",
+    linkColorClassName: "text-[#2A1B12]/85 hover:text-[#2A1B12]",
   },
 ];
 
@@ -53,6 +64,12 @@ export default function Hero() {
               sizes="100vw"
               className="h-full w-full object-cover object-center md:hidden"
             />
+            <Link
+              href="/salim"
+              className={`absolute z-10 mt-4 inline-block cursor-pointer bg-transparent text-[16px] font-semibold transition duration-300 ease-in-out hover:translate-x-1 sm:text-[17px] md:mt-5 md:text-[18px] ${image.linkColorClassName} ${image.linkClassName}`}
+            >
+              Shop Salim &gt;&gt;
+            </Link>
           </div>
         ))}
       </div>

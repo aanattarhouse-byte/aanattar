@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/salim",
-        destination: "/product/salim-luxury-attar",
+        destination: "/products/salim-luxury-attar",
         permanent: true,
       },
     ];
