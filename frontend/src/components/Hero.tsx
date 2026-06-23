@@ -9,7 +9,7 @@ const heroSlides = [
     mobileSrc: "/mobile1.jpeg",
     alt: "Luxury Perfume Banner 1",
     linkClassName:
-      "left-[64%] top-[72%] sm:left-[66%] sm:top-[70%] md:left-[63%] md:top-[73%]",
+      "left-[60%] top-[72%] sm:left-[66%] sm:top-[70%] md:left-[63%] md:top-[73%]",
   },
   {
     desktopSrc: "/desktop2.jpg",
@@ -23,7 +23,7 @@ const heroSlides = [
     mobileSrc: "/mobile3.jpeg",
     alt: "Luxury Perfume Banner 3",
     linkClassName:
-      "left-[9%] top-[47%] sm:left-[10%] sm:top-[46%] md:left-[19%] md:top-[70%]",
+      "left-[9%] top-[51%] sm:left-[10%] sm:top-[46%] md:left-[19%] md:top-[70%]",
   },
 ];
 
