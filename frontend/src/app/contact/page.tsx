@@ -43,27 +43,27 @@ const quickTopics = [
 
 export default function ContactPage() {
   return (
-    <main className="bg-[#0b0b0b] text-white">
+    <main className="bg-[#0b0b0b] md:bg-[#f8f3ea] text-white md:text-[#2A1B12]">
       <section className="relative isolate overflow-hidden px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
         {/* Swirling 3D WebGL Galaxy Background */}
-        <GalaxyParticleField className="absolute inset-0 -z-10 h-full w-full" />
+        <GalaxyParticleField className="absolute inset-0 -z-10 h-full w-full md:hidden" />
         
         {/* Bottom vignette/fade mask */}
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0b0b0b] to-transparent pointer-events-none -z-10" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0b0b0b] to-transparent pointer-events-none -z-10 md:hidden" />
 
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end relative z-10">
           <ScrollReveal>
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-amber-300">
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-amber-300 md:text-[#B88A3D]">
               Contact Aan Attar
             </p>
-            <h1 className="mt-4 text-4xl leading-none sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+            <h1 className="mt-4 text-4xl leading-none sm:text-5xl md:text-6xl lg:text-7xl text-white md:text-[#2A1B12] drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] md:drop-shadow-none">
               Need help choosing the right attar?
             </h1>
           </ScrollReveal>
 
           <ScrollReveal
             delay={0.12}
-            className="max-w-2xl text-base text-zinc-300 sm:text-lg lg:ml-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+            className="max-w-2xl text-base text-zinc-300 sm:text-lg lg:ml-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] md:drop-shadow-none md:text-[#6e6257]"
           >
             Tell us the mood, occasion, or person you are shopping for. We will
             help you find a long-lasting attar, premium oudh, musk, floral oil,
@@ -72,7 +72,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="border-y border-white/10 px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+      <section className="border-y border-white/10 md:border-[#eadfce]/60 px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-3">
           {contactOptions.map((option) => {
             const Icon = option.icon;
@@ -81,15 +81,15 @@ export default function ContactPage() {
               <Link
                 key={option.label}
                 href={option.href}
-                className="group rounded-[8px] border border-white/10 bg-[#15100d]/90 p-5 transition hover:-translate-y-1 hover:border-amber-300/35 hover:bg-[#1d1510]"
+                className="group rounded-[8px] border border-white/10 bg-[#15100d]/90 p-5 transition hover:-translate-y-1 hover:border-amber-300/35 hover:bg-[#1d1510] md:border-[#eadfce] md:bg-[#fffaf3] md:hover:border-amber-300/35 md:hover:bg-[#fff7e9]"
               >
                 <span className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] text-black">
                   <Icon size={19} />
                 </span>
-                <p className="mt-5 font-sans text-xs font-bold uppercase tracking-[0.18em] text-amber-200">
+                <p className="mt-5 font-sans text-xs font-bold uppercase tracking-[0.18em] text-amber-200 md:text-[#B88A3D]">
                   {option.label}
                 </p>
-                <p className="mt-2 text-base text-zinc-200">{option.value}</p>
+                <p className="mt-2 text-base text-zinc-200 md:text-[#2A1B12]">{option.value}</p>
               </Link>
             );
           })}
@@ -99,10 +99,10 @@ export default function ContactPage() {
       <section className="px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr]">
           <ScrollReveal>
-            <span className="inline-flex rounded-full border border-amber-300/25 bg-amber-300/10 px-4 py-2 font-sans text-[0.68rem] font-bold uppercase tracking-[0.18em] text-amber-200">
+            <span className="inline-flex rounded-full border border-amber-300/25 bg-amber-300/10 px-4 py-2 font-sans text-[0.68rem] font-bold uppercase tracking-[0.18em] text-amber-200 md:border-[#B88A3D]/20 md:bg-[#B88A3D]/5 md:text-[#B88A3D]">
               Trending Requests
             </span>
-            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
+            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl text-white md:text-[#2A1B12]">
               Fast help for fragrance decisions.
             </h2>
           </ScrollReveal>
@@ -111,10 +111,10 @@ export default function ContactPage() {
             {quickTopics.map((topic) => (
               <div
                 key={topic}
-                className="flex items-center gap-3 rounded-[8px] border border-white/10 bg-white/[0.04] p-4"
+                className="flex items-center gap-3 rounded-[8px] border border-white/10 bg-white/[0.04] p-4 md:border-[#eadfce] md:bg-[#fffaf3]"
               >
-                <Sparkles size={17} className="shrink-0 text-amber-300" />
-                <p className="font-sans text-sm font-semibold text-zinc-100">
+                <Sparkles size={17} className="shrink-0 text-amber-300 md:text-[#B88A3D]" />
+                <p className="font-sans text-sm font-semibold text-zinc-100 md:text-[#2A1B12]">
                   {topic}
                 </p>
               </div>

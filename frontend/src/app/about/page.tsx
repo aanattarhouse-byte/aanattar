@@ -105,7 +105,7 @@ export default function AboutPage() {
   };
 
   return (
-    <main className="bg-[#0b0b0b] text-white">
+    <main className="bg-[#0b0b0b] md:bg-[#f8f3ea] text-white md:text-[#2A1B12]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -114,16 +114,16 @@ export default function AboutPage() {
       <section className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <ScrollReveal>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 sm:text-sm sm:tracking-[0.24em]">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 sm:text-sm sm:tracking-[0.24em] md:text-[#B88A3D]">
               About Aan Attar
             </p>
-            <h1 className="mt-4 max-w-3xl text-4xl leading-none sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="mt-4 max-w-3xl text-4xl leading-none sm:text-5xl md:text-6xl lg:text-7xl text-white md:text-[#2A1B12]">
               A premium attar house built around memory, mood, and presence.
             </h1>
           </ScrollReveal>
 
           <ScrollReveal delay={0.12} className="max-w-2xl lg:ml-auto">
-            <p className="text-base text-zinc-300 sm:text-lg">
+            <p className="text-base text-zinc-300 sm:text-lg md:text-[#6e6257]">
               Aan Attar creates concentrated perfume oils for people
               who want their fragrance to feel personal, refined, and
               unforgettable. Our collection brings together traditional attar
@@ -139,7 +139,7 @@ export default function AboutPage() {
               </Link>
               <Link
                 href="/build-your-signature"
-                className="inline-flex h-11 items-center justify-center rounded-[8px] border border-amber-300/25 bg-white/[0.04] px-5 text-xs font-bold uppercase tracking-[0.12em] text-amber-100 transition hover:border-amber-300/45 hover:bg-white/[0.08]"
+                className="inline-flex h-11 items-center justify-center rounded-[8px] border border-amber-300/25 bg-white/[0.04] px-5 text-xs font-bold uppercase tracking-[0.12em] text-amber-100 transition hover:border-amber-300/45 hover:bg-white/[0.08] md:border-[#2A1B12]/20 md:bg-transparent md:text-[#2A1B12] md:hover:border-[#2A1B12]/40 md:hover:bg-[#2A1B12]/5"
               >
                 Build Your Signature
               </Link>
@@ -148,14 +148,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="border-y border-white/10 bg-[#120d0a] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <section className="border-y border-white/10 bg-[#120d0a] md:border-[#eadfce]/60 md:bg-[#fff9f2] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-4">
           {values.map((value) => (
             <div
               key={value}
-              className="rounded-[8px] border border-white/10 bg-white/[0.04] p-5"
+              className="rounded-[8px] border border-white/10 bg-white/[0.04] md:border-[#eadfce] md:bg-[#fffaf3] p-5"
             >
-              <p className="font-sans text-sm font-semibold leading-relaxed text-zinc-100">
+              <p className="font-sans text-sm font-semibold leading-relaxed text-zinc-100 md:text-[#2A1B12]">
                 {value}
               </p>
             </div>
@@ -166,15 +166,15 @@ export default function AboutPage() {
       <section className="px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <ScrollReveal>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 md:text-[#B88A3D]">
               Our Story
             </p>
-            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
+            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl text-white md:text-[#2A1B12]">
               Fragrance that feels close, lasting, and unmistakably yours.
             </h2>
           </ScrollReveal>
 
-          <ScrollReveal delay={0.12} className="space-y-5 text-zinc-300">
+          <ScrollReveal delay={0.12} className="space-y-5 text-zinc-300 md:text-[#6e6257]">
             <p className="text-base sm:text-lg">
               Every attar begins with a simple belief: scent should say
               something before words do. Some blends are clean and polished for

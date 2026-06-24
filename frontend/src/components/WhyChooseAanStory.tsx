@@ -76,9 +76,9 @@ export default function WhyChooseAanStory() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/48 via-black/8 to-transparent" />
           </Link>
           <ShopSalimButton
-            className="absolute bottom-4 left-[45px] z-20 flex h-[40px] w-[68px] items-center justify-center overflow-hidden rounded-[20px] border-2 border-[#db9e19] bg-[linear-gradient(180deg,#143B72_0%,#0D2C59_60%,#081F43_100%)] text-center text-[9px] font-bold uppercase tracking-[0.08em] text-[#D9BE7A] shadow-[0_4px_12px_rgba(0,0,0,0.3)] md:h-[42px] md:w-[130px] md:rounded-[14px] md:text-[12px] md:tracking-[0.1em]"
+            className="absolute bottom-4 left-[45px] z-20 flex h-[40px] w-[68px] items-center justify-center overflow-hidden rounded-[20px] border-2 border-[#ffff] text-center text-[9px] font-bold uppercase tracking-[0.08em] text-[#ffff] shadow-[0_4px_12px_rgba(0,0,0,0.3)] md:h-[42px] md:w-[130px] md:rounded-[14px] md:text-[12px] md:tracking-[0.1em]"
           >
-            <span className="relative">Shop Salim</span>
+            <span className="relative">  Shop Salim &gt;&gt; </span>
           </ShopSalimButton>
         </motion.div>
 
