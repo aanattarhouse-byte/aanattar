@@ -62,7 +62,7 @@ export default function Hero() {
             />
             <Link
               href="/products/salim-luxury-attar"
-              className={`absolute z-10 mt-4 inline-block cursor-pointer rounded-full border border-white px-5 py-2 text-[16px] font-semibold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.45)] transition duration-300 ease-in-out hover:translate-x-1 hover:bg-white/10 sm:text-[17px] md:mt-5 md:text-[18px] ${
+              className={`absolute z-10 mt-4 inline-block cursor-pointer rounded-full border border-white max-md:border-white! max-md:text-white! px-5 py-2 text-[16px] font-semibold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.45)] transition duration-300 ease-in-out hover:translate-x-1 hover:bg-white/10 sm:text-[17px] md:mt-5 md:text-[18px] ${
                 image.desktopSrc === "/desktop1.jpg"
                   ? "md:border-white md:text-white md:drop-shadow-[0_1px_3px_rgba(0,0,0,0.45)] md:hover:bg-white/10"
                   : "md:border-zinc-950 md:text-zinc-950 md:drop-shadow-none md:hover:bg-zinc-950 md:hover:text-white"
