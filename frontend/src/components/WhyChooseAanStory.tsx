@@ -78,7 +78,7 @@ export default function WhyChooseAanStory() {
           <ShopSalimButton
             className="absolute bottom-4 left-[45px] z-20 flex h-[40px] w-[68px] items-center justify-center overflow-hidden rounded-[20px] border-2 border-white text-center text-[9px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)] md:h-[42px] md:w-[130px] md:rounded-[14px] md:text-[12px] md:tracking-[0.1em]"
           >
-            <span className="relative">  Shop Salim &gt;&gt; </span>
+            <span className="relative">  Shop Salim </span>
           </ShopSalimButton>
         </motion.div>
 
