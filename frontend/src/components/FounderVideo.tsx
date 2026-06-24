@@ -14,6 +14,7 @@ const copy = [
 export default function FounderVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isIntersecting, setIsIntersecting] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -21,12 +22,14 @@ export default function FounderVideo() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) {
+        if (entry.isIntersecting) {
+          setIsIntersecting(true);
+        } else {
           video.pause();
           setIsPlaying(false);
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.15, rootMargin: "200px 0px" }
     );
 
     observer.observe(video);
@@ -35,6 +38,12 @@ export default function FounderVideo() {
       observer.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    if (isIntersecting && videoRef.current) {
+      videoRef.current.load();
+    }
+  }, [isIntersecting]);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -123,7 +132,9 @@ export default function FounderVideo() {
               playsInline
               preload="metadata"
             >
-              <source src="/founder.mp4#t=0.001" type="video/mp4" />
+              {isIntersecting && (
+                <source src="/founder.mp4#t=0.001" type="video/mp4" />
+              )}
             </video>
 
             {/* Play/Pause Overlay */}

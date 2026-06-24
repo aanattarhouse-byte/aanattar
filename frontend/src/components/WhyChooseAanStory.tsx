@@ -70,7 +70,7 @@ export default function WhyChooseAanStory() {
               alt="Salim benefits visual"
               width={1672}
               height={941}
-              priority
+              loading="lazy"
               className="h-auto w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/48 via-black/8 to-transparent" />

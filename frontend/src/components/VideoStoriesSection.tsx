@@ -181,13 +181,18 @@ export default function VideoStoriesSection() {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Start video backgrounds before the card reaches the viewport so mobile users
-  // see motion immediately instead of a blank or poster-like frame.
+  // Start video backgrounds before the card reaches the viewport.
+  // On mobile, we only preload the first video. The rest will load as they become active.
   useEffect(() => {
     const videos = videoRefs.current.filter(Boolean) as HTMLVideoElement[];
     if (!videos.length) return;
 
     loadVideoBackground(videos[0], true);
+
+    if (isMobile) {
+      // On mobile, subsequent videos will only load when they scroll to active focus
+      return;
+    }
 
     const loader = new IntersectionObserver(
       (entries, obs) => {
@@ -198,7 +203,7 @@ export default function VideoStoriesSection() {
           obs.unobserve(video);
         });
       },
-      { rootMargin: "900px 0px", threshold: 0.01 }
+      { rootMargin: "200px 0px", threshold: 0.01 }
     );
 
     videos.forEach((v) => {
@@ -207,7 +212,7 @@ export default function VideoStoriesSection() {
     });
 
     return () => loader.disconnect();
-  }, [mounted]);
+  }, [mounted, isMobile]);
 
   // Stacking scroll progress across the entire cards container
   const { scrollYProgress } = useScroll({
