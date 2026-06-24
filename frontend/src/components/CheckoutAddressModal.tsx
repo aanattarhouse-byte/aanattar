@@ -245,8 +245,8 @@ export default function CheckoutAddressModal({
   if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-2 sm:p-4">
-      <div className="flex max-h-[calc(100vh-1rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-sm sm:max-w-md flex-col overflow-hidden rounded-[8px] sm:rounded-[12px] border border-white/10 bg-[#120d0a] text-white shadow-2xl">
+    <div data-lenis-prevent className="fixed inset-0 z-[9999] flex justify-center items-start sm:items-center bg-black/70 p-2 sm:p-4 overflow-y-auto">
+      <div className="relative my-auto flex max-h-none sm:max-h-[calc(100vh-2rem)] w-full max-w-sm sm:max-w-md flex-col overflow-hidden rounded-[8px] sm:rounded-[12px] border border-white/10 bg-[#120d0a] text-white shadow-2xl">
         <div className="flex items-start justify-between gap-3 border-b border-white/10 px-3 py-2.5 sm:px-5 sm:py-3">
           <div>
             <span className="block text-[8px] sm:text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-amber-300">
@@ -271,7 +271,7 @@ export default function CheckoutAddressModal({
         </div>
 
         <form onSubmit={saveAddressAndContinue} className="flex min-h-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-2.5 sm:px-5 sm:py-3.5 sm:space-y-3.5">
+          <div data-lenis-prevent className="min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-2.5 sm:px-5 sm:py-3.5 sm:space-y-3.5">
             <section>
               <h4 className="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-amber-200">
                 Receiver Details
