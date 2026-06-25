@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { backendFetch } from "@/lib/backendApi";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -12,6 +13,10 @@ import {
   saveCheckoutSession,
   type CheckoutSession,
 } from "@/lib/checkoutSession";
+import {
+  getMinimumOrderStatus,
+  MINIMUM_ORDER_TOAST,
+} from "@/lib/minimumOrder";
 import { formatPrice } from "@/lib/products";
 import CheckoutAddressModal from "@/components/CheckoutAddressModal";
 
@@ -78,6 +83,7 @@ function loadRazorpayScript() {
 }
 
 export default function PaymentClient() {
+  const router = useRouter();
   const { user, loading: authLoading, loginWithGoogle } = useAuth();
   const [session, setSession] = useState<CheckoutSession | null>(() =>
     getCheckoutSession()
@@ -87,6 +93,17 @@ export default function PaymentClient() {
   const [statusMessage, setStatusMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const minimumOrderStatus = session
+    ? getMinimumOrderStatus(session.cartItems, session.subtotal)
+    : null;
+  const canCheckout = minimumOrderStatus?.canCheckout ?? false;
+
+  useEffect(() => {
+    if (session && !canCheckout) {
+      clearCheckoutSession();
+      router.replace("/build-your-wardrobe?minimumOrder=1");
+    }
+  }, [canCheckout, router, session]);
 
   const refreshSession = () => {
     setAddressOpen(false);
@@ -94,7 +111,8 @@ export default function PaymentClient() {
   };
 
   const createCodOrder = async () => {
-    if (!session) {
+    if (!session || !canCheckout) {
+      setStatusMessage(MINIMUM_ORDER_TOAST);
       return;
     }
 
@@ -132,7 +150,8 @@ export default function PaymentClient() {
   };
 
   const payWithRazorpay = async () => {
-    if (!session) {
+    if (!session || !canCheckout) {
+      setStatusMessage(MINIMUM_ORDER_TOAST);
       return;
     }
 
@@ -251,6 +270,11 @@ export default function PaymentClient() {
   };
 
   const confirmOrder = () => {
+    if (!canCheckout) {
+      setStatusMessage(MINIMUM_ORDER_TOAST);
+      return;
+    }
+
     if (!user) {
       setStatusMessage("Please login to place your order.");
       void loginWithGoogle().catch(() => {
@@ -397,8 +421,12 @@ export default function PaymentClient() {
             <button
               type="button"
               onClick={confirmOrder}
-              disabled={isSubmitting || authLoading}
-              className="mt-6 h-12 w-full rounded-[8px] bg-[#D4A24C] text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={!canCheckout || isSubmitting || authLoading}
+              className={`mt-6 h-12 w-full rounded-[8px] text-xs font-bold uppercase tracking-[0.12em] text-black transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                canCheckout
+                  ? "bg-[#D4A24C] hover:bg-[#E0B35A]"
+                  : "bg-gray-300 cursor-not-allowed opacity-50"
+              }`}
             >
               {!user
                 ? authLoading ? "Logging In..." : "Login To Order"

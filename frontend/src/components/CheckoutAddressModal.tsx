@@ -10,6 +10,10 @@ import {
   saveCheckoutSession,
   type CheckoutSession,
 } from "@/lib/checkoutSession";
+import {
+  getMinimumOrderStatus,
+  MINIMUM_ORDER_TOAST,
+} from "@/lib/minimumOrder";
 
 type CheckoutAddressForm = {
   receiverFullName: string;
@@ -71,6 +75,25 @@ const fieldLabels: Record<keyof CheckoutAddressForm, string> = {
   country: "Country",
   deliveryInstructions: "Delivery instructions",
 };
+
+type LenisController = {
+  start: () => void;
+  stop: () => void;
+};
+
+function getLenis() {
+  const lenis = (window as unknown as { lenis?: Partial<LenisController> }).lenis;
+
+  if (
+    lenis &&
+    typeof lenis.start === "function" &&
+    typeof lenis.stop === "function"
+  ) {
+    return lenis as LenisController;
+  }
+
+  return undefined;
+}
 
 function normalizePhone(value: string) {
   return value.replace(/[\s-]/g, "");
@@ -172,25 +195,24 @@ export default function CheckoutAddressModal({
   const [statusMessage, setStatusMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const minimumOrderStatus = getMinimumOrderStatus(items, subtotal);
+  const canCheckout = minimumOrderStatus.canCheckout;
 
   useEffect(() => {
-    setMounted(true);
+    const mountId = window.setTimeout(() => setMounted(true), 0);
     // Disable background scrolling
     const originalStyle = window.getComputedStyle(document.body).overflow;
     document.body.style.overflow = "hidden";
 
     // Stop Lenis smooth scroll if active
-    if ((window as any).lenis) {
-      (window as any).lenis.stop();
-    }
+    getLenis()?.stop();
 
     return () => {
+      window.clearTimeout(mountId);
       document.body.style.overflow = originalStyle;
 
       // Re-enable Lenis smooth scroll
-      if ((window as any).lenis) {
-        (window as any).lenis.start();
-      }
+      getLenis()?.start();
     };
   }, []);
 
@@ -202,6 +224,11 @@ export default function CheckoutAddressModal({
   const saveAddressAndContinue = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setStatusMessage("");
+
+    if (!canCheckout) {
+      setStatusMessage(MINIMUM_ORDER_TOAST);
+      return;
+    }
 
     const nextErrors = validateForm(form);
     setErrors(nextErrors);
@@ -342,8 +369,12 @@ export default function CheckoutAddressModal({
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="h-10 sm:h-9 rounded-[6px] bg-[#D4A24C] px-3 sm:px-4 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#E0B35A] disabled:cursor-not-allowed disabled:opacity-60 min-w-max"
+              disabled={isSubmitting || !canCheckout}
+              className={`h-10 sm:h-9 rounded-[6px] px-3 sm:px-4 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.12em] text-black transition disabled:cursor-not-allowed disabled:opacity-50 min-w-max ${
+                canCheckout
+                  ? "bg-[#D4A24C] hover:bg-[#E0B35A]"
+                  : "bg-gray-300 cursor-not-allowed opacity-50"
+              }`}
             >
               {isSubmitting ? "Saving..." : "Continue"}
             </button>

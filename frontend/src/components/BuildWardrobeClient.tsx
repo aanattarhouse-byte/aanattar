@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
+import { MINIMUM_ORDER_TOAST } from "@/lib/minimumOrder";
 import { getProductBySlug, formatPrice, getCompareAtPrice, type Product } from "@/lib/products";
 import GalaxyParticleField from "@/components/particles/GalaxyParticleField";
 
@@ -112,6 +113,7 @@ export default function BuildWardrobeClient({
   isPremiumCollection?: boolean;
 }) {
   const [touchedSlug, setTouchedSlug] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState("");
   const { addItem } = useCart();
   const wardrobe = recommendations.map((recommendation) => ({
     ...recommendation,
@@ -126,8 +128,40 @@ export default function BuildWardrobeClient({
     requestCartOpen();
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("minimumOrder") !== "1") {
+      return;
+    }
+
+    const showToastId = window.setTimeout(
+      () => setToastMessage(MINIMUM_ORDER_TOAST),
+      0
+    );
+    params.delete("minimumOrder");
+    const nextSearch = params.toString();
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}`
+    );
+
+    const timeoutId = window.setTimeout(() => setToastMessage(""), 5200);
+
+    return () => {
+      window.clearTimeout(showToastId);
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#0b0b0b] text-white">
+      {toastMessage && (
+        <div className="fixed left-1/2 top-4 z-[130] w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 rounded-[8px] border border-amber-300/30 bg-[#1a120d] px-4 py-3 text-sm font-semibold text-amber-100 shadow-[0_18px_50px_rgba(0,0,0,0.35)] sm:top-6">
+          {toastMessage}
+        </div>
+      )}
       {/* Top Hero Section with swirling galaxy background */}
       <section className="relative isolate overflow-hidden px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20 w-full border-b border-white/5">
         <GalaxyParticleField className="absolute inset-0 -z-10 h-full w-full" />
