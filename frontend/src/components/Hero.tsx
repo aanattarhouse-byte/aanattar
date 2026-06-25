@@ -68,7 +68,7 @@ export default function Hero() {
                   : "md:border-zinc-950 md:text-zinc-950 md:drop-shadow-none md:hover:bg-zinc-950 md:hover:text-white"
               } ${image.linkClassName}`}
             >
-              Shop Salim &gt;&gt;
+              Shop Now &gt;&gt;
             </Link>
           </div>
         ))}
