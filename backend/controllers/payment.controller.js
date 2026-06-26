@@ -25,12 +25,13 @@ const verifyRazorpaySignature = (payload, signature, secret) => {
 const getCartSnapshot = async (userId) => {
   const cart = await Cart.findOne({ user: userId }).populate({
     path: 'items.product',
-    select: 'name images stock'
+    select: 'name slug images stock'
   });
   if (!cart || cart.items.length === 0) throw new ApiError(400, 'Cart is empty');
 
   const products = cart.items.map((item) => ({
     product: item.product._id,
+    slug: item.product.slug,
     name: item.product.name,
     image: item.product.images?.[0]?.url,
     quantity: item.quantity,
