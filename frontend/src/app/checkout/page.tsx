@@ -2,21 +2,12 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getCartItems } from "@/lib/cart";
-import { getMinimumOrderStatus } from "@/lib/minimumOrder";
 
 export default function CheckoutPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const items = getCartItems();
-    const subtotal = items.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-    const { canCheckout } = getMinimumOrderStatus(items, subtotal);
-
-    router.replace(canCheckout ? "/cart" : "/build-your-wardrobe?minimumOrder=1");
+    router.replace("/cart");
   }, [router]);
 
   return (

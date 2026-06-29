@@ -9,6 +9,7 @@ export type CartItem = {
   quantity: number;
   variant?: string;
   volume?: string;
+  source?: string;
 };
 
 export const CART_STORAGE_KEY = "aanstory_cart";
@@ -47,14 +48,16 @@ export function addCartItem(item: CartItem, currentItems?: CartItem[]) {
     (cartItem) =>
       cartItem.id === item.id &&
       cartItem.variant === item.variant &&
-      cartItem.volume === item.volume
+      cartItem.volume === item.volume &&
+      cartItem.source === item.source
   );
 
   const nextItems = existing
     ? items.map((cartItem) =>
         cartItem.id === item.id &&
         cartItem.variant === item.variant &&
-        cartItem.volume === item.volume
+        cartItem.volume === item.volume &&
+        cartItem.source === item.source
           ? {
               ...cartItem,
               quantity: cartItem.quantity + item.quantity,

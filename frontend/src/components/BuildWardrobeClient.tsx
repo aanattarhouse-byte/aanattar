@@ -1,14 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, ShoppingCart } from "lucide-react";
+import { Check, Eye, ShoppingCart, Sparkles } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
-import { MINIMUM_ORDER_TOAST } from "@/lib/minimumOrder";
 import { getProductBySlug, formatPrice, getCompareAtPrice, type Product } from "@/lib/products";
 import GalaxyParticleField from "@/components/particles/GalaxyParticleField";
+import { useMinimumSelection } from "@/hooks/useMinimumSelection";
+import {
+  type GuardReason,
+  type PendingNavigation,
+  useNavigationGuard,
+} from "@/hooks/useNavigationGuard";
+import { useWardrobeSelection } from "@/hooks/useWardrobeSelection";
 
 type WardrobeRecommendation = {
   slug: string;
@@ -100,11 +107,102 @@ function buildCartItem(
     slug: product.slug,
     name: recommendation.name,
     image: product.image,
-    price: isPremiumCollection ? 149 : product.price,
+    price: isPremiumCollection ? 150 : product.price,
     quantity: 1,
     variant: isPremiumCollection ? "Premium Collection" : undefined,
     volume: isPremiumCollection ? "5ml" : undefined,
   };
+}
+
+function WardrobeGuardModal({
+  mode,
+  onClose,
+  onReturnAnyway,
+  onContinueAnyway,
+}: {
+  mode: GuardReason | "confirm" | null;
+  onClose: () => void;
+  onReturnAnyway: () => void;
+  onContinueAnyway: () => void;
+}) {
+  const content = {
+    empty: {
+      title: "Complete Your Wardrobe",
+      message: "Please add at least 2 products before returning to your cart.",
+      primary: "Continue Shopping",
+      secondary: "Cancel",
+    },
+    "one-more": {
+      title: "Just One More",
+      message:
+        "You've selected only 1 product. Add one more to complete your wardrobe and unlock the recommended fragrance pairing.",
+      primary: "Add One More",
+      secondary: "Return Anyway",
+    },
+    confirm: {
+      title: "Are you sure?",
+      message:
+        "Your wardrobe works best with at least 2 fragrances. Continue with only one?",
+      primary: "Stay Here",
+      secondary: "Continue Anyway",
+    },
+  } as const;
+
+  if (!mode) {
+    return null;
+  }
+
+  const modal = content[mode];
+  const titleId = `wardrobe-${mode}-title`;
+  const messageId = `wardrobe-${mode}-message`;
+
+  return (
+    <AnimatePresence>
+      <div className="fixed inset-0 z-[160] flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 bg-black/75 backdrop-blur-md"
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96, y: 18 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: 18 }}
+          transition={{ type: "spring", duration: 0.45 }}
+          className="relative w-full max-w-md overflow-hidden rounded-[14px] border border-amber-300/20 bg-[#0d0a08] p-6 text-center shadow-[0_28px_90px_rgba(0,0,0,0.55)]"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          aria-describedby={messageId}
+        >
+          <div className="mx-auto grid h-12 w-12 place-items-center rounded-full border border-amber-300/25 bg-amber-300/10 text-amber-200">
+            <Sparkles size={20} />
+          </div>
+          <h2 id={titleId} className="mt-5 font-display text-2xl font-semibold text-white">
+            {modal.title}
+          </h2>
+          <p id={messageId} className="mt-3 text-sm leading-6 text-zinc-300">{modal.message}</p>
+          <div className="mt-7 grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex h-11 items-center justify-center rounded-[8px] bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-4 text-xs font-bold uppercase tracking-[0.08em] text-black transition hover:brightness-105"
+            >
+              {modal.primary}
+            </button>
+            <button
+              type="button"
+              onClick={mode === "one-more" ? onReturnAnyway : mode === "confirm" ? onContinueAnyway : onClose}
+              className="inline-flex h-11 items-center justify-center rounded-[8px] border border-amber-300/25 bg-white/5 px-4 text-xs font-bold uppercase tracking-[0.08em] text-amber-100 transition hover:border-amber-300/50 hover:bg-white/10"
+            >
+              {modal.secondary}
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>
+  );
 }
 
 export default function BuildWardrobeClient({
@@ -114,44 +212,89 @@ export default function BuildWardrobeClient({
 }) {
   const [touchedSlug, setTouchedSlug] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState("");
-  const { addItem } = useCart();
+  const [modalMode, setModalMode] = useState<GuardReason | "confirm" | null>(null);
+  const [showCompleteReminder, setShowCompleteReminder] = useState(false);
+  const pendingNavigationRef = useRef<PendingNavigation | undefined>(undefined);
+  const completeReminderTimerRef = useRef<number | null>(null);
+  const { wardrobeFlow } = useCart();
+  const { selectedCount, addWardrobeItem } = useWardrobeSelection();
+  const minimumRequired = wardrobeFlow?.minimumRequired ?? 2;
+  const minimumSelection = useMinimumSelection(selectedCount, minimumRequired);
+  const guardEnabled = wardrobeFlow?.source === "cart";
   const wardrobe = recommendations.map((recommendation) => ({
     ...recommendation,
     product: getRecommendationProduct(recommendation),
   }));
 
+  const handleBlockedNavigation = useCallback(
+    (reason: GuardReason, pendingNavigation?: PendingNavigation) => {
+      pendingNavigationRef.current = pendingNavigation;
+      setModalMode(reason);
+    },
+    []
+  );
+
+  const { continueNavigation } = useNavigationGuard({
+    enabled: guardEnabled,
+    selectedCount,
+    minimumRequired,
+    onBlocked: handleBlockedNavigation,
+  });
+
   const addRecommendation = (
     product: Product,
     recommendation: WardrobeRecommendation
   ) => {
-    addItem(buildCartItem(product, recommendation, isPremiumCollection));
-    requestCartOpen();
+    addWardrobeItem(buildCartItem(product, recommendation, isPremiumCollection));
+    setToastMessage(`${recommendation.name} added to your wardrobe.`);
+
+    if (guardEnabled && selectedCount + 1 >= minimumRequired) {
+      setShowCompleteReminder(true);
+
+      if (completeReminderTimerRef.current) {
+        window.clearTimeout(completeReminderTimerRef.current);
+      }
+
+      completeReminderTimerRef.current = window.setTimeout(() => {
+        setShowCompleteReminder(false);
+        completeReminderTimerRef.current = null;
+      }, 2000);
+    }
   };
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+  const closeModal = () => setModalMode(null);
 
-    if (params.get("minimumOrder") !== "1") {
+  const returnAnyway = () => setModalMode("confirm");
+
+  const continueAnyway = () => {
+    const pendingNavigation = pendingNavigationRef.current;
+
+    setModalMode(null);
+    pendingNavigationRef.current = undefined;
+
+    if (pendingNavigation?.type === "done") {
+      requestCartOpen();
       return;
     }
 
-    const showToastId = window.setTimeout(
-      () => setToastMessage(MINIMUM_ORDER_TOAST),
-      0
-    );
-    params.delete("minimumOrder");
-    const nextSearch = params.toString();
-    window.history.replaceState(
-      null,
-      "",
-      `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}`
-    );
+    continueNavigation(pendingNavigation);
+  };
 
-    const timeoutId = window.setTimeout(() => setToastMessage(""), 5200);
+  useEffect(() => {
+    if (!toastMessage) {
+      return;
+    }
 
+    const timer = window.setTimeout(() => setToastMessage(""), 1800);
+
+    return () => window.clearTimeout(timer);
+  }, [toastMessage]);
+
+  useEffect(() => {
     return () => {
-      window.clearTimeout(showToastId);
-      window.clearTimeout(timeoutId);
+      if (completeReminderTimerRef.current) {
+        window.clearTimeout(completeReminderTimerRef.current);
+      }
     };
   }, []);
 
@@ -167,7 +310,7 @@ export default function BuildWardrobeClient({
         <GalaxyParticleField className="absolute inset-0 -z-10 h-full w-full" />
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0b0b0b] to-transparent pointer-events-none -z-10" />
 
-        <div className="mx-auto max-w-7xl relative z-10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 relative z-10 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-3xl">
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
               Curated Selection
@@ -186,9 +329,9 @@ export default function BuildWardrobeClient({
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20 w-full">
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {wardrobe.map(({ product, ...recommendation }) => {
-            const cardPrice = isPremiumCollection ? 149 : product.price;
+            const cardPrice = isPremiumCollection ? 150 : product.price;
             const cardDiscountPercent = isPremiumCollection
-              ? Math.round(((product.price - 149) / product.price) * 100)
+              ? Math.round(((product.price - 150) / product.price) * 100)
               : product.discountPercent || 20;
             const cardCompareAtPrice = isPremiumCollection
               ? product.price
@@ -289,6 +432,61 @@ export default function BuildWardrobeClient({
           })}
         </div>
       </section>
+      <AnimatePresence>
+        {guardEnabled && (!minimumSelection.isComplete || showCompleteReminder) && (
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
+            transition={{ duration: 0.28 }}
+            className="fixed inset-x-0 bottom-0 z-[140] border-t border-amber-300/20 bg-[#070605]/95 px-4 py-4 text-white shadow-[0_-20px_70px_rgba(0,0,0,0.45)] backdrop-blur-md sm:px-6"
+          >
+            <div className="mx-auto flex max-w-5xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <p className="font-display text-base font-semibold text-white">
+                  {minimumSelection.isComplete ? "Wardrobe Complete" : "Build Your Wardrobe"}
+                </p>
+                <div className="mt-2 h-1.5 w-full max-w-sm overflow-hidden rounded-full bg-white/10">
+                  <motion.div
+                    className="h-full rounded-full bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642]"
+                    animate={{
+                      width: `${(minimumSelection.progressValue / minimumRequired) * 100}%`,
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-300">
+                  <span className="font-bold text-amber-100">
+                    {minimumSelection.isComplete && <Check size={14} className="mr-1 inline" />}
+                    {minimumSelection.progressValue} / {minimumRequired} Products Selected
+                  </span>
+                  {!minimumSelection.isComplete && (
+                    <span>
+                      Add {minimumSelection.remainingCount} more fragrance
+                      {minimumSelection.remainingCount === 1 ? "" : "s"} to continue.
+                    </span>
+                  )}
+                </div>
+              </div>
+              {!minimumSelection.isComplete && (
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="inline-flex h-11 shrink-0 items-center justify-center rounded-[8px] bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-5 text-xs font-bold uppercase tracking-[0.08em] text-black transition hover:brightness-105"
+                >
+                  Continue Shopping
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <WardrobeGuardModal
+        mode={modalMode}
+        onClose={closeModal}
+        onReturnAnyway={returnAnyway}
+        onContinueAnyway={continueAnyway}
+      />
     </main>
   );
 }

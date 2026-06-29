@@ -15,7 +15,6 @@ import {
   type CartItem,
 } from "@/lib/cart";
 import {
-  getSalimComboCartItems,
   isSalimComboBaseItem,
   isSalimComboMiniItem,
   salimComboConfig,
@@ -25,15 +24,46 @@ type CartContextValue = {
   items: CartItem[];
   count: number;
   subtotal: number;
+  wardrobeFlow: WardrobeFlow | null;
   addItem: (item: CartItem, selectedAddOnIds?: string[]) => void;
   updateQuantity: (id: string, quantity: number, variant?: string, volume?: string) => void;
   removeItem: (id: string, variant?: string, volume?: string) => void;
+  startWardrobeFlow: (flow?: WardrobeFlow) => void;
+  clearWardrobeFlow: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
 
+export type WardrobeFlow = {
+  source: "cart";
+  minimumRequired: number;
+};
+
+const WARDROBE_FLOW_STORAGE_KEY = "aanstory_wardrobe_flow";
+
+function getWardrobeFlow() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const stored = window.localStorage.getItem(WARDROBE_FLOW_STORAGE_KEY);
+
+    if (!stored) {
+      return null;
+    }
+
+    return JSON.parse(stored) as WardrobeFlow;
+  } catch {
+    return null;
+  }
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [wardrobeFlow, setWardrobeFlow] = useState<WardrobeFlow | null>(() =>
+    getWardrobeFlow()
+  );
 
   useEffect(() => {
     const syncCart = () => setItems(getCartItems());
@@ -65,6 +95,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     items,
     count,
     subtotal,
+    wardrobeFlow,
     addItem: (item, selectedAddOnIds) => {
       let nextItems = items;
 
@@ -121,6 +152,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
           }
         )
       );
+    },
+    startWardrobeFlow: (flow = { source: "cart", minimumRequired: 2 }) => {
+      setWardrobeFlow(flow);
+      window.localStorage.setItem(WARDROBE_FLOW_STORAGE_KEY, JSON.stringify(flow));
+    },
+    clearWardrobeFlow: () => {
+      setWardrobeFlow(null);
+      window.localStorage.removeItem(WARDROBE_FLOW_STORAGE_KEY);
     },
   };
 

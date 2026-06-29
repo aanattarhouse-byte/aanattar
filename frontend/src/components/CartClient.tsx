@@ -8,7 +8,6 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { formatPrice } from "@/lib/products";
 import { getSalimComboState } from "@/lib/salimCombo";
-import { getMinimumOrderStatus, MIN_AMOUNT } from "@/lib/minimumOrder";
 import CheckoutAddressModal from "@/components/CheckoutAddressModal";
 
 export default function CartClient() {
@@ -17,17 +16,11 @@ export default function CartClient() {
   const { items, subtotal, updateQuantity, removeItem } = useCart();
   const { user, loading: authLoading, loginWithGoogle } = useAuth();
   const salimComboState = getSalimComboState(items);
-  const minimumOrderStatus = getMinimumOrderStatus(items, subtotal);
-  const canCheckout = minimumOrderStatus.canCheckout;
+  const canCheckout = true;
   const visibleItems = items;
 
   const startCheckout = async () => {
     setLoginMessage("");
-
-    if (!canCheckout) {
-      setLoginMessage("Minimum 2 products and ₹797 subtotal required to place an order.");
-      return;
-    }
 
     if (!user) {
       setLoginMessage("Please login to place your order.");
@@ -176,53 +169,11 @@ export default function CartClient() {
           <span>{salimComboState.active ? "Final Total" : "Total"}</span>
           <span>{formatPrice(salimComboState.finalTotal)}</span>
         </div>
-        <div
-          className={`mt-4 rounded-[8px] border p-3 text-xs font-semibold ${
-            canCheckout
-              ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-100"
-              : "border-amber-300/20 bg-amber-300/10 text-amber-100"
-          }`}
-        >
-          {canCheckout ? (
-            <p>✓ Eligible for Checkout</p>
-          ) : (
-            <>
-              <p>Need:</p>
-              <ul className="mt-2 space-y-1">
-                {minimumOrderStatus.needsProducts && (
-                  <li>• Minimum 2 products</li>
-                )}
-                {minimumOrderStatus.needsAmount && (
-                  <li>• Minimum ₹{MIN_AMOUNT} subtotal</li>
-                )}
-              </ul>
-            </>
-          )}
-        </div>
-        {!canCheckout && (
-          <div className="mt-3 space-y-2 text-xs font-semibold text-amber-100">
-            {minimumOrderStatus.needsProducts && (
-              <p className="rounded-[8px] border border-amber-300/20 bg-amber-300/10 p-3">
-                ⚠ Please add at least 2 attars to build your wardrobe.
-              </p>
-            )}
-            {minimumOrderStatus.needsAmount && (
-              <p className="rounded-[8px] border border-amber-300/20 bg-amber-300/10 p-3">
-                ⚠ Minimum order amount is ₹{MIN_AMOUNT}. Add ₹
-                {minimumOrderStatus.missingAmount} more to continue.
-              </p>
-            )}
-          </div>
-        )}
         <button
           type="button"
           onClick={startCheckout}
-          disabled={!canCheckout || authLoading}
-          className={`mt-6 h-12 w-full rounded-[8px] text-xs font-bold uppercase tracking-[0.12em] text-black transition disabled:cursor-not-allowed disabled:opacity-50 ${
-            canCheckout
-              ? "bg-[#D4A24C] hover:bg-[#E0B35A]"
-              : "bg-gray-300 cursor-not-allowed opacity-50"
-          }`}
+          disabled={authLoading}
+          className="mt-6 h-12 w-full rounded-[8px] text-xs font-bold uppercase tracking-[0.12em] text-black transition bg-[#D4A24C] hover:bg-[#E0B35A] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {authLoading ? "Logging In..." : user ? "Order Now" : "Login To Order"}
         </button>

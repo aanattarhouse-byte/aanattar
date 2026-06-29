@@ -5,7 +5,6 @@ import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import ApiError from '../utils/apiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import { assertMinimumOrder } from '../utils/minimumOrder.js';
 
 const verifyRazorpaySignature = (payload, signature, secret) => {
   if (!signature || !secret) return false;
@@ -38,7 +37,6 @@ const getCartSnapshot = async (userId) => {
     price: item.price
   }));
   const amount = products.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  assertMinimumOrder(products, amount);
 
   return { cart, products, amount };
 };

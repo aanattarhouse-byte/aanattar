@@ -302,6 +302,26 @@ export default function SalimDetailsClient() {
                 </div>
               </div>
 
+              {/* Action Buttons */}
+              <div className="mt-7 grid grid-cols-1 gap-2 sm:mt-8 sm:gap-4">
+                <button
+                  type="button"
+                  onClick={() => handleAddToCart(false)}
+                  className="group flex h-11 min-w-0 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-3 text-[11px] font-bold uppercase tracking-[0.06em] text-black shadow-lg shadow-amber-500/10 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0 sm:h-12 sm:gap-2 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
+                >
+                  <ShoppingCart size={16} strokeWidth={2.4} />
+                  Add to Cart
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddToCart(true)}
+                  className="group flex h-11 min-w-0 items-center justify-center gap-1.5 rounded-lg border border-amber-400/20 bg-zinc-900/70 px-3 text-[11px] font-bold uppercase tracking-[0.06em] text-amber-100 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/40 hover:bg-zinc-800 active:translate-y-0 sm:h-12 sm:gap-2 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
+                >
+                  <Zap size={16} />
+                  Buy Now
+                </button>
+              </div>
+
               {/* Divider */}
               <div className="my-8 border-t border-white/10" />
 
@@ -387,26 +407,6 @@ export default function SalimDetailsClient() {
                     </span>
                   </div>
                 </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="mt-7 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4">
-                <button
-                  type="button"
-                  onClick={() => handleAddToCart(false)}
-                  className="group flex h-11 min-w-0 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-3 text-[11px] font-bold uppercase tracking-[0.06em] text-black shadow-lg shadow-amber-500/10 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0 sm:h-12 sm:gap-2 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
-                >
-                  <ShoppingCart size={16} strokeWidth={2.4} />
-                  Add to Cart
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleAddToCart(true)}
-                  className="group flex h-11 min-w-0 items-center justify-center gap-1.5 rounded-lg border border-amber-400/20 bg-zinc-900/70 px-3 text-[11px] font-bold uppercase tracking-[0.06em] text-amber-100 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/40 hover:bg-zinc-800 active:translate-y-0 sm:h-12 sm:gap-2 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
-                >
-                  <Zap size={16} />
-                  Buy Now
-                </button>
               </div>
 
           </div>

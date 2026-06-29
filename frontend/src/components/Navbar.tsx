@@ -3,7 +3,6 @@
 import {
   Home,
   Heart,
-  LayoutGrid,
   LogOut,
   Menu,
   Minus,
@@ -28,7 +27,6 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { CART_OPEN_EVENT } from "@/lib/cart";
-import { getMinimumOrderStatus, MIN_AMOUNT } from "@/lib/minimumOrder";
 import { products } from "@/lib/products";
 import { useAuth } from "@/context/AuthContext";
 import SalimComboBuilder from "@/components/SalimComboBuilder";
@@ -158,8 +156,7 @@ export default function Navbar() {
     removeItem: removeCartItem,
   } = useCart();
   const salimComboState = getSalimComboState(cartItems);
-  const minimumOrderStatus = getMinimumOrderStatus(cartItems, cartSubtotal);
-  const canCheckout = minimumOrderStatus.canCheckout;
+  const canCheckout = true;
   const hasSalimBaseInCart = cartItems.some(isSalimComboBaseItem);
   const cartDrawerItems = cartItems;
 
@@ -446,7 +443,7 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
-             <div ref={loginRef} className="relative">
+            <div ref={loginRef} className="relative hidden xl:block">
               <motion.button
                 type="button"
                 aria-label={user ? "Open account menu" : "Login"}
@@ -1083,62 +1080,14 @@ export default function Navbar() {
                       </span>
                     </div>
                   )}
-                  <div
-                    className={`rounded-[6px] border p-2 font-sans text-[10px] ${
-                      canCheckout
-                        ? "border-emerald-600/20 bg-emerald-50 text-emerald-800"
-                        : "border-amber-600/20 bg-amber-50 text-[#6f4a12]"
-                    }`}
-                  >
-                    {canCheckout ? (
-                      <p className="font-bold">✓ Eligible for Checkout</p>
-                    ) : (
-                      <>
-                        <p className="font-bold">Need:</p>
-                        <ul className="mt-1 space-y-0.5 font-semibold">
-                          {minimumOrderStatus.needsProducts && (
-                            <li>• Minimum 2 products</li>
-                          )}
-                          {minimumOrderStatus.needsAmount && (
-                            <li>• Minimum ₹{MIN_AMOUNT} subtotal</li>
-                          )}
-                        </ul>
-                      </>
-                    )}
-                  </div>
-                  {!canCheckout && (
-                    <div className="space-y-1.5 font-sans text-[10px] font-semibold text-[#6f4a12]">
-                      {minimumOrderStatus.needsProducts && (
-                        <p className="rounded-[6px] border border-amber-600/20 bg-amber-50 p-2">
-                          ⚠ Please add at least 2 attars to build your wardrobe.
-                        </p>
-                      )}
-                      {minimumOrderStatus.needsAmount && (
-                        <p className="rounded-[6px] border border-amber-600/20 bg-amber-50 p-2">
-                          ⚠ Minimum order amount is ₹{MIN_AMOUNT}. Add ₹
-                          {minimumOrderStatus.missingAmount} more to continue.
-                        </p>
-                      )}
-                    </div>
-                  )}
                 </div>
-                {canCheckout ? (
-                  <Link
-                    href="/cart"
-                    onClick={() => setCartOpen(false)}
-                    className="flex h-10 w-full items-center justify-center rounded-[8px] bg-[#c0943e] font-sans text-[10px] font-bold uppercase tracking-[0.06em] text-black transition hover:bg-[#d2a64d] sm:h-11"
-                  >
-                    View Cart
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    disabled
-                    className="flex h-10 w-full cursor-not-allowed items-center justify-center rounded-[8px] bg-gray-300 font-sans text-[10px] font-bold uppercase tracking-[0.06em] text-black opacity-50 sm:h-11"
-                  >
-                    View Cart
-                  </button>
-                )}
+                <Link
+                  href="/cart"
+                  onClick={() => setCartOpen(false)}
+                  className="flex h-10 w-full items-center justify-center rounded-[8px] bg-[#c0943e] font-sans text-[10px] font-bold uppercase tracking-[0.06em] text-black transition hover:bg-[#d2a64d] sm:h-11"
+                >
+                  View Cart
+                </Link>
               </div>
             </motion.aside>
           </motion.div>
@@ -1260,6 +1209,7 @@ export default function Navbar() {
             <span>Home</span>
           </Link>
 
+          {/*
           <Link
             href="/build-your-signature"
             className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-[9px] font-bold uppercase tracking-[0.08em] transition duration-300 ${
@@ -1269,6 +1219,7 @@ export default function Navbar() {
             <LayoutGrid size={18} className={pathname === "/build-your-signature" ? "text-[#B88A3D]" : "text-[#5d1717]"} />
             <span>Scent</span>
           </Link>
+          */}
 
           <button
             type="button"

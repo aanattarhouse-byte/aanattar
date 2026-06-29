@@ -10,10 +10,6 @@ import {
   saveCheckoutSession,
   type CheckoutSession,
 } from "@/lib/checkoutSession";
-import {
-  getMinimumOrderStatus,
-  MINIMUM_ORDER_TOAST,
-} from "@/lib/minimumOrder";
 
 type CheckoutAddressForm = {
   receiverFullName: string;
@@ -195,8 +191,7 @@ export default function CheckoutAddressModal({
   const [statusMessage, setStatusMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const minimumOrderStatus = getMinimumOrderStatus(items, subtotal);
-  const canCheckout = minimumOrderStatus.canCheckout;
+  const canCheckout = true;
 
   useEffect(() => {
     const mountId = window.setTimeout(() => setMounted(true), 0);
@@ -224,11 +219,6 @@ export default function CheckoutAddressModal({
   const saveAddressAndContinue = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setStatusMessage("");
-
-    if (!canCheckout) {
-      setStatusMessage(MINIMUM_ORDER_TOAST);
-      return;
-    }
 
     const nextErrors = validateForm(form);
     setErrors(nextErrors);

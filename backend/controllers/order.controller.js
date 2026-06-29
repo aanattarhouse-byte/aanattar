@@ -5,7 +5,6 @@ import Product from '../models/Product.js';
 import ApiError from '../utils/apiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { getPaginationMeta, getPaginationOptions } from '../utils/queryOptions.js';
-import { assertMinimumOrder } from '../utils/minimumOrder.js';
 import mongoose from 'mongoose';
 import razorpay from '../config/razorpay.js';
 
@@ -45,7 +44,6 @@ const isValidRazorpaySignature = (orderId, paymentId, signature) => {
 
 export const createOrder = asyncHandler(async (req, res) => {
   const products = mapOrderProducts(req.body.products);
-  assertMinimumOrder(products);
 
   const order = await Order.create({
     userId: req.user._id,
@@ -63,7 +61,6 @@ export const createOrder = asyncHandler(async (req, res) => {
 
 export const createCheckoutRazorpayOrder = asyncHandler(async (req, res) => {
   const products = mapOrderProducts(req.body.products);
-  assertMinimumOrder(products);
   const shippingAddress = req.body.shippingAddress;
   const amount = req.body.amount;
   const amountInPaise = Math.round(amount * 100);
@@ -142,7 +139,6 @@ export const verifyCheckoutRazorpayPayment = asyncHandler(async (req, res) => {
   } = req.body;
 
   const products = mapOrderProducts(req.body.products);
-  assertMinimumOrder(products);
 
   if (!isValidRazorpaySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
     throw new ApiError(400, 'Invalid payment signature');

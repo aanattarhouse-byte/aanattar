@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ShopSalimButton from "@/components/ShopSalimButton";
 
+
 const particles = [
   "left-[8%] top-[18%] h-1.5 w-1.5 opacity-70",
   "left-[20%] top-[72%] h-1 w-1 opacity-50",

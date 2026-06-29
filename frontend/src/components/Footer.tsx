@@ -205,11 +205,11 @@ export default function Footer() {
                     Build Your Signature
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link href="/build-your-wardrobe" className="hover:text-amber-300 transition duration-300">
                     Build Your Wardrobe
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link href="/contact" className="hover:text-amber-300 transition duration-300">
                     Contact Support

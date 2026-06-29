@@ -13,10 +13,6 @@ import {
   saveCheckoutSession,
   type CheckoutSession,
 } from "@/lib/checkoutSession";
-import {
-  getMinimumOrderStatus,
-  MINIMUM_ORDER_TOAST,
-} from "@/lib/minimumOrder";
 import { formatPrice } from "@/lib/products";
 import CheckoutAddressModal from "@/components/CheckoutAddressModal";
 
@@ -93,17 +89,7 @@ export default function PaymentClient() {
   const [statusMessage, setStatusMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const minimumOrderStatus = session
-    ? getMinimumOrderStatus(session.cartItems, session.subtotal)
-    : null;
-  const canCheckout = minimumOrderStatus?.canCheckout ?? false;
-
-  useEffect(() => {
-    if (session && !canCheckout) {
-      clearCheckoutSession();
-      router.replace("/build-your-wardrobe?minimumOrder=1");
-    }
-  }, [canCheckout, router, session]);
+  const canCheckout = true;
 
   const refreshSession = () => {
     setAddressOpen(false);
@@ -111,8 +97,7 @@ export default function PaymentClient() {
   };
 
   const createCodOrder = async () => {
-    if (!session || !canCheckout) {
-      setStatusMessage(MINIMUM_ORDER_TOAST);
+    if (!session) {
       return;
     }
 
@@ -150,8 +135,7 @@ export default function PaymentClient() {
   };
 
   const payWithRazorpay = async () => {
-    if (!session || !canCheckout) {
-      setStatusMessage(MINIMUM_ORDER_TOAST);
+    if (!session) {
       return;
     }
 
@@ -270,11 +254,6 @@ export default function PaymentClient() {
   };
 
   const confirmOrder = () => {
-    if (!canCheckout) {
-      setStatusMessage(MINIMUM_ORDER_TOAST);
-      return;
-    }
-
     if (!user) {
       setStatusMessage("Please login to place your order.");
       void loginWithGoogle().catch(() => {
