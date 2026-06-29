@@ -253,6 +253,68 @@ section {
   mix-blend-mode: screen;
 }
 
+.global-whatsapp-fixed {
+  align-items: center !important;
+  background: #25d366 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18) !important;
+  box-sizing: border-box !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  height: 58px !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+  outline: 0 !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  pointer-events: auto !important;
+  position: fixed !important;
+  bottom: 306px !important;
+  right: 56px !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  transform: scale(1) !important;
+  transition: transform 180ms ease !important;
+  visibility: visible !important;
+  white-space: nowrap !important;
+  width: 58px !important;
+  z-index: 2147483647 !important;
+}
+
+.global-whatsapp-fixed svg {
+  display: block !important;
+  flex: 0 0 auto !important;
+  height: 34px !important;
+  width: 34px !important;
+}
+
+.global-whatsapp-fixed:hover {
+  transform: scale(1.08) !important;
+}
+
+.global-whatsapp-fixed:focus-visible {
+  outline: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .global-whatsapp-fixed {
+    bottom: 68px !important;
+    height: 58px !important;
+    right: 32px !important;
+    width: 58px !important;
+  }
+
+  .global-whatsapp-fixed svg {
+    height: 34px !important;
+    width: 34px !important;
+  }
+}
+
 @keyframes cinematic-breathe {
   0% { transform: translate3d(-1.5%, -1%, 0) scale(1); filter: saturate(1); }
   100% { transform: translate3d(1.5%, 1%, 0) scale(1.05); filter: saturate(1.18); }

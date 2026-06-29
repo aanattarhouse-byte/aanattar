@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   FaInstagram,
-  FaFacebookF,
   FaEnvelope,
   FaPhoneAlt,
   FaCreditCard
@@ -100,7 +99,7 @@ export default function Footer() {
               {/* Social icons */}
               <div className="flex items-center gap-2.5 mt-2">
                 <a
-                  href="#"
+                  href="https://www.instagram.com/aan_attar_house?igsh=YmdwZ3JxNGo5dGQx"
                   aria-label="Instagram"
                   className="
                     w-9 h-9 rounded-full
@@ -119,7 +118,7 @@ export default function Footer() {
                   <FaInstagram size={14} />
                 </a>
 
-                <a
+                {/* <a
                   href="#"
                   aria-label="Facebook"
                   className="
@@ -137,7 +136,7 @@ export default function Footer() {
                   "
                 >
                   <FaFacebookF size={13} />
-                </a>
+                </a> */}
 
                 <a
                   href="mailto:hello@theaanstory.com"
@@ -160,7 +159,7 @@ export default function Footer() {
                 </a>
 
                 <a
-                  href="tel:+919876543210"
+                  href="tel:+918274934858"
                   aria-label="Phone hotline"
                   className="
                     w-9 h-9 rounded-full
@@ -178,6 +177,8 @@ export default function Footer() {
                 >
                   <FaPhoneAlt size={13} />
                 </a>
+
+             
               </div>
             </motion.div>
 
@@ -243,8 +244,8 @@ export default function Footer() {
                 </li>
                 <li className="flex items-center gap-3">
                   <PhoneIcon size={15} className="text-[#B88A3D] shrink-0" />
-                  <a href="tel:+919876543210" className="hover:text-zinc-200 transition">
-                    +91 9876543210
+                  <a href="tel:+918274934858" className="hover:text-zinc-200 transition">
+                    +91 82749 34858
                   </a>
                 </li>
                 <li className="flex items-center gap-3">
