@@ -5,6 +5,8 @@ import Testimonials from "@/components/Testimonials";
 import NebulaParticleField from "@/components/particles/NebulaParticleField";
 import { signatureProducts } from "@/lib/products";
 
+const BUILDER_PRODUCT_PRICE = 1;
+
 export const metadata = {
   title: "Build Your Signature | Aan Attar Hosue",
   description: "Explore 35 luxury attars and choose the scent that becomes your signature.",
@@ -24,7 +26,11 @@ export default function BuildYourSignaturePage() {
           <AnimatedSignatureHeader />
 
           <div className="mt-9">
-            <ProductGrid products={signatureProducts} compact />
+            <ProductGrid
+              products={signatureProducts}
+              compact
+              priceOverride={BUILDER_PRODUCT_PRICE}
+            />
           </div>
         </div>
       </section>

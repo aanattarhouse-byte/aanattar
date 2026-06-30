@@ -17,13 +17,16 @@ import {
 export default function ProductCard({
   product,
   compact = false,
+  priceOverride,
 }: {
   product: Product;
   compact?: boolean;
+  priceOverride?: number;
 }) {
   const [isTouched, setIsTouched] = useState(false);
   const { addItem } = useCart();
   const discountPercent = getProductDiscountPercent(product);
+  const displayPrice = priceOverride ?? product.price;
   const compareAtPrice = getCompareAtPrice(product.price, discountPercent);
 
   const addToCart = () => {
@@ -32,7 +35,7 @@ export default function ProductCard({
       slug: product.slug,
       name: product.name,
       image: product.image,
-      price: product.price,
+      price: displayPrice,
       quantity: 1,
     });
     requestCartOpen();
@@ -92,7 +95,7 @@ export default function ProductCard({
           <span className={`font-sans font-bold leading-none text-amber-100 ${
             compact ? "text-base" : "text-xl"
           }`}>
-            {formatPrice(product.price)}
+            {formatPrice(displayPrice)}
           </span>
           <span className={`font-sans font-semibold leading-none text-zinc-500 line-through ${
             compact ? "text-xs" : "text-sm"

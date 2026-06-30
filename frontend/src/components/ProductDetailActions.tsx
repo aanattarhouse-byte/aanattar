@@ -9,8 +9,6 @@ import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
 import {
   formatPrice,
-  getCompareAtPrice,
-  getProductDiscountPercent,
   type Product,
 } from "@/lib/products";
 import {
@@ -36,6 +34,8 @@ const BOTTLE_TEMPLATES = [
   { id: "bottle-9", name: "Bottle 9", note: "Cedar Mist (Cedarwood & Green Vetiver)", image: "/bottle9.jpeg" },
   { id: "bottle-10", name: "Bottle 10", note: "Royal Spice (Cardamom & Warm Woods)", image: "/bottle10.jpeg" },
 ];
+
+const BUILDER_PRODUCT_PRICE = 1;
 
 export default function ProductDetailActions({
   product,
@@ -113,22 +113,31 @@ export default function ProductDetailActions({
   const router = useRouter();
   const { addItem } = useCart();
 
-  const price = isPremium ? 149 : getVolumePrice(selectedVolume, product.price);
-  
+  // Original product detail price logic is paused for now.
+  // const price = isPremium ? 149 : getVolumePrice(selectedVolume, product.price);
+  const price = BUILDER_PRODUCT_PRICE;
+
   const regularPriceForVolume = getVolumePrice(selectedVolume, product.price);
-  const discountPercent = isPremium
-    ? Math.round(((regularPriceForVolume - 149) / regularPriceForVolume) * 100)
-    : getProductDiscountPercent(product);
-  const compareAtPrice = isPremium
-    ? regularPriceForVolume
-    : getCompareAtPrice(price, discountPercent);
+  // Original premium/type discount logic is paused for now.
+  // const discountPercent = isPremium
+  //   ? Math.round(((regularPriceForVolume - 149) / regularPriceForVolume) * 100)
+  //   : getProductDiscountPercent(product);
+  const discountPercent = Math.round(
+    ((regularPriceForVolume - BUILDER_PRODUCT_PRICE) / regularPriceForVolume) * 100
+  );
+  // const compareAtPrice = isPremium
+  //   ? regularPriceForVolume
+  //   : getCompareAtPrice(price, discountPercent);
+  const compareAtPrice = regularPriceForVolume;
 
   const selectedVolumeValue = getVolumeCartValue(selectedVolume);
 
   const addProductWithSelection = (chosenIndex: number | null, actionType: "cart" | "buy") => {
     if (chosenIndex !== null) {
       const bPrice = bottlePrices[chosenIndex] || 0;
-      const itemPrice = price + bPrice;
+      // Original bottle add-on price logic is paused for now.
+      // const itemPrice = price + bPrice;
+      const itemPrice = BUILDER_PRODUCT_PRICE;
       const selectedBottlesText = `Bottle ${chosenIndex + 1} (₹${bPrice})`;
 
       addItem({
@@ -138,7 +147,8 @@ export default function ProductDetailActions({
         image: product.image,
         price: itemPrice,
         quantity,
-        variant: `Bottle ${chosenIndex + 1} (${formatPrice(bPrice)})`, // Removed "Signature: " text
+        // variant: `Bottle ${chosenIndex + 1} (${formatPrice(bPrice)})`, // Removed "Signature: " text
+        variant: `Bottle ${chosenIndex + 1}`,
         volume: selectedVolumeValue,
       });
       setSelectedBottleIndex(chosenIndex);
@@ -321,7 +331,7 @@ export default function ProductDetailActions({
                       {formatVolume(volume)}
                     </span>
                     <span className="mt-1 block font-sans text-xs font-semibold text-amber-200">
-                      {formatPrice(getVolumePrice(volume, product.price))}
+                      {formatPrice(BUILDER_PRODUCT_PRICE)}
                     </span>
                   </button>
                 );

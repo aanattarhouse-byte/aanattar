@@ -7,7 +7,7 @@ import { Check, Eye, ShoppingCart, Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
-import { getProductBySlug, formatPrice, getCompareAtPrice, type Product } from "@/lib/products";
+import { getProductBySlug, formatPrice, type Product } from "@/lib/products";
 import GalaxyParticleField from "@/components/particles/GalaxyParticleField";
 import { useMinimumSelection } from "@/hooks/useMinimumSelection";
 import {
@@ -23,6 +23,8 @@ type WardrobeRecommendation = {
   occasion: string;
   line: string;
 };
+
+const BUILDER_PRODUCT_PRICE = 1;
 
 const recommendations: WardrobeRecommendation[] = [
   {
@@ -107,7 +109,7 @@ function buildCartItem(
     slug: product.slug,
     name: recommendation.name,
     image: product.image,
-    price: isPremiumCollection ? 150 : product.price,
+    price: BUILDER_PRODUCT_PRICE,
     quantity: 1,
     variant: isPremiumCollection ? "Premium Collection" : undefined,
     volume: isPremiumCollection ? "5ml" : undefined,
@@ -329,13 +331,11 @@ export default function BuildWardrobeClient({
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20 w-full">
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {wardrobe.map(({ product, ...recommendation }) => {
-            const cardPrice = isPremiumCollection ? 150 : product.price;
-            const cardDiscountPercent = isPremiumCollection
-              ? Math.round(((product.price - 150) / product.price) * 100)
-              : product.discountPercent || 20;
-            const cardCompareAtPrice = isPremiumCollection
-              ? product.price
-              : getCompareAtPrice(product.price, cardDiscountPercent);
+            const cardPrice = BUILDER_PRODUCT_PRICE;
+            const cardDiscountPercent = Math.round(
+              ((product.price - BUILDER_PRODUCT_PRICE) / product.price) * 100
+            );
+            const cardCompareAtPrice = product.price;
 
             const isTouched = touchedSlug === recommendation.slug;
 
