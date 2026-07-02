@@ -1,8 +1,7 @@
 import Hero from "@/components/Hero";
 import Testimonials from "@/components/Testimonials";
 import WhyChooseAanStory from "@/components/WhyChooseAanStory";
-import VideoStoriesSection from "@/components/VideoStoriesSection";
-import FounderVideo from "@/components/FounderVideo";
+import LazyHomeMedia from "@/components/LazyHomeMedia";
 import { getInitialAuthUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
@@ -17,9 +16,7 @@ export default async function Home() {
     <main className="overflow-x-clip">
       <Hero />
       <WhyChooseAanStory />
-      <VideoStoriesSection />
-
-      <FounderVideo />
+      <LazyHomeMedia />
 
       <Testimonials />
     </main>

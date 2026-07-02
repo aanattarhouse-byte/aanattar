@@ -1,7 +1,6 @@
 'use client';
 
-import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
+import type { Auth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -10,16 +9,25 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 
-if (typeof window !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.apiKey !== 'xxxxx') {
+export async function getFirebaseAuth() {
+  if (auth) return auth;
+
+  if (typeof window === 'undefined' || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'xxxxx') {
+    return null;
+  }
+
   try {
-    app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const [{ initializeApp, getApps }, { getAuth }] = await Promise.all([
+      import('firebase/app'),
+      import('firebase/auth'),
+    ]);
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
     auth = getAuth(app);
+    return auth;
   } catch (error) {
     console.error('Failed to initialize Firebase client SDK:', error);
+    return null;
   }
 }
-
-export const firebaseAuth = auth as Auth;

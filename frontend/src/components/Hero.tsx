@@ -45,7 +45,7 @@ export default function Hero() {
               height={1000}
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
-              quality={100}
+              quality={82}
               sizes="100vw"
               className="hidden h-full w-full object-cover object-center md:block"
             />
@@ -56,7 +56,7 @@ export default function Hero() {
               height={1500}
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
-              quality={100}
+              quality={82}
               sizes="100vw"
               className="h-full w-full object-cover object-center md:hidden"
             />

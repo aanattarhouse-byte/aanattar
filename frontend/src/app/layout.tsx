@@ -3,7 +3,7 @@ import { Playfair_Display, Lora, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CinematicShell from "@/components/cinematic/CinematicShell";
+import DeferredCinematicShell from "@/components/DeferredCinematicShell";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { getInitialAuthUser } from "@/lib/auth";
@@ -58,7 +58,7 @@ export default async function RootLayout({
       <body className="min-h-screen flex flex-col bg-[#0B0B0B] text-zinc-100 antialiased selection:bg-amber-400/30 selection:text-white pb-[60px] md:pb-0">
         <AuthProvider initialUser={initialUser}>
           <CartProvider>
-            <CinematicShell />
+            <DeferredCinematicShell />
             <Navbar />
             <main className="relative z-10 flex-1">{children}</main>
             <div className="relative z-10">

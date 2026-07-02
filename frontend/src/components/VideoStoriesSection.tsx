@@ -32,14 +32,14 @@ const stories = [
   },
 ];
 
-const loadVideoBackground = (video: HTMLVideoElement, eager = false) => {
+const loadVideoBackground = (video: HTMLVideoElement) => {
   const src = video.dataset?.src || "";
   if (!src) return;
 
   video.muted = true;
   video.defaultMuted = true;
   video.playsInline = true;
-  video.preload = eager ? "auto" : "metadata";
+  video.preload = "metadata";
 
   if (!video.src) {
     video.src = `${src}#t=0.001`;
@@ -115,11 +115,12 @@ function MobileCard({
                   }}
                   className="absolute inset-0 h-full w-full object-cover"
                   data-src={video}
+                  aria-label={`${stories[i].title} video`}
                   autoPlay
                   loop
                   muted
                   playsInline
-                  preload={i === 0 ? "auto" : "metadata"}
+                  preload="metadata"
                 />
                 {/* Play/Pause Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">
@@ -187,7 +188,7 @@ export default function VideoStoriesSection() {
     const videos = videoRefs.current.filter(Boolean) as HTMLVideoElement[];
     if (!videos.length) return;
 
-    loadVideoBackground(videos[0], true);
+    loadVideoBackground(videos[0]);
 
     if (isMobile) {
       // On mobile, subsequent videos will only load when they scroll to active focus
@@ -199,7 +200,7 @@ export default function VideoStoriesSection() {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const video = entry.target as HTMLVideoElement;
-          loadVideoBackground(video, true);
+          loadVideoBackground(video);
           obs.unobserve(video);
         });
       },
@@ -231,7 +232,7 @@ export default function VideoStoriesSection() {
 
       const activeVideo = videoRefs.current[activeIndex];
       if (activeVideo && playingIndex !== activeIndex) {
-        loadVideoBackground(activeVideo, true);
+        loadVideoBackground(activeVideo);
       }
 
       videoRefs.current.forEach((video, idx) => {
@@ -291,7 +292,7 @@ export default function VideoStoriesSection() {
     });
 
     if (!video.src) {
-      loadVideoBackground(video, true);
+      loadVideoBackground(video);
     }
     video.muted = false;
     video.defaultMuted = false;
@@ -363,11 +364,12 @@ export default function VideoStoriesSection() {
                           }}
                           className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
                           data-src={story.video}
+                          aria-label={`${story.title} video`}
                           autoPlay
                           loop
                           muted
                           playsInline
-                          preload={index === 0 ? "auto" : "metadata"}
+                          preload="metadata"
                         />
                     {/* Play/Pause Overlay */}
                     <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">

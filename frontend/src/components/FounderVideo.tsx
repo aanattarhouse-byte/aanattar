@@ -127,9 +127,11 @@ export default function FounderVideo() {
           >
             <video
               ref={videoRef}
+              aria-label="Founder story video"
               className="aspect-[9/16] max-h-[720px] w-full rounded-[1.5rem] bg-black object-cover transition duration-700 group-hover:scale-[1.02]"
               loop
               playsInline
+              muted
               preload="metadata"
             >
               {isIntersecting && (

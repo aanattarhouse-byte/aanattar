@@ -1,9 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
-import { signInWithPopup, GoogleAuthProvider, Auth } from 'firebase/auth';
 import { usePathname, useRouter } from 'next/navigation';
-import { firebaseAuth } from '@/lib/firebaseClient';
+import { getFirebaseAuth } from '@/lib/firebaseClient';
 import { backendFetch } from '@/lib/backendApi';
 import type { UserRole } from '@/types/store';
 
@@ -38,7 +37,6 @@ export function AuthProvider({
   const [user, setUser] = useState<UserType | null>(initialUser);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [firebaseAuthInstance] = useState<Auth | null>(firebaseAuth);
 
   React.useEffect(() => {
     if (user?.role === 'admin' && pathname === '/') {
@@ -50,10 +48,12 @@ export function AuthProvider({
     setError(null);
     setLoading(true);
     try {
+      const firebaseAuthInstance = await getFirebaseAuth();
       if (!firebaseAuthInstance) {
         throw new Error('Firebase Authentication is not initialized. Please verify Firebase environment variables on the backend.');
       }
 
+      const { signInWithPopup, GoogleAuthProvider } = await import('firebase/auth');
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(firebaseAuthInstance, provider);
       const idToken = await userCredential.user.getIdToken();
