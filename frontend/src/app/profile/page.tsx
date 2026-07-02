@@ -78,6 +78,7 @@ export default function ProfilePage() {
                   alt={user.displayName || "Avatar"}
                   fill
                   sizes="96px"
+                  decoding="async"
                   className="object-cover"
                 />
               ) : (

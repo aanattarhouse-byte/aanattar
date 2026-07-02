@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState, useTransition } from 'react';
 import Header from '@/components/admin/Header';
@@ -147,8 +148,18 @@ export default function OrderDetailsClient({ initialOrder }: OrderDetailsClientP
                   <tr key={`${item.name}-${item.price}-${item.quantity}`}>
                     <td>
                       <div className={styles.productCell}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        {item.image ? <img className={styles.productImage} src={item.image} alt={item.name} /> : <div className={styles.productImagePlaceholder}>No image</div>}
+                        {item.image ? (
+                          <Image
+                            className={styles.productImage}
+                            src={item.image}
+                            alt={item.name}
+                            width={54}
+                            height={54}
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className={styles.productImagePlaceholder}>No image</div>
+                        )}
                         <span>{item.name || 'Product'}</span>
                       </div>
                     </td>

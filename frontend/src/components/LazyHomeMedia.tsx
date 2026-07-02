@@ -5,12 +5,15 @@ import LazyWhenVisible from "@/components/LazyWhenVisible";
 
 const VideoStoriesSection = dynamic(() => import("@/components/VideoStoriesSection"), {
   ssr: false,
+  loading: () => null,
 });
 const FounderVideo = dynamic(() => import("@/components/FounderVideo"), {
   ssr: false,
+  loading: () => null,
 });
 const Testimonials = dynamic(() => import("@/components/Testimonials"), {
   ssr: false,
+  loading: () => null,
 });
 
 export default function LazyHomeMedia() {

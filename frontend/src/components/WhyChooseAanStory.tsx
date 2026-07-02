@@ -1,11 +1,6 @@
-"use client";
-
-import { fadeUp, stagger } from "@/lib/framer/motion";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import ShopSalimButton from "@/components/ShopSalimButton";
-
 
 const particles = [
   "left-[8%] top-[18%] h-1.5 w-1.5 opacity-70",
@@ -31,36 +26,28 @@ export default function WhyChooseAanStory() {
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {particles.map((particle, index) => (
-          <motion.span
+          <span
             key={particle}
-            className={`absolute rounded-full bg-[#ffcf7a] shadow-[0_0_18px_rgba(255,207,122,0.9)] ${particle}`}
-            animate={{ y: [-8, 12, -8], opacity: [0.35, 0.9, 0.35] }}
-            transition={{ duration: 4 + index * 0.35, repeat: Infinity, ease: "easeInOut", delay: index * 0.18 }}
+            className={`why-aan-particle absolute rounded-full bg-[#ffcf7a] shadow-[0_0_18px_rgba(255,207,122,0.9)] ${particle}`}
+            style={{
+              animationDuration: `${4 + index * 0.35}s`,
+              animationDelay: `${index * 0.18}s`,
+            }}
           />
         ))}
       </div>
 
-      <motion.div
-        className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
-        variants={stagger}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-120px" }}
-      >
+      <div className="why-aan-reveal relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <motion.h2
+          <h2
             id="why-customers-love"
-            variants={fadeUp}
             className="relative z-20 font-display text-3xl font-semibold leading-tight text-white drop-shadow-[0_8px_34px_rgba(255,179,71,0.18)] sm:text-4xl lg:text-5xl"
           >
             Why Customers Love Salim
-          </motion.h2>
+          </h2>
         </div>
 
-        <motion.div
-          variants={fadeUp}
-          className="relative -mx-4 mt-3 max-w-6xl overflow-visible md:mx-auto md:mt-6 md:overflow-hidden"
-        >
+        <div className="relative -mx-4 mt-3 max-w-6xl overflow-visible md:mx-auto md:mt-6 md:overflow-hidden">
           <Link
             href="/products/salim-luxury-attar"
             className="group relative block w-full cursor-pointer overflow-hidden"
@@ -72,6 +59,9 @@ export default function WhyChooseAanStory() {
               width={1672}
               height={941}
               loading="lazy"
+              decoding="async"
+              quality={82}
+              sizes="(max-width: 767px) 100vw, (max-width: 1279px) calc(100vw - 3rem), 1152px"
               className="h-auto w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/48 via-black/8 to-transparent" />
@@ -81,9 +71,9 @@ export default function WhyChooseAanStory() {
           >
             <span className="relative">  Shop Salim </span>
           </ShopSalimButton>
-        </motion.div>
+        </div>
 
-      </motion.div>
+      </div>
     </section>
   );
 }

@@ -73,6 +73,7 @@ export default function CartClient() {
                 alt={item.name}
                 fill
                 sizes="120px"
+                decoding="async"
                 className="object-cover"
               />
             </Link>

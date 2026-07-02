@@ -94,6 +94,7 @@ function MagneticLink({
 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const boundsRef = useRef<DOMRect | null>(null);
 
   const springX = useSpring(x, {
     stiffness: 260,
@@ -108,14 +109,19 @@ function MagneticLink({
   return (
     <motion.div
       style={{ x: springX, y: springY }}
+      onPointerEnter={(event) => {
+        boundsRef.current = event.currentTarget.getBoundingClientRect();
+      }}
       onPointerMove={(event) => {
-        const rect = event.currentTarget.getBoundingClientRect();
+        const rect =
+          boundsRef.current ?? event.currentTarget.getBoundingClientRect();
 
         x.set((event.clientX - rect.left - rect.width / 2) * 0.12);
 
         y.set((event.clientY - rect.top - rect.height / 2) * 0.12);
       }}
       onPointerLeave={() => {
+        boundsRef.current = null;
         x.set(0);
         y.set(0);
       }}
@@ -295,6 +301,7 @@ export default function Navbar() {
                 fill
                 sizes="98px"
                 priority
+                decoding="async"
                 className="object-cover"
               />
             </span>
@@ -416,6 +423,7 @@ export default function Navbar() {
                                 alt={product.name}
                                 width={54}
                                 height={54}
+                                decoding="async"
                                 className="h-[54px] w-[54px] object-cover"
                               />
                             </span>
@@ -736,6 +744,7 @@ export default function Navbar() {
                             alt={product.name}
                             width={48}
                             height={48}
+                            decoding="async"
                             className="h-12 w-12 rounded-[8px] object-cover"
                           />
                           <span className="min-w-0">
@@ -968,6 +977,7 @@ export default function Navbar() {
                                 alt={item.name}
                                 fill
                                 sizes="(max-width: 639px) 64px, 72px"
+                                decoding="async"
                                 className="object-cover"
                               />
                             </Link>

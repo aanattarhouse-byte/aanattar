@@ -68,6 +68,7 @@ export default function TrackOrderPage({ params }: TrackOrderPageProps) {
 
   useEffect(() => {
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchOrderDetails(true);
     }
   }, [user, orderId]);
@@ -334,7 +335,7 @@ export default function TrackOrderPage({ params }: TrackOrderPageProps) {
               {order.shippingAddress.deliveryInstructions && (
                 <div className="mt-4 pt-4 border-t border-zinc-900">
                   <span className="text-[10px] uppercase font-bold text-zinc-500 block mb-1">Carrier Note</span>
-                  <p className="text-xs italic text-zinc-400">"{order.shippingAddress.deliveryInstructions}"</p>
+                  <p className="text-xs italic text-zinc-400">&quot;{order.shippingAddress.deliveryInstructions}&quot;</p>
                 </div>
               )}
             </div>
@@ -355,6 +356,7 @@ export default function TrackOrderPage({ params }: TrackOrderPageProps) {
                           alt={item.name}
                           fill
                           sizes="48px"
+                          decoding="async"
                           className="object-cover"
                         />
                       ) : (

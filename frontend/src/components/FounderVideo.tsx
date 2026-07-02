@@ -132,7 +132,7 @@ export default function FounderVideo() {
               loop
               playsInline
               muted
-              preload="metadata"
+              preload="none"
             >
               {isIntersecting && (
                 <source src="/founder.mp4#t=0.001" type="video/mp4" />

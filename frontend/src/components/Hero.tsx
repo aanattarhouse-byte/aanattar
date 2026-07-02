@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 
@@ -43,11 +41,12 @@ export default function Hero() {
               alt={image.alt}
               width={1820}
               height={1000}
-              priority={false}
-              loading="lazy"
-              fetchPriority="low"
+              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : "low"}
+              decoding="async"
               quality={82}
-              sizes="100vw"
+              sizes="(max-width:640px) 100vw, (max-width:1024px) 100vw, 100vw"
               className="hidden h-full w-full object-cover object-center md:block"
             />
             <Image
@@ -58,8 +57,9 @@ export default function Hero() {
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
               fetchPriority={index === 0 ? "high" : "low"}
+              decoding="async"
               quality={82}
-              sizes="100vw"
+              sizes="(max-width:640px) 100vw, (max-width:1024px) 100vw, 100vw"
               className="h-full w-full object-cover object-center md:hidden"
             />
             <Link
@@ -71,30 +71,6 @@ export default function Hero() {
           </div>
         ))}
       </div>
-
-      <style jsx>{`
-        .hero-scroll-track {
-          animation: hero-scroll-right-to-left 12s infinite ease-in-out;
-        }
-
-        @keyframes hero-scroll-right-to-left {
-          0%,
-          27% {
-            transform: translateX(0%);
-          }
-          33%,
-          60% {
-            transform: translateX(-100%);
-          }
-          66%,
-          93% {
-            transform: translateX(-200%);
-          }
-          100% {
-            transform: translateX(-300%);
-          }
-        }
-      `}</style>
     </section>
   );
 }

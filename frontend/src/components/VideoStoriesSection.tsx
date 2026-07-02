@@ -39,7 +39,7 @@ const loadVideoBackground = (video: HTMLVideoElement) => {
   video.muted = true;
   video.defaultMuted = true;
   video.playsInline = true;
-  video.preload = "metadata";
+  video.preload = "none";
 
   if (!video.src) {
     video.src = `${src}#t=0.001`;
@@ -120,7 +120,7 @@ function MobileCard({
                   loop
                   muted
                   playsInline
-                  preload="metadata"
+                  preload="none"
                 />
                 {/* Play/Pause Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">
@@ -369,7 +369,7 @@ export default function VideoStoriesSection() {
                           loop
                           muted
                           playsInline
-                          preload="metadata"
+                          preload="none"
                         />
                     {/* Play/Pause Overlay */}
                     <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">

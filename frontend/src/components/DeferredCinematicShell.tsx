@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const CinematicShell = dynamic(
   () => import("@/components/cinematic/CinematicShell"),
-  { ssr: false }
+  { ssr: false, loading: () => null }
 );
 
 export default function DeferredCinematicShell() {

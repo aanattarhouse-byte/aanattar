@@ -4,6 +4,15 @@ import React, { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+function createSeededRandom(seed: number) {
+  let value = seed;
+
+  return () => {
+    value = (value * 1664525 + 1013904223) % 4294967296;
+    return value / 4294967296;
+  };
+}
+
 function Galaxy() {
   const ref = useRef<THREE.Points>(null);
   const count = 3500;
@@ -21,19 +30,20 @@ function Galaxy() {
     const insideColor = new THREE.Color("#ffe3b3");  // Radiant bright gold core
     const outsideColor = new THREE.Color("#ff5b1a"); // Deep orange-red arms
     const mixColor = new THREE.Color("#9b3cf3");     // Cosmic indigo/purple dust hints
+    const random = createSeededRandom(421337);
 
     for (let i = 0; i < count; i++) {
       // Distance from center
-      const r = Math.pow(Math.random(), power) * radius;
+      const r = Math.pow(random(), power) * radius;
 
       // Position math
       const branchAngle = ((i % branches) / branches) * Math.PI * 2;
       const spinAngle = r * spin;
 
       // Cubic-based distribution for arm scattering (fluffy edges)
-      const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness * r;
-      const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness * r;
-      const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness * r;
+      const randomX = Math.pow(random(), 3) * (random() < 0.5 ? 1 : -1) * randomness * r;
+      const randomY = Math.pow(random(), 3) * (random() < 0.5 ? 1 : -1) * randomness * r;
+      const randomZ = Math.pow(random(), 3) * (random() < 0.5 ? 1 : -1) * randomness * r;
 
       pos[i * 3] = Math.cos(branchAngle + spinAngle) * r + randomX;
       pos[i * 3 + 1] = randomY;

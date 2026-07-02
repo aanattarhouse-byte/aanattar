@@ -52,6 +52,7 @@ export default function ProductDetailActions({
 
   // Reset image view when product changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowAlternate(false);
   }, [product.id]);
 
@@ -193,6 +194,9 @@ export default function ProductDetailActions({
               alt={product.name}
               fill
               priority
+              fetchPriority="high"
+              loading="eager"
+              decoding="async"
               sizes="(min-width: 1024px) 50vw, 100vw"
               className={`object-cover transition-opacity duration-500 ${
                 product.hoverImage
@@ -206,6 +210,7 @@ export default function ProductDetailActions({
                 src={product.hoverImage}
                 alt={`${product.name} alternate view`}
                 fill
+                decoding="async"
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className={`object-cover absolute inset-0 transition-opacity duration-500 md:group-hover/image:opacity-100 ${
                   showAlternate ? "opacity-100" : "opacity-0"
@@ -501,6 +506,7 @@ export default function ProductDetailActions({
                           src={template.image}
                           alt={template.name}
                           fill
+                          decoding="async"
                           sizes="100px"
                           className="object-cover transition duration-300 group-hover:scale-105"
                         />

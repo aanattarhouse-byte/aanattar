@@ -2,8 +2,10 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -79,11 +81,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const saveItems = (nextItems: CartItem[]) => {
+  const saveItems = useCallback((nextItems: CartItem[]) => {
     setItems(nextItems);
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(nextItems));
     window.dispatchEvent(new Event(CART_UPDATED_EVENT));
-  };
+  }, []);
 
   const count = items.reduce((total, item) => total + item.quantity, 0);
   const subtotal = items.reduce(
@@ -91,12 +93,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     0
   );
 
-  const value: CartContextValue = {
-    items,
-    count,
-    subtotal,
-    wardrobeFlow,
-    addItem: (item, selectedAddOnIds) => {
+  const addItem = useCallback(
+    (item: CartItem, selectedAddOnIds?: string[]) => {
       let nextItems = items;
 
       if (isSalimComboBaseItem(item)) {
@@ -126,7 +124,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       setItems(nextItems);
     },
-    updateQuantity: (id, quantity, variant, volume) => {
+    [items]
+  );
+
+  const updateQuantity = useCallback(
+    (id: string, quantity: number, variant?: string, volume?: string) => {
       saveItems(
         items.map((item) =>
           item.id === id && item.variant === variant && item.volume === volume
@@ -135,7 +137,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         )
       );
     },
-    removeItem: (id, variant, volume) => {
+    [items, saveItems]
+  );
+
+  const removeItem = useCallback(
+    (id: string, variant?: string, volume?: string) => {
       const itemToRemove = items.find(
         (item) =>
           item.id === id && item.variant === variant && item.volume === volume
@@ -153,15 +159,43 @@ export function CartProvider({ children }: { children: ReactNode }) {
         )
       );
     },
-    startWardrobeFlow: (flow = { source: "cart", minimumRequired: 2 }) => {
+    [items, saveItems]
+  );
+
+  const startWardrobeFlow = useCallback((flow: WardrobeFlow = { source: "cart", minimumRequired: 2 }) => {
       setWardrobeFlow(flow);
       window.localStorage.setItem(WARDROBE_FLOW_STORAGE_KEY, JSON.stringify(flow));
-    },
-    clearWardrobeFlow: () => {
+  }, []);
+
+  const clearWardrobeFlow = useCallback(() => {
       setWardrobeFlow(null);
       window.localStorage.removeItem(WARDROBE_FLOW_STORAGE_KEY);
-    },
-  };
+  }, []);
+
+  const value: CartContextValue = useMemo(
+    () => ({
+      items,
+      count,
+      subtotal,
+      wardrobeFlow,
+      addItem,
+      updateQuantity,
+      removeItem,
+      startWardrobeFlow,
+      clearWardrobeFlow,
+    }),
+    [
+      items,
+      count,
+      subtotal,
+      wardrobeFlow,
+      addItem,
+      updateQuantity,
+      removeItem,
+      startWardrobeFlow,
+      clearWardrobeFlow,
+    ]
+  );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

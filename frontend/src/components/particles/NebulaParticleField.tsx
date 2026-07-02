@@ -4,6 +4,15 @@ import React, { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+function createSeededRandom(seed: number) {
+  let value = seed;
+
+  return () => {
+    value = (value * 1664525 + 1013904223) % 4294967296;
+    return value / 4294967296;
+  };
+}
+
 function NebulaCloud() {
   const pointsRef = useRef<THREE.Points>(null);
   const count = 220;
@@ -29,10 +38,9 @@ function NebulaCloud() {
     return tex;
   }, []);
 
-  const [positions, colors, sizes] = useMemo(() => {
+  const [positions, colors] = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
-    const sz = new Float32Array(count);
 
     // Color definitions for a luxurious, glowing purple-violet-blue nebula
     const nebulaColors = [
@@ -41,33 +49,31 @@ function NebulaCloud() {
       new THREE.Color("#06b6d4"), // Cyan
       new THREE.Color("#f59e0b"), // Warm Amber
     ];
+    const random = createSeededRandom(884211);
 
     for (let i = 0; i < count; i++) {
       // Clustered distribution (more dense in the center, sparse outer)
-      const u = Math.random();
-      const v = Math.random();
+      const u = random();
+      const v = random();
       const theta = u * 2.0 * Math.PI;
       const phi = Math.acos(2.0 * v - 1.0);
-      const r = Math.pow(Math.random(), 2.2) * 5.0; // concentrated cluster
+      const r = Math.pow(random(), 2.2) * 5.0; // concentrated cluster
 
       pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.6; // slightly flattened
       pos[i * 3 + 2] = r * Math.cos(phi);
 
       // Select a cosmic color and mix it
-      const baseColor = nebulaColors[Math.floor(Math.random() * nebulaColors.length)].clone();
-      const mixAmount = Math.random() * 0.3;
+      const baseColor = nebulaColors[Math.floor(random() * nebulaColors.length)].clone();
+      const mixAmount = random() * 0.3;
       baseColor.lerp(new THREE.Color("#ffffff"), mixAmount); // slightly desaturate to glow
 
       col[i * 3] = baseColor.r;
       col[i * 3 + 1] = baseColor.g;
       col[i * 3 + 2] = baseColor.b;
-
-      // Random sizes for depth (gas clouds are large and soft)
-      sz[i] = 1.2 + Math.random() * 2.8;
     }
 
-    return [pos, col, sz];
+    return [pos, col];
   }, []);
 
   useFrame(({ clock, pointer }) => {
@@ -137,19 +143,20 @@ function TwinklingStars() {
     const gold = new THREE.Color("#fef08a"); // Radiant gold stars
     const white = new THREE.Color("#ffffff"); // Bright white stars
     const blue = new THREE.Color("#93c5fd");  // Cool blue stars
+    const random = createSeededRandom(229771);
 
     for (let i = 0; i < count; i++) {
       // Wider distribution field
-      const r = 3.0 + Math.random() * 8.0;
-      const theta = Math.random() * 2.0 * Math.PI;
-      const phi = Math.acos(2.0 * Math.random() - 1.0);
+      const r = 3.0 + random() * 8.0;
+      const theta = random() * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * random() - 1.0);
 
       pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       pos[i * 3 + 2] = r * Math.cos(phi);
 
       // Mix colors
-      const rand = Math.random();
+      const rand = random();
       const finalColor = rand < 0.4 ? white.clone() : rand < 0.8 ? gold.clone() : blue.clone();
       
       col[i * 3] = finalColor.r;

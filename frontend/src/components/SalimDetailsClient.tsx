@@ -170,8 +170,10 @@ export default function SalimDetailsClient() {
                   src={displayedActiveImage}
                   alt="Salim Luxury Attar main view"
                   fill
-                  unoptimized
                   priority
+                  fetchPriority="high"
+                  loading="eager"
+                  decoding="async"
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-contain transition-all duration-700 hover:scale-105 sm:object-cover"
                 />
@@ -203,7 +205,7 @@ export default function SalimDetailsClient() {
                         src={img}
                         alt={`Salim Luxury Attar view ${i + 1}`}
                         fill
-                        unoptimized
+                        decoding="async"
                         sizes="96px"
                         className="object-contain sm:object-cover"
                       />
@@ -360,6 +362,7 @@ export default function SalimDetailsClient() {
                             src={addOn.image}
                             alt={addOn.name}
                             fill
+                            decoding="async"
                             sizes="120px"
                             className="object-cover"
                           />

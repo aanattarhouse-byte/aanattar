@@ -55,6 +55,22 @@ export default async function RootLayout({
       lang="en"
       className={`${playfair.variable} ${lora.variable} ${spaceGrotesk.variable}`}
     >
+      <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/desktop1.jpg"
+          fetchPriority="high"
+          media="(min-width: 768px)"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/mobile1.jpeg"
+          fetchPriority="high"
+          media="(max-width: 767px)"
+        />
+      </head>
       <body className="min-h-screen flex flex-col bg-[#0B0B0B] text-zinc-100 antialiased selection:bg-amber-400/30 selection:text-white pb-[60px] md:pb-0">
         <AuthProvider initialUser={initialUser}>
           <CartProvider>

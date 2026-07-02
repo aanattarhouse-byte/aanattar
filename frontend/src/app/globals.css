@@ -85,6 +85,23 @@ section {
   position: relative;
 }
 
+.hero-scroll-track {
+  animation: hero-scroll-right-to-left 12s infinite ease-in-out;
+  will-change: transform;
+}
+
+.why-aan-reveal {
+  animation: why-aan-reveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.why-aan-particle {
+  animation-name: why-aan-particle-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transform: translate3d(0, -8px, 0);
+  will-change: transform, opacity;
+}
+
 .cinematic-section {
   position: relative;
   overflow: hidden;
@@ -338,6 +355,46 @@ section {
 @keyframes salim-aura-sweep {
   0% { transform: translate3d(-4%, -2%, 0) scale(1); opacity: 0.55; }
   100% { transform: translate3d(5%, 3%, 0) scale(1.06); opacity: 1; }
+}
+
+@keyframes hero-scroll-right-to-left {
+  0%,
+  27% {
+    transform: translateX(0%);
+  }
+  33%,
+  60% {
+    transform: translateX(-100%);
+  }
+  66%,
+  93% {
+    transform: translateX(-200%);
+  }
+  100% {
+    transform: translateX(-300%);
+  }
+}
+
+@keyframes why-aan-reveal {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes why-aan-particle-float {
+  0%, 100% {
+    opacity: 0.35;
+    transform: translate3d(0, -8px, 0);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate3d(0, 12px, 0);
+  }
 }
 
 @keyframes salim-logo-float {

@@ -357,6 +357,7 @@ export default function BuildWardrobeClient({
                     alt={recommendation.name}
                     fill
                     sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    decoding="async"
                     className={`object-cover transition duration-700 ease-out md:group-hover:scale-105 ${
                       isTouched ? "scale-105 opacity-0" : ""
                     } ${product.hoverImage ? "md:group-hover:opacity-0" : ""}`}
@@ -367,6 +368,7 @@ export default function BuildWardrobeClient({
                       alt={`${recommendation.name} packaging`}
                       fill
                       sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      decoding="async"
                       className={`object-cover transition duration-700 ease-out md:group-hover:scale-105 md:group-hover:opacity-100 ${
                         isTouched ? "scale-105 opacity-100" : "opacity-0"
                       }`}

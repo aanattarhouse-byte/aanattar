@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  compress: true,
   productionBrowserSourceMaps: false,
+  experimental: {
+    optimizePackageImports: [
+      "framer-motion",
+      "lucide-react",
+      "react-icons/fa",
+      "react-icons/si",
+    ],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 82],
@@ -35,7 +44,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/:path*.(mp4|mov)",
+        source: "/:path*.(mp4|mov|webm)",
         headers: [
           {
             key: "Cache-Control",
@@ -48,7 +57,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/:path*.(jpg|jpeg|png|webp|avif|svg)",
+        source: "/:path*.(jpg|jpeg|png|webp|avif|svg|ico|woff|woff2)",
         headers: [
           {
             key: "Cache-Control",

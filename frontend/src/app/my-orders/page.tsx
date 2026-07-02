@@ -70,6 +70,7 @@ export default function MyOrdersPage() {
 
   useEffect(() => {
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchOrders();
     }
   }, [user, page, status]);
@@ -299,7 +300,7 @@ export default function MyOrdersPage() {
             </div>
             <h3 className="font-display text-2xl font-bold text-white mb-2">No purchases found</h3>
             <p className="text-zinc-400 text-sm max-w-sm mx-auto mb-8">
-              You haven't placed any orders yet. Explore our luxury selection of artisanal attars, bespoke blends, and custom collections.
+              You haven&apos;t placed any orders yet. Explore our luxury selection of artisanal attars, bespoke blends, and custom collections.
             </p>
             <Link
               href="/build-your-signature"
@@ -352,6 +353,7 @@ export default function MyOrdersPage() {
                               alt={item.name}
                               fill
                               sizes="64px"
+                              decoding="async"
                               className="object-cover"
                             />
                           ) : (
@@ -389,7 +391,7 @@ export default function MyOrdersPage() {
                         </p>
                         <p>{order.shippingAddress.city}, {order.shippingAddress.state} - {order.shippingAddress.pincode}</p>
                         {order.shippingAddress.deliveryInstructions && (
-                          <p className="mt-2 text-zinc-500 italic">Instructions: "{order.shippingAddress.deliveryInstructions}"</p>
+                          <p className="mt-2 text-zinc-500 italic">Instructions: &quot;{order.shippingAddress.deliveryInstructions}&quot;</p>
                         )}
                       </div>
                       <div>

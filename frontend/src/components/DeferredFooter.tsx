@@ -5,6 +5,7 @@ import LazyWhenVisible from "@/components/LazyWhenVisible";
 
 const Footer = dynamic(() => import("@/components/Footer"), {
   ssr: false,
+  loading: () => null,
 });
 
 export default function DeferredFooter() {
