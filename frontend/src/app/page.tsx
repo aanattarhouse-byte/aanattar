@@ -1,5 +1,4 @@
 import Hero from "@/components/Hero";
-import Testimonials from "@/components/Testimonials";
 import WhyChooseAanStory from "@/components/WhyChooseAanStory";
 import LazyHomeMedia from "@/components/LazyHomeMedia";
 import { getInitialAuthUser } from "@/lib/auth";
@@ -17,8 +16,6 @@ export default async function Home() {
       <Hero />
       <WhyChooseAanStory />
       <LazyHomeMedia />
-
-      <Testimonials />
     </main>
   );
 }

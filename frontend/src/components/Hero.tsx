@@ -43,8 +43,9 @@ export default function Hero() {
               alt={image.alt}
               width={1820}
               height={1000}
-              priority={index === 0}
-              loading={index === 0 ? "eager" : "lazy"}
+              priority={false}
+              loading="lazy"
+              fetchPriority="low"
               quality={82}
               sizes="100vw"
               className="hidden h-full w-full object-cover object-center md:block"
@@ -56,6 +57,7 @@ export default function Hero() {
               height={1500}
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : "low"}
               quality={82}
               sizes="100vw"
               className="h-full w-full object-cover object-center md:hidden"

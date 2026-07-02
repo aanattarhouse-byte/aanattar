@@ -9,6 +9,9 @@ const VideoStoriesSection = dynamic(() => import("@/components/VideoStoriesSecti
 const FounderVideo = dynamic(() => import("@/components/FounderVideo"), {
   ssr: false,
 });
+const Testimonials = dynamic(() => import("@/components/Testimonials"), {
+  ssr: false,
+});
 
 export default function LazyHomeMedia() {
   return (
@@ -18,6 +21,9 @@ export default function LazyHomeMedia() {
       </LazyWhenVisible>
       <LazyWhenVisible minHeight="720px">
         <FounderVideo />
+      </LazyWhenVisible>
+      <LazyWhenVisible minHeight="620px">
+        <Testimonials />
       </LazyWhenVisible>
     </>
   );

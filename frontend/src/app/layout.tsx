@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Lora, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import DeferredFooter from "@/components/DeferredFooter";
 import DeferredCinematicShell from "@/components/DeferredCinematicShell";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -62,7 +62,7 @@ export default async function RootLayout({
             <Navbar />
             <main className="relative z-10 flex-1">{children}</main>
             <div className="relative z-10">
-              <Footer />
+              <DeferredFooter />
             </div>
           </CartProvider>
         </AuthProvider>

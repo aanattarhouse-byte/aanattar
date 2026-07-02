@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    qualities: [75, 82],
     remotePatterns: [
       {
         protocol: "https",
