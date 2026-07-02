@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   compress: true,
-  productionBrowserSourceMaps: false,
+  productionBrowserSourceMaps: true,
   experimental: {
     optimizePackageImports: [
       "framer-motion",
