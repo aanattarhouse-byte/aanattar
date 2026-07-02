@@ -15,9 +15,6 @@ export type Product = {
   hoverImage?: string;
 };
 
-const unsplashImage = (id: string) =>
-  `https://unsplash.com/photos/${id}/download?force=true&w=900`;
-
 export const productImages: Record<string, string> = {
   "salim-luxury-attar": "/salim1.jpg",
   "royal-confidence": "/Royal Confidence 1.png",

@@ -14,22 +14,16 @@ import {
   User,
   X,
 } from "lucide-react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useSpring,
-} from "framer-motion";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { CART_OPEN_EVENT } from "@/lib/cart";
-import { products } from "@/lib/products";
+import type { Product } from "@/lib/products";
 import { useAuth } from "@/context/AuthContext";
-import SalimComboBuilder from "@/components/SalimComboBuilder";
 import {
   getSalimComboState,
   isSalimComboBaseItem,
@@ -41,6 +35,11 @@ const navItems = [
   { label: "Build Your Signature", href: "/build-your-signature" },
     { label: "Contact Us", href: "/contact" },
 ];
+
+const SalimComboBuilder = dynamic(() => import("@/components/SalimComboBuilder"), {
+  ssr: false,
+  loading: () => null,
+});
 
 type LenisController = {
   start: () => void;
@@ -92,40 +91,8 @@ function MagneticLink({
   onClick?: () => void;
   ariaLabel?: string;
 }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const boundsRef = useRef<DOMRect | null>(null);
-
-  const springX = useSpring(x, {
-    stiffness: 260,
-    damping: 18,
-  });
-
-  const springY = useSpring(y, {
-    stiffness: 260,
-    damping: 18,
-  });
-
   return (
-    <motion.div
-      style={{ x: springX, y: springY }}
-      onPointerEnter={(event) => {
-        boundsRef.current = event.currentTarget.getBoundingClientRect();
-      }}
-      onPointerMove={(event) => {
-        const rect =
-          boundsRef.current ?? event.currentTarget.getBoundingClientRect();
-
-        x.set((event.clientX - rect.left - rect.width / 2) * 0.12);
-
-        y.set((event.clientY - rect.top - rect.height / 2) * 0.12);
-      }}
-      onPointerLeave={() => {
-        boundsRef.current = null;
-        x.set(0);
-        y.set(0);
-      }}
-    >
+    <div className="transition-transform duration-300 hover:-translate-y-0.5">
       <Link
         href={href}
         aria-label={ariaLabel}
@@ -135,7 +102,7 @@ function MagneticLink({
       >
         {children}
       </Link>
-    </motion.div>
+    </div>
   );
 }
 
@@ -145,6 +112,7 @@ export default function Navbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchProducts, setSearchProducts] = useState<Product[]>([]);
   const { user, loginWithGoogle, logout } = useAuth();
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -162,7 +130,6 @@ export default function Navbar() {
     removeItem: removeCartItem,
   } = useCart();
   const salimComboState = getSalimComboState(cartItems);
-  const canCheckout = true;
   const hasSalimBaseInCart = cartItems.some(isSalimComboBaseItem);
   const cartDrawerItems = cartItems;
 
@@ -170,10 +137,10 @@ export default function Navbar() {
     const query = searchQuery.trim().toLowerCase();
 
     if (!query) {
-      return products.slice(0, 5);
+      return searchProducts.slice(0, 5);
     }
 
-    return products
+    return searchProducts
       .filter((product) => {
         const searchable = [
           product.name,
@@ -189,9 +156,31 @@ export default function Navbar() {
         return searchable.includes(query);
       })
       .slice(0, 6);
-  }, [searchQuery]);
+  }, [searchProducts, searchQuery]);
+  const searchCatalogReady = searchProducts.length > 0;
 
   // Session persistent synchronization is managed by AuthProvider now.
+
+  useEffect(() => {
+    if (!searchOpen || searchProducts.length > 0) return;
+
+    let cancelled = false;
+    const loadProducts = () => {
+      import("@/lib/products").then(({ products }) => {
+        if (!cancelled) {
+          setSearchProducts(products);
+        }
+      });
+    };
+    const idle = window.requestIdleCallback ?? ((cb: IdleRequestCallback) => window.setTimeout(cb, 1));
+    const cancelIdle = window.cancelIdleCallback ?? window.clearTimeout;
+    const id = idle(loadProducts);
+
+    return () => {
+      cancelled = true;
+      cancelIdle(id);
+    };
+  }, [searchOpen, searchProducts.length]);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -277,16 +266,7 @@ export default function Navbar() {
 
   return (
     <header className="relative z-50 w-full border-b border-black/5 bg-[#f8f3ea]">
-      <motion.div
-        className="mx-auto w-full max-w-[1500px] px-4 sm:px-6 lg:px-8"
-        animate={{
-          y: 0,
-          scale: 1,
-        }}
-        transition={{
-          duration: 0.4,
-        }}
-      >
+      <div className="mx-auto w-full max-w-[1500px] px-4 sm:px-6 lg:px-8">
         <nav className="flex h-[78px] items-center justify-between gap-3 sm:h-[82px]">
           {/* Logo */}
           <Link
@@ -344,15 +324,13 @@ export default function Navbar() {
           {/* Right Actions */}
           <div className="ml-auto flex items-center justify-end gap-1 sm:gap-2">
             <div ref={searchRef} className="relative hidden sm:block">
-              <motion.button
+              <button
                 type="button"
                 aria-label="Search products"
                 onClick={() => {
                   setSearchOpen((value) => !value);
                   setLoginOpen(false);
                 }}
-                whileHover={{ y: -1 }}
-                whileTap={{ scale: 0.98 }}
                 className="
                   grid
                   h-11
@@ -367,15 +345,10 @@ export default function Navbar() {
                 "
               >
                 <Search size={18} />
-              </motion.button>
+              </button>
 
-              <AnimatePresence>
-                {searchOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
-                    transition={{ duration: 0.18 }}
+              {searchOpen && (
+                  <div
                     className="
                       absolute
                       right-0
@@ -389,6 +362,7 @@ export default function Navbar() {
                       p-3
                       text-[#2A1B12]
                       shadow-[0_18px_50px_rgba(42,27,18,0.16)]
+                      animate-[why-aan-reveal_0.18s_ease-out_both]
                     "
                   >
                     <label className="relative block">
@@ -406,7 +380,7 @@ export default function Navbar() {
                     </label>
 
                     <div className="mt-3 max-h-[22rem] space-y-2 overflow-y-auto">
-                      {searchResults.length > 0 ? (
+                      {!searchCatalogReady ? null : searchResults.length > 0 ? (
                         searchResults.map((product) => (
                           <Link
                             key={product.id}
@@ -446,21 +420,18 @@ export default function Navbar() {
                         </p>
                       )}
                     </div>
-                  </motion.div>
+                  </div>
                 )}
-              </AnimatePresence>
             </div>
 
             <div ref={loginRef} className="relative hidden xl:block">
-              <motion.button
+              <button
                 type="button"
                 aria-label={user ? "Open account menu" : "Login"}
                 onClick={() => {
                   setLoginOpen((value) => !value);
                   setAuthError("");
                 }}
-                whileHover={{ y: -1 }}
-                whileTap={{ scale: 0.98 }}
                 className="
                   inline-flex
                   h-11
@@ -482,15 +453,10 @@ export default function Navbar() {
               >
                 {user ? <User size={17} /> : <LoginMark />}
                 <span className="hidden lg:inline">{user ? "Account" : ""}</span>
-              </motion.button>
+              </button>
  
-              <AnimatePresence>
-                {loginOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
-                    transition={{ duration: 0.18 }}
+              {loginOpen && (
+                  <div
                     className="
                       absolute
                       right-[-80px]
@@ -507,6 +473,7 @@ export default function Navbar() {
                       p-4
                       text-[#2A1B12]
                       shadow-[0_18px_50px_rgba(42,27,18,0.16)]
+                      animate-[why-aan-reveal_0.18s_ease-out_both]
                     "
                   >
                     {user ? (
@@ -627,17 +594,14 @@ export default function Navbar() {
                         )}
                       </div>
                     )}
-                  </motion.div>
+                  </div>
                 )}
-              </AnimatePresence>
             </div>
 
-            <motion.button
+            <button
               type="button"
               onClick={() => setCartOpen(true)}
               aria-label={`Open cart with ${cartCount} item${cartCount === 1 ? "" : "s"}`}
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.98 }}
               className="
                 relative
                 grid
@@ -656,7 +620,7 @@ export default function Navbar() {
               <span className="absolute right-0 top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#5d1717] px-1 text-[0.62rem] font-bold leading-none text-white">
                 {cartCount}
               </span>
-            </motion.button>
+            </button>
           </div>
 
           {/* Mobile Toggle */}
@@ -683,24 +647,8 @@ export default function Navbar() {
         </nav>
 
         {/* Mobile Menu */}
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: -10,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              exit={{
-                opacity: 0,
-                y: -10,
-              }}
-              transition={{
-                duration: 0.25,
-              }}
+        {open && (
+            <div
               className="
                 mb-4
                 overflow-hidden
@@ -710,6 +658,7 @@ export default function Navbar() {
                 bg-white
                 p-3
                 shadow-lg
+                animate-[why-aan-reveal_0.22s_ease-out_both]
               "
             >
               <div className="grid gap-1">
@@ -728,7 +677,7 @@ export default function Navbar() {
 
                 {searchQuery.trim() && (
                   <div className="mb-2 grid gap-2">
-                    {searchResults.length > 0 ? (
+                    {!searchCatalogReady ? null : searchResults.length > 0 ? (
                       searchResults.slice(0, 4).map((product) => (
                         <Link
                           key={product.id}
@@ -890,19 +839,12 @@ export default function Navbar() {
                   </span>
                 </button>
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
-      </motion.div>
+      </div>
 
-      <AnimatePresence>
-        {cartOpen && (
-          <motion.div
-            className="fixed inset-0 z-[120]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
+      {cartOpen && (
+          <div className="fixed inset-0 z-[120] animate-[why-aan-reveal_0.16s_ease-out_both]">
             <button
               type="button"
               aria-label="Close cart"
@@ -910,11 +852,7 @@ export default function Navbar() {
               className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
             />
 
-            <motion.aside
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 280, damping: 32 }}
+            <aside
               className="fixed bottom-3 right-3 top-3 flex h-[calc(100dvh-1.5rem)] max-h-[calc(100dvh-1.5rem)] w-[calc(100vw-3rem)] max-w-[320px] flex-col overflow-hidden rounded-l-[10px] rounded-r-[4px] bg-[#f7f8fb] text-[#16100c] shadow-[-20px_0_70px_rgba(0,0,0,0.24)] sm:bottom-0 sm:right-0 sm:top-0 sm:h-[100dvh] sm:max-h-[100dvh] sm:w-[320px] sm:rounded-none lg:w-[350px] lg:max-w-[350px]"
               role="dialog"
               aria-modal="true"
@@ -1099,32 +1037,23 @@ export default function Navbar() {
                   View Cart
                 </Link>
               </div>
-            </motion.aside>
-          </motion.div>
+            </aside>
+          </div>
         )}
-      </AnimatePresence>
 
       {/* Premium Login Modal for Mobile/Universal */}
-      <AnimatePresence>
-        {showLoginModal && (
+      {showLoginModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+            <div
               onClick={() => {
                 setShowLoginModal(false);
                 setAuthError("");
               }}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-[why-aan-reveal_0.16s_ease-out_both]"
             />
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", duration: 0.5 }}
-              className="relative w-full max-w-md overflow-hidden rounded-[16px] border border-[#e5d8c3] bg-[#fffaf3] p-6 text-[#2A1B12] shadow-2xl"
+            <div
+              className="relative w-full max-w-md overflow-hidden rounded-[16px] border border-[#e5d8c3] bg-[#fffaf3] p-6 text-[#2A1B12] shadow-2xl animate-[why-aan-reveal_0.22s_ease-out_both]"
             >
               {/* Close Button */}
               <button
@@ -1201,10 +1130,9 @@ export default function Navbar() {
                   </p>
                 )}
               </div>
-            </motion.div>
+            </div>
           </div>
         )}
-      </AnimatePresence>
 
       {/* Mobile Bottom Navigation Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-[100] bg-[#fffaf3]/95 backdrop-blur-md border-t border-[#e5d8c3]/40 shadow-[0_-4px_16px_rgba(42,27,18,0.06)] px-2 py-1.5 md:hidden">

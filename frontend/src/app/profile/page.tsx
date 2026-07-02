@@ -1,15 +1,12 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { User, Mail, Calendar, ShieldCheck, MapPin, ArrowRight } from "lucide-react";
+import { User, Mail, ShieldCheck, MapPin, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function ProfilePage() {
   const { user, loading, loginWithGoogle } = useAuth();
-  const router = useRouter();
 
   if (loading) {
     return (

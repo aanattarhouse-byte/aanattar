@@ -6,8 +6,8 @@ import { backendFetch } from "@/lib/backendApi";
 import type { Order, OrderStatus } from "@/types/store";
 import Link from "next/link";
 import { 
-  ArrowLeft, Clock, MapPin, Package, ShoppingBag, 
-  Truck, CheckCircle, RefreshCw, AlertTriangle
+  ArrowLeft, MapPin, Package, ShoppingBag, 
+  CheckCircle, RefreshCw, AlertTriangle
 } from "lucide-react";
 import Image from "next/image";
 

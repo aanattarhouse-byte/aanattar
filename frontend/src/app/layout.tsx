@@ -56,6 +56,12 @@ export default async function RootLayout({
       className={`${playfair.variable} ${lora.variable} ${spaceGrotesk.variable}`}
     >
       <head>
+        <style
+          dangerouslySetInnerHTML={{
+            __html:
+              "html{background:#0b0b0b}body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(circle at 50% -20%,rgba(255,179,71,.13),transparent 34rem),linear-gradient(180deg,#0b0b0b 0%,#111 48%,#0b0b0b 100%);color:#fafafa}body::selection{background:rgba(251,191,36,.3);color:#fff}",
+          }}
+        />
         <link
           rel="preload"
           as="image"

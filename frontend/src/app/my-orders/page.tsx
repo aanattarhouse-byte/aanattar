@@ -1,14 +1,14 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { backendFetch } from "@/lib/backendApi";
-import { addCartItem, CART_UPDATED_EVENT, requestCartOpen } from "@/lib/cart";
+import { addCartItem, requestCartOpen } from "@/lib/cart";
 import type { Order, OrderStatus } from "@/types/store";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  ShoppingBag, Search, Filter, Calendar, MapPin, 
+  ShoppingBag, Search, Filter, MapPin, 
   CreditCard, Eye, EyeOff, RefreshCw, XCircle, FileText, ChevronRight, ChevronLeft
 } from "lucide-react";
 
@@ -41,7 +41,6 @@ export default function MyOrdersPage() {
   
   // Cancellation and reordering indicators
   const [actionLoading, setActionLoading] = useState<Record<string, boolean>>({});
-  const [isPending, startTransition] = useTransition();
 
   const fetchOrders = async () => {
     setLoading(true);

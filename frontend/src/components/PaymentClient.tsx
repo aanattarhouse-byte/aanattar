@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { backendFetch } from "@/lib/backendApi";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -79,7 +78,6 @@ function loadRazorpayScript() {
 }
 
 export default function PaymentClient() {
-  const router = useRouter();
   const { user, loading: authLoading, loginWithGoogle } = useAuth();
   const [session, setSession] = useState<CheckoutSession | null>(() =>
     getCheckoutSession()

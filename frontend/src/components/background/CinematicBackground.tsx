@@ -1,11 +1,25 @@
 "use client";
 
-import ParticleField from "@/components/particles/ParticleField";
+import dynamic from "next/dynamic";
 import { useMousePosition } from "@/hooks/useMousePosition";
-import type { CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
+
+const ParticleField = dynamic(() => import("@/components/particles/ParticleField"), {
+  ssr: false,
+  loading: () => null,
+});
 
 export default function CinematicBackground() {
   const mouse = useMousePosition();
+  const [showParticles, setShowParticles] = useState(false);
+
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb: IdleRequestCallback) => window.setTimeout(cb, 1200));
+    const cancelIdle = window.cancelIdleCallback ?? window.clearTimeout;
+    const id = idle(() => setShowParticles(true));
+
+    return () => cancelIdle(id);
+  }, []);
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#0b0b0b]">
@@ -20,7 +34,7 @@ export default function CinematicBackground() {
           "--mouse-y": `${mouse.y * 100}%`,
         } as CSSProperties}
       />
-      <ParticleField />
+      {showParticles ? <ParticleField /> : null}
       <div className="cinematic-grain" />
       <div className="cinematic-vignette" />
     </div>

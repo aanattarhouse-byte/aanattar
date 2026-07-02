@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: [
       "framer-motion",
       "lucide-react",
+      "react-icons",
       "react-icons/fa",
       "react-icons/si",
     ],

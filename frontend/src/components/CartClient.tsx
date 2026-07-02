@@ -16,7 +16,6 @@ export default function CartClient() {
   const { items, subtotal, updateQuantity, removeItem } = useCart();
   const { user, loading: authLoading, loginWithGoogle } = useAuth();
   const salimComboState = getSalimComboState(items);
-  const canCheckout = true;
   const visibleItems = items;
 
   const startCheckout = async () => {

@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Minus, Plus, ShoppingCart, Zap, Check, Sparkles, X } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Zap, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
@@ -19,7 +19,6 @@ import {
   getVolumePrice,
   type ProductVolumeMl,
 } from "@/lib/productVolume";
-import ScrollReveal from "@/components/ScrollReveal";
 
 // Define the 10 bottles and their descriptions
 const BOTTLE_TEMPLATES = [
@@ -135,12 +134,9 @@ export default function ProductDetailActions({
 
   const addProductWithSelection = (chosenIndex: number | null, actionType: "cart" | "buy") => {
     if (chosenIndex !== null) {
-      const bPrice = bottlePrices[chosenIndex] || 0;
       // Original bottle add-on price logic is paused for now.
       // const itemPrice = price + bPrice;
       const itemPrice = BUILDER_PRODUCT_PRICE;
-      const selectedBottlesText = `Bottle ${chosenIndex + 1} (₹${bPrice})`;
-
       addItem({
         id: `${product.id}-bottle-${chosenIndex}-${selectedVolume}`,
         slug: product.slug,

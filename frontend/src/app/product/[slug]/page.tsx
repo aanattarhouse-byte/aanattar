@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
 import ProductDetailActions from "@/components/ProductDetailActions";
 import ProductGrid from "@/components/ProductGrid";
