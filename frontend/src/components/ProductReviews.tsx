@@ -2,11 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Star } from "lucide-react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Product } from "@/lib/products";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const reviews = [
   {
@@ -36,40 +32,53 @@ export default function ProductReviews({ product }: { product: Product }) {
     if (!sectionRef.current) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const ctx = gsap.context(() => {
-      gsap.from("[data-review-heading]", {
-        opacity: 0,
-        y: 24,
-        duration: 0.75,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 78%",
-        },
-      });
+    let context: { revert: () => void } | undefined;
+    let cancelled = false;
 
-      gsap.from("[data-review-card]", {
-        opacity: 0,
-        y: 28,
-        scale: 0.98,
-        duration: 0.7,
-        ease: "power3.out",
-        stagger: 0.12,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-        },
-      });
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+      ([{ default: gsap }, { ScrollTrigger }]) => {
+        if (!sectionRef.current || cancelled) return;
 
-      gsap.to("[data-review-marquee]", {
-        xPercent: -50,
-        duration: 18,
-        ease: "none",
-        repeat: -1,
-      });
-    }, sectionRef);
+        gsap.registerPlugin(ScrollTrigger);
+        context = gsap.context(() => {
+          gsap.from("[data-review-heading]", {
+            opacity: 0,
+            y: 24,
+            duration: 0.75,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 78%",
+            },
+          });
 
-    return () => ctx.revert();
+          gsap.from("[data-review-card]", {
+            opacity: 0,
+            y: 28,
+            scale: 0.98,
+            duration: 0.7,
+            ease: "power3.out",
+            stagger: 0.12,
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 70%",
+            },
+          });
+
+          gsap.to("[data-review-marquee]", {
+            xPercent: -50,
+            duration: 18,
+            ease: "none",
+            repeat: -1,
+          });
+        }, sectionRef);
+      }
+    );
+
+    return () => {
+      cancelled = true;
+      context?.revert();
+    };
   }, []);
 
   return (

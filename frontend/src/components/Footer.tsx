@@ -118,26 +118,6 @@ export default function Footer() {
                   <FaInstagram size={14} />
                 </a>
 
-                {/* <a
-                  href="#"
-                  aria-label="Facebook"
-                  className="
-                    w-9 h-9 rounded-full
-                    border border-white/10
-                    bg-white/5 backdrop-blur-xl
-                    flex items-center justify-center
-                    text-zinc-400
-                    hover:bg-[#B88A3D]
-                    hover:text-black
-                    hover:border-[#B88A3D]
-                    hover:scale-105
-                    duration-300
-                    transition
-                  "
-                >
-                  <FaFacebookF size={13} />
-                </a> */}
-
                 <a
                   href="mailto:hello@theaanstory.com"
                   aria-label="Email support"
@@ -197,27 +177,22 @@ export default function Footer() {
               </h3>
               <ul className="flex flex-col gap-2.5 text-xs text-zinc-400">
                 <li>
-                  <Link href="/about" className="hover:text-amber-300 transition duration-300">
+                  <Link href="/about" prefetch={false} className="hover:text-amber-300 transition duration-300">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="/build-your-signature" className="hover:text-amber-300 transition duration-300">
+                  <Link href="/build-your-signature" prefetch={false} className="hover:text-amber-300 transition duration-300">
                     Build Your Signature
                   </Link>
                 </li>
-                {/* <li>
-                  <Link href="/build-your-wardrobe" className="hover:text-amber-300 transition duration-300">
-                    Build Your Wardrobe
-                  </Link>
-                </li> */}
                 <li>
-                  <Link href="/contact" className="hover:text-amber-300 transition duration-300">
+                  <Link href="/contact" prefetch={false} className="hover:text-amber-300 transition duration-300">
                     Contact Support
                   </Link>
                 </li>
                 <li>
-                  <Link href="/track-order" className="hover:text-amber-300 transition duration-300">
+                  <Link href="/track-order" prefetch={false} className="hover:text-amber-300 transition duration-300">
                     Track Order
                   </Link>
                 </li>
@@ -265,11 +240,11 @@ export default function Footer() {
               <p>© {currentYear} Aan Attar. All rights reserved.</p>
               <span className="hidden sm:inline text-zinc-700">|</span>
               <div className="flex gap-2">
-                <Link href="/privacy" className="hover:text-zinc-400 transition">
+                <Link href="/privacy" prefetch={false} className="hover:text-zinc-400 transition">
                   Privacy Policy
                 </Link>
                 <span className="text-zinc-800">•</span>
-                <Link href="/terms" className="hover:text-zinc-400 transition">
+                <Link href="/terms" prefetch={false} className="hover:text-zinc-400 transition">
                   Terms & Conditions
                 </Link>
               </div>

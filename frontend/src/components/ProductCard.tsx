@@ -49,6 +49,7 @@ export default function ProductCard({
     >
       <Link
         href={product.slug === "salim-luxury-attar" ? "/products/salim-luxury-attar" : `/product/${product.slug}`}
+        prefetch={false}
         className="relative block aspect-[4/3] overflow-hidden bg-[#0f0907]"
         aria-label={`View ${product.name}`}
         onTouchStart={() => setIsTouched(true)}
@@ -121,6 +122,7 @@ export default function ProductCard({
           <div className={`${compact ? "mt-4" : "mt-5"}`}>
             <Link
               href="/products/salim-luxury-attar"
+              prefetch={false}
               className={`flex w-full items-center justify-center rounded-[8px] border border-amber-300/30 bg-white/5 font-bold text-amber-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-black ${
                 compact ? "h-10 px-3 text-xs" : "h-11 px-4 text-sm"
               }`}
@@ -132,6 +134,7 @@ export default function ProductCard({
           <div className={`${compact ? "mt-4" : "mt-5"} grid grid-cols-[1fr_auto] gap-2`}>
             <Link
               href={`/product/${product.slug}`}
+              prefetch={false}
               className={`inline-flex items-center justify-center rounded-[8px] border border-amber-300/30 bg-white/5 font-bold text-amber-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-black ${
                 compact ? "h-10 px-3 text-xs" : "h-11 px-4 text-sm"
               }`}

@@ -31,7 +31,6 @@ import {
 
 const navItems = [
   { label: "About", href: "/about" },
-  // { label: "Build Your Wardrobe", href: "/build-your-wardrobe" },
   { label: "Build Your Signature", href: "/build-your-signature" },
     { label: "Contact Us", href: "/contact" },
 ];
@@ -1146,18 +1145,6 @@ export default function Navbar() {
             <Home size={18} className={pathname === "/" ? "text-[#B88A3D]" : "text-[#5d1717]"} />
             <span>Home</span>
           </Link>
-
-          {/*
-          <Link
-            href="/build-your-signature"
-            className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-[9px] font-bold uppercase tracking-[0.08em] transition duration-300 ${
-              pathname === "/build-your-signature" ? "text-[#B88A3D]" : "text-[#5d1717]"
-            }`}
-          >
-            <LayoutGrid size={18} className={pathname === "/build-your-signature" ? "text-[#B88A3D]" : "text-[#5d1717]"} />
-            <span>Scent</span>
-          </Link>
-          */}
 
           <button
             type="button"

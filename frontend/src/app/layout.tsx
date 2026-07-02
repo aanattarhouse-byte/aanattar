@@ -27,13 +27,33 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://theaanstory.com"),
   title: "Aan Attar | Premium Fragrance House",
   description: "Luxury attar experience. Curated scents, build your own, and exclusive gift sets crafted around Aan Attar signature.",
   keywords: ["attar", "luxury", "perfume", "fragrance", "Aan Attar"],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Aan Attar",
     description: "Premium luxury attar brand",
+    url: "/",
+    siteName: "Aan Attar",
+    images: [
+      {
+        url: "/hero2.png",
+        width: 1200,
+        height: 676,
+        alt: "Aan Attar premium fragrance house",
+      },
+    ],
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Aan Attar | Premium Fragrance House",
+    description: "Luxury attar experience crafted around Aan Attar signature.",
+    images: ["/hero2.png"],
   },
 };
 

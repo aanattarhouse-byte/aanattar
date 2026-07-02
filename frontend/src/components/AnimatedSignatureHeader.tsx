@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
-import gsap from "gsap";
 
 export default function AnimatedSignatureHeader() {
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -10,39 +9,40 @@ export default function AnimatedSignatureHeader() {
   useEffect(() => {
     if (!headingRef.current) return;
 
-    const chars = headingRef.current.querySelectorAll(".char-span");
+    let timeline: { kill: () => void } | undefined;
 
-    // Timeline setup with loop repeat
-    const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
+    import("gsap").then(({ default: gsap }) => {
+      if (!headingRef.current) return;
 
-    // Initial setup state (hidden above viewport, blurred, transparent)
-    tl.set(headingRef.current, { y: 0, opacity: 1 });
-    tl.set(chars, { y: -150, opacity: 0, filter: "blur(12px)" });
+      const chars = headingRef.current.querySelectorAll(".char-span");
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
+      timeline = tl;
 
-    // 1. Drop down with character stagger and bounce landing
-    tl.to(chars, {
-      y: 0,
-      opacity: 1,
-      filter: "blur(0px)",
-      duration: 0.9,
-      stagger: 0.04, // Smooth letter-by-letter cascade
-      ease: "back.out(1.6)",
-    });
+      tl.set(headingRef.current, { y: 0, opacity: 1 });
+      tl.set(chars, { y: -150, opacity: 0, filter: "blur(12px)" });
 
-    // 2. Hold for 2 seconds
-    tl.to({}, { duration: 2 });
+      tl.to(chars, {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: 0.9,
+        stagger: 0.04,
+        ease: "back.out(1.6)",
+      });
 
-    // 3. Entire heading slides down, blurs, and fades out
-    tl.to(headingRef.current, {
-      y: 80,
-      opacity: 0,
-      filter: "blur(12px)",
-      duration: 0.8,
-      ease: "power2.inOut",
+      tl.to({}, { duration: 2 });
+
+      tl.to(headingRef.current, {
+        y: 80,
+        opacity: 0,
+        filter: "blur(12px)",
+        duration: 0.8,
+        ease: "power2.inOut",
+      });
     });
 
     return () => {
-      tl.kill();
+      timeline?.kill();
     };
   }, []);
 
@@ -86,6 +86,7 @@ export default function AnimatedSignatureHeader() {
       
       <Link
         href="/build-your-wardrobe"
+        prefetch={false}
         className="mt-6 inline-flex h-10 items-center rounded-[8px] border border-amber-300/40 bg-white/5 px-5 text-xs font-bold uppercase tracking-[0.1em] text-amber-100 transition hover:bg-amber-300 hover:text-black"
       >
         Build Your Wardrobe
