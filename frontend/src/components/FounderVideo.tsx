@@ -14,7 +14,6 @@ const copy = [
 export default function FounderVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isIntersecting, setIsIntersecting] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -22,9 +21,7 @@ export default function FounderVideo() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsIntersecting(true);
-        } else {
+        if (!entry.isIntersecting) {
           video.pause();
           setIsPlaying(false);
         }
@@ -39,11 +36,12 @@ export default function FounderVideo() {
     };
   }, []);
 
-  useEffect(() => {
-    if (isIntersecting && videoRef.current) {
-      videoRef.current.load();
+  const handleMouseEnter = () => {
+    const video = videoRef.current;
+    if (video && video.preload !== "auto") {
+      video.preload = "auto";
     }
-  }, [isIntersecting]);
+  };
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -73,13 +71,13 @@ export default function FounderVideo() {
         aria-hidden
       />
       <div
-        className="absolute left-1/2 top-1/2 -z-10 h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d4a24c]/10 blur-[120px]"
+        className="absolute left-1/2 top-1/2 -z-10 h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(212,162,76,0.15)_0%,transparent_70%)] pointer-events-none transform-gpu"
         aria-hidden
       />
 
       <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 sm:px-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20 lg:px-12">
         <motion.div
-          className="max-w-2xl text-left"
+          className="max-w-2xl text-left transform-gpu"
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-120px" }}
@@ -108,35 +106,34 @@ export default function FounderVideo() {
         </motion.div>
 
         <motion.div
-          className="relative mx-auto w-full max-w-[500px] lg:mr-0"
+          className="relative mx-auto w-full max-w-[500px] lg:mr-0 transform-gpu"
           initial={{ opacity: 0, y: 34, scale: 0.96 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-120px" }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
         >
           <div
-            className="absolute -inset-10 -z-10 rounded-full bg-[#d4a24c]/20 blur-[80px]"
+            className="absolute -inset-10 -z-10 rounded-full bg-[radial-gradient(circle,rgba(212,162,76,0.22)_0%,transparent_70%)] pointer-events-none transform-gpu"
             aria-hidden
           />
 
           <motion.div
             onClick={togglePlay}
-            className="group relative overflow-hidden rounded-[1.5rem] shadow-[0_32px_110px_rgba(0,0,0,0.58)] cursor-pointer"
+            onMouseEnter={handleMouseEnter}
+            className="group relative overflow-hidden rounded-[1.5rem] shadow-[0_32px_110px_rgba(0,0,0,0.58)] cursor-pointer transform-gpu"
             whileHover={{ y: -6, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 180, damping: 18 }}
           >
             <video
               ref={videoRef}
               aria-label="Founder story video"
-              className="aspect-[9/16] max-h-[720px] w-full rounded-[1.5rem] bg-black object-cover transition duration-700 group-hover:scale-[1.02]"
+              className="aspect-[9/16] max-h-[720px] w-full rounded-[1.5rem] bg-black object-cover transition duration-700 group-hover:scale-[1.02] transform-gpu"
               loop
               playsInline
               muted
-              preload="none"
+              preload="metadata"
             >
-              {isIntersecting && (
-                <source src="/founder.mp4#t=0.001" type="video/mp4" />
-              )}
+              <source src="/founder.mp4#t=0.001" type="video/mp4" />
             </video>
 
             {/* Play/Pause Overlay */}
