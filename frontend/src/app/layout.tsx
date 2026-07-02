@@ -82,20 +82,6 @@ export default async function RootLayout({
               "html{background:#0b0b0b}body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(circle at 50% -20%,rgba(255,179,71,.13),transparent 34rem),linear-gradient(180deg,#0b0b0b 0%,#111 48%,#0b0b0b 100%);color:#fafafa}body::selection{background:rgba(251,191,36,.3);color:#fff}",
           }}
         />
-        <link
-          rel="preload"
-          as="image"
-          href="/desktop1.jpg"
-          fetchPriority="high"
-          media="(min-width: 768px)"
-        />
-        <link
-          rel="preload"
-          as="image"
-          href="/mobile1.jpeg"
-          fetchPriority="high"
-          media="(max-width: 767px)"
-        />
       </head>
       <body className="min-h-screen flex flex-col bg-[#0B0B0B] text-zinc-100 antialiased selection:bg-amber-400/30 selection:text-white pb-[60px] md:pb-0">
         <AuthProvider initialUser={initialUser}>

@@ -15,6 +15,7 @@ import {
   Sparkles,
   ShieldCheck,
   RotateCcw,
+  Play,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
@@ -194,12 +195,21 @@ export default function SalimDetailsClient() {
                     }`}
                   >
                     {isVideo ? (
-                      <video
-                        src={img}
-                        className="h-full w-full object-contain sm:object-cover"
-                        muted
-                        playsInline
-                      />
+                      <div className="relative w-full h-full">
+                        <video
+                          src={img}
+                          className="h-full w-full object-contain sm:object-cover"
+                          muted
+                          playsInline
+                          preload="none"
+                          poster={i === 3 ? "/salim1.jpg" : "/salim2.jpg"}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white/90 backdrop-blur-[2px]">
+                            <Play size={10} fill="currentColor" className="ml-0.5" />
+                          </div>
+                        </div>
+                      </div>
                     ) : (
                       <Image
                         src={img}
