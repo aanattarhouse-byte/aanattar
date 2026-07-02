@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Check, Eye, ShoppingCart, Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
@@ -16,6 +17,25 @@ import {
   useNavigationGuard,
 } from "@/hooks/useNavigationGuard";
 import { useWardrobeSelection } from "@/hooks/useWardrobeSelection";
+
+type LenisController = {
+  start: () => void;
+  stop: () => void;
+};
+
+function getLenis() {
+  const lenis = (window as unknown as { lenis?: Partial<LenisController> }).lenis;
+
+  if (
+    lenis &&
+    typeof lenis.start === "function" &&
+    typeof lenis.stop === "function"
+  ) {
+    return lenis as LenisController;
+  }
+
+  return undefined;
+}
 
 type WardrobeRecommendation = {
   slug: string;
@@ -150,6 +170,24 @@ function WardrobeGuardModal({
     },
   } as const;
 
+  useEffect(() => {
+    if (!mode) return;
+
+    // Disable background scrolling
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+
+    // Stop Lenis smooth scroll if active
+    getLenis()?.stop();
+
+    return () => {
+      document.body.style.overflow = originalStyle;
+
+      // Re-enable Lenis smooth scroll
+      getLenis()?.start();
+    };
+  }, [mode]);
+
   if (!mode) {
     return null;
   }
@@ -212,6 +250,7 @@ export default function BuildWardrobeClient({
 }: {
   isPremiumCollection?: boolean;
 }) {
+  const router = useRouter();
   const [touchedSlug, setTouchedSlug] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState("");
   const [modalMode, setModalMode] = useState<GuardReason | "confirm" | null>(null);
@@ -250,17 +289,24 @@ export default function BuildWardrobeClient({
     addWardrobeItem(buildCartItem(product, recommendation, isPremiumCollection));
     setToastMessage(`${recommendation.name} added to your wardrobe.`);
 
-    if (guardEnabled && selectedCount + 1 >= minimumRequired) {
-      setShowCompleteReminder(true);
+    if (selectedCount + 1 >= minimumRequired) {
+      if (guardEnabled) {
+        setShowCompleteReminder(true);
 
-      if (completeReminderTimerRef.current) {
-        window.clearTimeout(completeReminderTimerRef.current);
+        if (completeReminderTimerRef.current) {
+          window.clearTimeout(completeReminderTimerRef.current);
+        }
+
+        completeReminderTimerRef.current = window.setTimeout(() => {
+          setShowCompleteReminder(false);
+          completeReminderTimerRef.current = null;
+        }, 2000);
       }
 
-      completeReminderTimerRef.current = window.setTimeout(() => {
-        setShowCompleteReminder(false);
-        completeReminderTimerRef.current = null;
-      }, 2000);
+      // Automatically redirect to /cart page after a brief delay
+      window.setTimeout(() => {
+        router.push("/cart");
+      }, 1200);
     }
   };
 
