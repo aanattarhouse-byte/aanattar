@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+
 import ShopSalimButton from "@/components/ShopSalimButton";
 
 const particles = [
@@ -12,6 +13,9 @@ const particles = [
   "left-[92%] top-[32%] h-1 w-1 opacity-45",
   "left-[14%] top-[46%] h-1 w-1 opacity-60",
 ];
+
+const salimBadgeButtonClassName =
+  "group absolute bottom-[12px] left-[43px] z-20 flex h-[22px] min-w-[72px] items-center justify-center whitespace-nowrap rounded-[4px] border border-[#c9963b] bg-[#0d2a4f] px-1.5 text-[5.5px] font-extrabold uppercase leading-none tracking-[0.06em] text-[#f2c766] shadow-[0_5px_12px_rgba(6,18,38,0.3),inset_0_0_0_1px_rgba(255,226,151,0.18),inset_0_1px_0_rgba(255,255,255,0.14)] ring-1 ring-[#6e4a1d]/55 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#f1c665] hover:bg-[#123460] hover:text-[#ffe08b] hover:shadow-[0_10px_22px_rgba(6,18,38,0.4),inset_0_0_0_1px_rgba(255,226,151,0.28),inset_0_1px_0_rgba(255,255,255,0.18)] active:translate-y-0 sm:bottom-4 sm:left-[54px] sm:h-7 sm:min-w-[94px] sm:px-3 sm:text-[7px] md:bottom-[146px] md:left-[155px] md:h-11 md:min-w-[146px] md:rounded-[8px] md:px-5 md:text-sm md:tracking-[0.14em] md:shadow-[0_8px_22px_rgba(6,18,38,0.34),inset_0_0_0_1px_rgba(255,226,151,0.22),inset_0_1px_0_rgba(255,255,255,0.16)]";
 
 export default function WhyChooseAanStory() {
   return (
@@ -66,10 +70,8 @@ export default function WhyChooseAanStory() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/48 via-black/8 to-transparent" />
           </Link>
-          <ShopSalimButton
-            className="absolute bottom-4 left-[45px] z-20 flex h-[40px] w-[68px] items-center justify-center overflow-hidden rounded-[20px] border-2 border-white text-center text-[9px] font-bold uppercase tracking-[0.08em] text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)] md:h-[42px] md:w-[130px] md:rounded-[14px] md:text-[12px] md:tracking-[0.1em]"
-          >
-            <span className="relative">  Shop Salim </span>
+          <ShopSalimButton className={salimBadgeButtonClassName}>
+            <span className="relative">Shop Now</span>
           </ShopSalimButton>
         </div>
 

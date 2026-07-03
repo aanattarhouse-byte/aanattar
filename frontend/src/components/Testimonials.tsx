@@ -69,7 +69,7 @@ export default function Testimonials() {
                 choose scents that leave a signature, not just an impression.
               </p>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="hidden flex-wrap gap-4 lg:flex">
                 <ShopSalimButton
                   className="rounded-lg bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
                 >
@@ -143,6 +143,14 @@ export default function Testimonials() {
                     </div>
                   </div>
                 ))}
+              </div>
+
+              <div className="mt-5 flex justify-start lg:hidden">
+                <ShopSalimButton
+                  className="rounded-lg bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
+                >
+                  Shop Now 
+                </ShopSalimButton>
               </div>
 
               <div className="absolute -top-6 right-10 h-20 w-20 rounded-full bg-zinc-100 blur-2xl" />

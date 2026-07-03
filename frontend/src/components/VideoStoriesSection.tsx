@@ -1,8 +1,9 @@
 "use client";
 
 import { fadeUp, stagger } from "@/lib/framer/motion";
+import ShopSalimButton from "@/components/ShopSalimButton";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
-import { Play, Pause } from "lucide-react";
+import { Pause, Play, ShoppingBag } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 const stories = [
@@ -308,7 +309,7 @@ export default function VideoStoriesSection() {
       className="cinematic-section relative isolate py-20 sm:py-24"
       style={{ overflow: "visible" }}
     >
-      {/* Background gradients */}
+    
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_15%_10%,rgba(255,179,71,0.12),transparent_32rem),radial-gradient(ellipse_at_85%_42%,rgba(255,107,53,0.08),transparent_28rem),linear-gradient(180deg,#090806,#11100d_48%,#070605)]" />
       <div className="absolute left-0 top-20 -z-10 h-72 w-72 rounded-full bg-[#ffb347]/10 blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 -z-10 h-80 w-80 rounded-full bg-[#8a5a1a]/16 blur-3xl pointer-events-none" />
@@ -327,6 +328,9 @@ export default function VideoStoriesSection() {
               Cinematic Stories
             </motion.p>
           </div>
+          <ShopSalimButton className="group relative z-20 hidden h-10 w-[118px] min-w-0 items-center justify-center self-end rounded-lg bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-black shadow-lg shadow-amber-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0 md:flex md:h-11 md:w-[130px] md:px-5 md:text-sm md:tracking-[0.12em]">
+            <span className="relative">Shop Now</span>
+          </ShopSalimButton>
         </div>
 
         {/* 
@@ -417,6 +421,14 @@ export default function VideoStoriesSection() {
             })
           )}
         </div>
+        <ShopSalimButton className="group relative z-20 mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-4 text-sm font-bold uppercase tracking-wide text-black shadow-lg shadow-amber-500/25 transition-all duration-300 hover:brightness-105 active:scale-[0.98] md:hidden">
+          <ShoppingBag
+            size={17}
+            strokeWidth={2.4}
+            className="transition-transform duration-300 group-hover:scale-110"
+          />
+          <span>SHOP NOW</span>
+        </ShopSalimButton>
       </motion.div>
     </section>
   );
