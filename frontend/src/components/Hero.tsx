@@ -7,7 +7,7 @@ const heroSlides = [
     mobileSrc: "/mobile1.jpeg",
     alt: "Luxury Perfume Banner 1",
     linkClassName:
-      "left-[75%] top-[62%] sm:left-[286%] sm:top-[60%] md:left-[58%] md:top-[73%]",
+      "left-[72%] top-[62%] sm:left-[286%] sm:top-[60%] md:left-[58%] md:top-[73%]",
   },
   {
     desktopSrc: "/desktop2.jpg",
