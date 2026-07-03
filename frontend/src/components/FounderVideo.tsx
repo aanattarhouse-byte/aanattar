@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, ShoppingBag } from "lucide-react";
+import ShopSalimButton from "@/components/ShopSalimButton";
 
 const copy = [
   "Built from a fascination with identity, desire, and digital craft, Salim Luxury Attar began as a personal search for work that felt rarer than a template and warmer than a campaign.",
@@ -97,12 +98,22 @@ export default function FounderVideo() {
             ))}
           </div>
 
-          <Link
-            href="/about"
-            className="mt-10 inline-flex items-center justify-center rounded-full border border-[#d4a24c]/70 px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-[#f5d28a] transition duration-300 hover:-translate-y-1 hover:border-[#ffd88a] hover:bg-[#d4a24c] hover:text-black hover:shadow-[0_18px_60px_rgba(212,162,76,0.24)]"
-          >
-            Read Full Story
-          </Link>
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            <Link
+              href="/about"
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#d4a24c]/70 px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-[#f5d28a] transition duration-300 hover:-translate-y-1 hover:border-[#ffd88a] hover:bg-[#d4a24c] hover:text-black hover:shadow-[0_18px_60px_rgba(212,162,76,0.24)]"
+            >
+              Read Full Story
+            </Link>
+            <ShopSalimButton className="group relative z-20 inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#d4a24c]/70 bg-gradient-to-r from-[#B8782F] via-[#F8DC7B] to-[#D8A642] px-5 text-sm font-bold uppercase tracking-wide text-black shadow-lg shadow-amber-500/25 transition-all duration-300 hover:-translate-y-1 hover:border-[#ffd88a] hover:brightness-105 hover:shadow-[0_18px_60px_rgba(212,162,76,0.24)] active:scale-[0.98]">
+              <ShoppingBag
+                size={17}
+                strokeWidth={2.4}
+                className="transition-transform duration-300 group-hover:scale-110"
+              />
+              <span>Shop Now</span>
+            </ShopSalimButton>
+          </div>
         </motion.div>
 
         <motion.div
