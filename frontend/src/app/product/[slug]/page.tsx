@@ -9,8 +9,6 @@ import {
   products,
 } from "@/lib/products";
 
-const BUILDER_PRODUCT_PRICE = 1;
-
 type ProductPageProps = {
   params: Promise<{
     slug: string;
@@ -75,7 +73,7 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
               <h2 className="mt-3 text-4xl">More scents in the story</h2>
             </ScrollReveal>
           </div>
-          <ProductGrid products={relatedProducts} priceOverride={BUILDER_PRODUCT_PRICE} />
+          <ProductGrid products={relatedProducts} />
         </div>
       </section>
 

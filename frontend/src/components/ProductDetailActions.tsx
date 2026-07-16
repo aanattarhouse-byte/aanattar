@@ -9,6 +9,8 @@ import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
 import {
   formatPrice,
+  getCompareAtPrice,
+  getProductDiscountPercent,
   type Product,
 } from "@/lib/products";
 import {
@@ -20,21 +22,22 @@ import {
   type ProductVolumeMl,
 } from "@/lib/productVolume";
 
-// Define the 10 bottles and their descriptions
 const BOTTLE_TEMPLATES = [
-  { id: "bottle-1", name: "Bottle 1", note: "Ocean Breeze (Sea Salt & Citrus)", image: "/bottle1.jpeg" },
-  { id: "bottle-2", name: "Bottle 2", note: "Velvet Rose (Taif Rose & Musk)", image: "/bottle2.jpeg" },
-  { id: "bottle-3", name: "Bottle 3", note: "Sandal Gold (Mysore Sandal & Amber)", image: "/bottle3.jpeg" },
-  { id: "bottle-4", name: "Bottle 4", note: "Royal Oudh (Cambodian Oud & Woods)", image: "/bottle4.jpeg" },
-  { id: "bottle-5", name: "Bottle 5", note: "Saffron Touch (Spicy Saffron & Herbs)", image: "/bottle5.jpeg" },
-  { id: "bottle-6", name: "Bottle 6", note: "Musk Supreme (Soft White Velvet Musk)", image: "/bottle6.jpeg" },
-  { id: "bottle-7", name: "Bottle 7", note: "Amber Glow (Golden Amber & Labdanum)", image: "/bottle7.jpeg" },
-  { id: "bottle-8", name: "Bottle 8", note: "Jasmine Noir (Night Jasmine & Vanilla)", image: "/bottle8.jpeg" },
-  { id: "bottle-9", name: "Bottle 9", note: "Cedar Mist (Cedarwood & Green Vetiver)", image: "/bottle9.jpeg" },
-  { id: "bottle-10", name: "Bottle 10", note: "Royal Spice (Cardamom & Warm Woods)", image: "/bottle10.jpeg" },
+  { id: "bottle-1", name: "Small Bottle 1", volume: "10ml", note: "Ocean Breeze (Sea Salt & Citrus)", image: "/bottle1.jpeg" },
+  { id: "bottle-2", name: "Small Bottle 2", volume: "10ml", note: "Velvet Rose (Taif Rose & Musk)", image: "/bottle2.jpeg" },
+  { id: "bottle-3", name: "Small Bottle 3", volume: "10ml", note: "Sandal Gold (Mysore Sandal & Amber)", image: "/bottle3.jpeg" },
+  { id: "bottle-4", name: "Small Bottle 4", volume: "10ml", note: "Royal Oudh (Cambodian Oud & Woods)", image: "/bottle4.jpeg" },
+  { id: "bottle-5", name: "Small Bottle 5", volume: "10ml", note: "Saffron Touch (Spicy Saffron & Herbs)", image: "/bottle5.jpeg" },
+  { id: "bottle-6", name: "Small Bottle 6", volume: "15ml", note: "Musk Supreme (Soft White Velvet Musk)", image: "/bottle6.jpeg" },
+  { id: "bottle-7", name: "Small Bottle 7", volume: "15ml", note: "Amber Glow (Golden Amber & Labdanum)", image: "/bottle7.jpeg" },
+  { id: "bottle-8", name: "Small Bottle 8", volume: "15ml", note: "Jasmine Noir (Night Jasmine & Vanilla)", image: "/bottle8.jpeg" },
+  { id: "bottle-9", name: "Small Bottle 9", volume: "15ml", note: "Cedar Mist (Cedarwood & Green Vetiver)", image: "/bottle9.jpeg" },
+  { id: "bottle-10", name: "Small Bottle 10", volume: "15ml", note: "Royal Spice (Cardamom & Warm Woods)", image: "/bottle10.jpeg" },
 ];
 
-const BUILDER_PRODUCT_PRICE = 1;
+function isBottleAvailableForVolume(index: number, volume: ProductVolumeMl) {
+  return PRODUCT_VOLUME_OPTIONS.includes(volume) && index >= 0 && index < BOTTLE_TEMPLATES.length;
+}
 
 export default function ProductDetailActions({
   product,
@@ -59,7 +62,7 @@ export default function ProductDetailActions({
   const bottlePrices = useMemo(() => {
     return BOTTLE_TEMPLATES.map((_, i) => {
       const seed = product.id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      return ((seed + i * 7) % 21) + 60; // stable integer price between 60 and 80
+      return ((seed + i * 7) % 11) + 70;
     });
   }, [product.id]);
   
@@ -70,6 +73,7 @@ export default function ProductDetailActions({
   const [isUpsellOpen, setIsUpsellOpen] = useState(false);
   const [upsellActionType, setUpsellActionType] = useState<"cart" | "buy">("cart");
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number | null>(null);
+  const availableBottleTemplates = BOTTLE_TEMPLATES;
 
   // Listen to signature volume custom event from other elements if necessary
   useEffect(() => {
@@ -77,6 +81,16 @@ export default function ProductDetailActions({
       const customEvent = e as CustomEvent<ProductVolumeMl>;
       if (customEvent.detail && typeof customEvent.detail === "number" && customEvent.detail !== selectedVolume) {
         setSelectedVolume(customEvent.detail);
+        setSelectedBottleIndex((index) =>
+          index !== null && isBottleAvailableForVolume(index, customEvent.detail)
+            ? index
+            : null
+        );
+        setTempSelectedIndex((index) =>
+          index !== null && isBottleAvailableForVolume(index, customEvent.detail)
+            ? index
+            : null
+        );
       }
     };
     window.addEventListener("signature-volume-changed", handleSignatureVolume);
@@ -87,10 +101,20 @@ export default function ProductDetailActions({
 
   const handleVolumeSelect = (volume: ProductVolumeMl) => {
     setSelectedVolume(volume);
+    setSelectedBottleIndex((index) =>
+      index !== null && isBottleAvailableForVolume(index, volume) ? index : null
+    );
+    setTempSelectedIndex((index) =>
+      index !== null && isBottleAvailableForVolume(index, volume) ? index : null
+    );
     window.dispatchEvent(new CustomEvent("product-volume-changed", { detail: volume }));
   };
 
   const handleSelectTempBottle = (index: number) => {
+    if (!isBottleAvailableForVolume(index, selectedVolume)) {
+      return;
+    }
+
     if (tempSelectedIndex === index) {
       setTempSelectedIndex(null);
     } else {
@@ -99,13 +123,21 @@ export default function ProductDetailActions({
   };
 
   const handleAddToCartClick = () => {
-    setTempSelectedIndex(selectedBottleIndex);
+    setTempSelectedIndex(
+      selectedBottleIndex !== null && isBottleAvailableForVolume(selectedBottleIndex, selectedVolume)
+        ? selectedBottleIndex
+        : null
+    );
     setUpsellActionType("cart");
     setIsUpsellOpen(true);
   };
 
   const handleBuyNowClick = () => {
-    setTempSelectedIndex(selectedBottleIndex);
+    setTempSelectedIndex(
+      selectedBottleIndex !== null && isBottleAvailableForVolume(selectedBottleIndex, selectedVolume)
+        ? selectedBottleIndex
+        : null
+    );
     setUpsellActionType("buy");
     setIsUpsellOpen(true);
   };
@@ -113,42 +145,40 @@ export default function ProductDetailActions({
   const router = useRouter();
   const { addItem } = useCart();
 
-  // Original product detail price logic is paused for now.
-  // const price = isPremium ? 149 : getVolumePrice(selectedVolume, product.price);
-  const price = BUILDER_PRODUCT_PRICE;
+  const price = isPremium ? 149 : getVolumePrice(selectedVolume, product.price);
 
   const regularPriceForVolume = getVolumePrice(selectedVolume, product.price);
-  // Original premium/type discount logic is paused for now.
-  // const discountPercent = isPremium
-  //   ? Math.round(((regularPriceForVolume - 149) / regularPriceForVolume) * 100)
-  //   : getProductDiscountPercent(product);
-  const discountPercent = Math.round(
-    ((regularPriceForVolume - BUILDER_PRODUCT_PRICE) / regularPriceForVolume) * 100
-  );
-  // const compareAtPrice = isPremium
-  //   ? regularPriceForVolume
-  //   : getCompareAtPrice(price, discountPercent);
-  const compareAtPrice = regularPriceForVolume;
+  const discountPercent = isPremium
+    ? Math.round(((regularPriceForVolume - 149) / regularPriceForVolume) * 100)
+    : getProductDiscountPercent(product);
+  const compareAtPrice = isPremium
+    ? regularPriceForVolume
+    : getCompareAtPrice(price, discountPercent);
 
   const selectedVolumeValue = getVolumeCartValue(selectedVolume);
 
   const addProductWithSelection = (chosenIndex: number | null, actionType: "cart" | "buy") => {
-    if (chosenIndex !== null) {
-      // Original bottle add-on price logic is paused for now.
-      // const itemPrice = price + bPrice;
-      const itemPrice = BUILDER_PRODUCT_PRICE;
+    const allowedChosenIndex =
+      chosenIndex !== null && isBottleAvailableForVolume(chosenIndex, selectedVolume)
+        ? chosenIndex
+        : null;
+
+    if (allowedChosenIndex !== null) {
+      const selectedBottle = availableBottleTemplates[allowedChosenIndex];
+      const bPrice = bottlePrices[allowedChosenIndex] || 0;
+      const itemPrice = price + bPrice;
       addItem({
-        id: `${product.id}-bottle-${chosenIndex}-${selectedVolume}`,
+        id: `${product.id}-${selectedBottle.id}-${selectedVolume}`,
         slug: product.slug,
         name: product.name, // Removed "(Signature Blend)" text
         image: product.image,
         price: itemPrice,
         quantity,
         // variant: `Bottle ${chosenIndex + 1} (${formatPrice(bPrice)})`, // Removed "Signature: " text
-        variant: `Bottle ${chosenIndex + 1}`,
+        variant: selectedBottle.name,
         volume: selectedVolumeValue,
       });
-      setSelectedBottleIndex(chosenIndex);
+      setSelectedBottleIndex(allowedChosenIndex);
     } else {
       addItem({
         id: product.id,
@@ -332,7 +362,7 @@ export default function ProductDetailActions({
                       {formatVolume(volume)}
                     </span>
                     <span className="mt-1 block font-sans text-xs font-semibold text-amber-200">
-                      {formatPrice(BUILDER_PRODUCT_PRICE)}
+                      {formatPrice(isPremium ? 149 : getVolumePrice(volume, product.price))}
                     </span>
                   </button>
                 );
@@ -435,7 +465,7 @@ export default function ProductDetailActions({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="relative z-10 w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[#0d0a08]/95 p-5 shadow-2xl backdrop-blur-2xl md:p-6"
+              className="relative z-10 w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-[#0d0a08]/95 p-5 shadow-2xl backdrop-blur-2xl md:p-7"
             >
               {/* Close Button */}
               <button
@@ -465,8 +495,8 @@ export default function ProductDetailActions({
               </div>
 
               {/* Swipeable Carousel of 7 Bottle Option Cards (Compact sizes: w-[125px], text sizes reduced) */}
-              <div className="mt-6 flex gap-3 overflow-x-auto pb-4 pt-1 px-1 scrollbar-none snap-x snap-mandatory cursor-grab active:cursor-grabbing">
-                {BOTTLE_TEMPLATES.map((template, index) => {
+              <div className="mt-6 flex gap-4 overflow-x-auto pb-5 pt-1 px-1 scrollbar-none snap-x snap-mandatory cursor-grab active:cursor-grabbing">
+                {availableBottleTemplates.map((template, index) => {
                   const isSelected = tempSelectedIndex === index;
                   const bPrice = bottlePrices[index] || 0;
 
@@ -474,7 +504,7 @@ export default function ProductDetailActions({
                     <div
                       key={template.id}
                       onClick={() => handleSelectTempBottle(index)}
-                      className={`group relative snap-center shrink-0 w-[125px] md:w-[135px] cursor-pointer flex flex-col justify-between overflow-hidden rounded-lg p-2.5 border transition-all duration-300 select-none ${
+                      className={`group relative snap-center shrink-0 w-[150px] md:w-[170px] cursor-pointer flex flex-col justify-between overflow-hidden rounded-lg p-3 border transition-all duration-300 select-none ${
                         isSelected
                           ? "border-[#D4AF37] bg-gradient-to-b from-[#D4AF37]/15 to-[#D4AF37]/0.02 shadow-[0_0_20px_rgba(212,175,55,0.22)] -translate-y-1 ring-2 ring-[#d4af37]"
                           : "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] hover:-translate-y-0.5"
@@ -503,20 +533,23 @@ export default function ProductDetailActions({
                           alt={template.name}
                           fill
                           decoding="async"
-                          sizes="100px"
+                          sizes="170px"
                           className="object-cover transition duration-300 group-hover:scale-105"
                         />
                       </div>
 
                       {/* Bottle Details */}
-                      <div className="mt-2.5 flex flex-col text-center">
-                        <span className="font-sans text-[10px] font-bold text-white leading-tight">
+                      <div className="mt-3 flex flex-col text-center">
+                        <span className="font-sans text-[11px] font-bold text-white leading-tight">
                           {template.name}
                         </span>
-                        <p className="mt-0.5 font-serif text-[8px] text-zinc-400 leading-tight line-clamp-2 min-h-[22px]">
+                        <span className="mx-auto mt-1 rounded bg-amber-300/15 px-1.5 py-0.5 font-sans text-[8px] font-bold uppercase tracking-[0.08em] text-amber-200">
+                          {template.volume}
+                        </span>
+                        <p className="mt-1 font-serif text-[9px] text-zinc-400 leading-tight line-clamp-2 min-h-[26px]">
                           {template.note}
                         </p>
-                        <span className="mt-1.5 block font-sans text-[10px] font-bold text-[#D4AF37] leading-none">
+                        <span className="mt-2 block font-sans text-[11px] font-bold text-[#D4AF37] leading-none">
                           +{formatPrice(bPrice)}
                         </span>
                       </div>
@@ -527,7 +560,7 @@ export default function ProductDetailActions({
 
               {/* Progress/Selection Dots Indicator */}
               <div className="mt-3 flex justify-center gap-1.5">
-                {BOTTLE_TEMPLATES.map((_, index) => (
+                {availableBottleTemplates.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setTempSelectedIndex(index)}

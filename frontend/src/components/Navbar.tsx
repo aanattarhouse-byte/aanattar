@@ -10,6 +10,7 @@ import {
   Search,
   ShoppingBag,
   ShoppingCart,
+  Sparkles,
   Trash2,
   User,
   X,
@@ -1161,6 +1162,19 @@ export default function Navbar() {
             </div>
             <span>Cart</span>
           </button>
+
+          <Link
+            href="/build-your-signature"
+            className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-[9px] font-bold uppercase tracking-[0.08em] transition duration-300 ${
+              pathname === "/build-your-signature" ? "text-[#B88A3D]" : "text-[#5d1717]"
+            }`}
+          >
+            <Sparkles
+              size={18}
+              className={pathname === "/build-your-signature" ? "text-[#B88A3D]" : "text-[#5d1717]"}
+            />
+            <span>Signature</span>
+          </Link>
 
           <Link
             href="/my-orders"

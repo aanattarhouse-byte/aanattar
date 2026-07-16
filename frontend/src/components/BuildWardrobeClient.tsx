@@ -8,7 +8,13 @@ import { Check, Eye, ShoppingCart, Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { requestCartOpen } from "@/lib/cart";
-import { getProductBySlug, formatPrice, type Product } from "@/lib/products";
+import {
+  getCompareAtPrice,
+  getProductBySlug,
+  getProductDiscountPercent,
+  formatPrice,
+  type Product,
+} from "@/lib/products";
 import GalaxyParticleField from "@/components/particles/GalaxyParticleField";
 import { useMinimumSelection } from "@/hooks/useMinimumSelection";
 import {
@@ -44,7 +50,7 @@ type WardrobeRecommendation = {
   line: string;
 };
 
-const BUILDER_PRODUCT_PRICE = 1;
+const PREMIUM_COLLECTION_PRICE = 149;
 
 const recommendations: WardrobeRecommendation[] = [
   {
@@ -129,10 +135,10 @@ function buildCartItem(
     slug: product.slug,
     name: recommendation.name,
     image: product.image,
-    price: BUILDER_PRODUCT_PRICE,
+    price: isPremiumCollection ? PREMIUM_COLLECTION_PRICE : product.price,
     quantity: 1,
     variant: isPremiumCollection ? "Premium Collection" : undefined,
-    volume: isPremiumCollection ? "5ml" : undefined,
+    volume: isPremiumCollection ? "10ml" : undefined,
   };
 }
 
@@ -377,11 +383,14 @@ export default function BuildWardrobeClient({
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20 w-full">
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {wardrobe.map(({ product, ...recommendation }) => {
-            const cardPrice = BUILDER_PRODUCT_PRICE;
-            const cardDiscountPercent = Math.round(
-              ((product.price - BUILDER_PRODUCT_PRICE) / product.price) * 100
-            );
-            const cardCompareAtPrice = product.price;
+            const regularPrice = product.price * 10;
+            const cardPrice = isPremiumCollection ? PREMIUM_COLLECTION_PRICE : product.price;
+            const cardDiscountPercent = isPremiumCollection
+              ? Math.round(((regularPrice - PREMIUM_COLLECTION_PRICE) / regularPrice) * 100)
+              : getProductDiscountPercent(product);
+            const cardCompareAtPrice = isPremiumCollection
+              ? regularPrice
+              : getCompareAtPrice(product.price, cardDiscountPercent);
 
             const isTouched = touchedSlug === recommendation.slug;
 

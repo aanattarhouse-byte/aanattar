@@ -1,4 +1,4 @@
-export const PRODUCT_VOLUME_OPTIONS = [5, 10, 15] as const;
+export const PRODUCT_VOLUME_OPTIONS = [10, 15] as const;
 export const DEFAULT_PRODUCT_VOLUME_ML = PRODUCT_VOLUME_OPTIONS[0];
 
 export type ProductVolumeMl = (typeof PRODUCT_VOLUME_OPTIONS)[number];

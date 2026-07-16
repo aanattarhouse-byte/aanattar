@@ -63,21 +63,23 @@ function getWardrobeFlow() {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
-  const [wardrobeFlow, setWardrobeFlow] = useState<WardrobeFlow | null>(() =>
-    getWardrobeFlow()
-  );
+  const [wardrobeFlow, setWardrobeFlow] = useState<WardrobeFlow | null>(null);
 
   useEffect(() => {
     const syncCart = () => setItems(getCartItems());
+    const syncWardrobeFlow = () => setWardrobeFlow(getWardrobeFlow());
 
     syncCart();
+    syncWardrobeFlow();
 
     window.addEventListener(CART_UPDATED_EVENT, syncCart);
     window.addEventListener("storage", syncCart);
+    window.addEventListener("storage", syncWardrobeFlow);
 
     return () => {
       window.removeEventListener(CART_UPDATED_EVENT, syncCart);
       window.removeEventListener("storage", syncCart);
+      window.removeEventListener("storage", syncWardrobeFlow);
     };
   }, []);
 
