@@ -23,6 +23,7 @@ import {
 } from "@/lib/productVolume";
 
 const BOTTLE_TEMPLATES = [
+  { id: "standard-bottle", name: "Standard Bottle", volume: "4ml", note: "Classic included bottle", image: "/standard bottle.png", price: 0, standard: true },
   { id: "bottle-1", name: "Small Bottle 1", volume: "10ml", note: "Ocean Breeze (Sea Salt & Citrus)", image: "/bottle1.jpeg" },
   { id: "bottle-2", name: "Small Bottle 2", volume: "10ml", note: "Velvet Rose (Taif Rose & Musk)", image: "/bottle2.jpeg" },
   { id: "bottle-3", name: "Small Bottle 3", volume: "10ml", note: "Sandal Gold (Mysore Sandal & Amber)", image: "/bottle3.jpeg" },
@@ -36,7 +37,8 @@ const BOTTLE_TEMPLATES = [
 ];
 
 function isBottleAvailableForVolume(index: number, volume: ProductVolumeMl) {
-  return PRODUCT_VOLUME_OPTIONS.includes(volume) && index >= 0 && index < BOTTLE_TEMPLATES.length;
+  const bottle = BOTTLE_TEMPLATES[index];
+  return Boolean(bottle?.standard) || bottle?.volume === getVolumeCartValue(volume);
 }
 
 export default function ProductDetailActions({
@@ -60,9 +62,14 @@ export default function ProductDetailActions({
 
   // Stable, deterministic prices generated based on the product ID to prevent hydration mismatches and layout shifts
   const bottlePrices = useMemo(() => {
-    return BOTTLE_TEMPLATES.map((_, i) => {
+    return BOTTLE_TEMPLATES.map((template, i) => {
+      if (template.price !== undefined) {
+        return template.price;
+      }
+
       const seed = product.id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      return ((seed + i * 7) % 11) + 70;
+      const premiumBottleIndex = i - 1;
+      return ((seed + premiumBottleIndex * 7) % 11) + 70;
     });
   }, [product.id]);
   
@@ -111,10 +118,6 @@ export default function ProductDetailActions({
   };
 
   const handleSelectTempBottle = (index: number) => {
-    if (!isBottleAvailableForVolume(index, selectedVolume)) {
-      return;
-    }
-
     if (tempSelectedIndex === index) {
       setTempSelectedIndex(null);
     } else {
@@ -159,16 +162,18 @@ export default function ProductDetailActions({
 
   const addProductWithSelection = (chosenIndex: number | null, actionType: "cart" | "buy") => {
     const allowedChosenIndex =
-      chosenIndex !== null && isBottleAvailableForVolume(chosenIndex, selectedVolume)
+      chosenIndex !== null && chosenIndex >= 0 && chosenIndex < availableBottleTemplates.length
         ? chosenIndex
         : null;
 
     if (allowedChosenIndex !== null) {
       const selectedBottle = availableBottleTemplates[allowedChosenIndex];
+      const bottleVolume = selectedBottle.volume;
+      const bottleVolumeMl = Number(bottleVolume.replace(/ml/i, ""));
       const bPrice = bottlePrices[allowedChosenIndex] || 0;
-      const itemPrice = price + bPrice;
+      const itemPrice = (isPremium ? 149 : getVolumePrice(bottleVolumeMl, product.price)) + bPrice;
       addItem({
-        id: `${product.id}-${selectedBottle.id}-${selectedVolume}`,
+        id: `${product.id}-${selectedBottle.id}-${bottleVolume}`,
         slug: product.slug,
         name: product.name, // Removed "(Signature Blend)" text
         image: product.image,
@@ -176,9 +181,12 @@ export default function ProductDetailActions({
         quantity,
         // variant: `Bottle ${chosenIndex + 1} (${formatPrice(bPrice)})`, // Removed "Signature: " text
         variant: selectedBottle.name,
-        volume: selectedVolumeValue,
+        volume: bottleVolume,
       });
       setSelectedBottleIndex(allowedChosenIndex);
+      if (!selectedBottle.standard) {
+        setSelectedVolume(bottleVolumeMl as ProductVolumeMl);
+      }
     } else {
       addItem({
         id: product.id,
