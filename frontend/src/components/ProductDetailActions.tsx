@@ -23,7 +23,7 @@ import {
 } from "@/lib/productVolume";
 
 const BOTTLE_TEMPLATES = [
-  { id: "standard-bottle", name: "Standard Bottle", volume: "4ml", note: "Classic included bottle", image: "/standard bottle.png", price: 0, standard: true },
+  { id: "standard-bottle", name: "Standard Bottle", volume: "10/15ml", note: "Classic included bottle", image: "/standard bottle.png", price: 0, standard: true },
   { id: "bottle-1", name: "Small Bottle 1", volume: "10ml", note: "Ocean Breeze (Sea Salt & Citrus)", image: "/bottle1.jpeg" },
   { id: "bottle-2", name: "Small Bottle 2", volume: "10ml", note: "Velvet Rose (Taif Rose & Musk)", image: "/bottle2.jpeg" },
   { id: "bottle-3", name: "Small Bottle 3", volume: "10ml", note: "Sandal Gold (Mysore Sandal & Amber)", image: "/bottle3.jpeg" },
@@ -168,7 +168,7 @@ export default function ProductDetailActions({
 
     if (allowedChosenIndex !== null) {
       const selectedBottle = availableBottleTemplates[allowedChosenIndex];
-      const bottleVolume = selectedBottle.volume;
+      const bottleVolume = selectedBottle.standard ? selectedVolumeValue : selectedBottle.volume;
       const bottleVolumeMl = Number(bottleVolume.replace(/ml/i, ""));
       const bPrice = bottlePrices[allowedChosenIndex] || 0;
       const itemPrice = (isPremium ? 149 : getVolumePrice(bottleVolumeMl, product.price)) + bPrice;
@@ -552,7 +552,7 @@ export default function ProductDetailActions({
                           {template.name}
                         </span>
                         <span className="mx-auto mt-1 rounded bg-amber-300/15 px-1.5 py-0.5 font-sans text-[8px] font-bold uppercase tracking-[0.08em] text-amber-200">
-                          {template.volume}
+                          {template.standard ? formatVolume(selectedVolume) : template.volume}
                         </span>
                         <p className="mt-1 font-serif text-[9px] text-zinc-400 leading-tight line-clamp-2 min-h-[26px]">
                           {template.note}
