@@ -109,7 +109,7 @@ const productCatalog: Product[] = [
     notes: ["Premium attar oil", "Soft musk", "Warm amber"],
     vibe: "Premium & Memorable",
     bestFor: "Daily wear, gifting, evening plans, and signature scent lovers.",
-    price: 1,
+    price: 499,
     category: "Signature Classics",
     premium: true,
   },

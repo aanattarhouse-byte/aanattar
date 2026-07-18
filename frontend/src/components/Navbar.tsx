@@ -267,14 +267,14 @@ export default function Navbar() {
   return (
     <header className="relative z-50 w-full border-b border-black/5 bg-[#f8f3ea]">
       <div className="mx-auto w-full max-w-[1500px] px-4 sm:px-6 lg:px-8">
-        <nav className="flex h-[78px] items-center justify-between gap-3 sm:h-[82px]">
+        <nav className="flex h-[78px] items-center justify-between gap-2 sm:h-[82px] sm:gap-3">
           {/* Logo */}
           <Link
             href="/"
-            className="flex min-w-0 flex-1 items-center gap-3 xl:flex-none"
+            className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3 xl:flex-none"
             onClick={() => setOpen(false)}
           >
-            <span className="relative h-12 w-22 shrink-0 overflow-hidden">
+            <span className="relative h-10 w-19 shrink-0 overflow-hidden sm:h-12 sm:w-22">
               <Image
                 src="/logo1.png"
                 alt="Aan Attar logo"
@@ -287,11 +287,11 @@ export default function Navbar() {
             </span>
 
             <span className="flex min-w-0 flex-col leading-none">
-              <span className="truncate font-display text-[1.05rem] font-semibold text-[#2A1B12] sm:text-[1.32rem]">
+              <span className="truncate font-display text-[0.86rem] font-semibold text-[#2A1B12] sm:text-[1.32rem]">
                 Aan Attar
               </span>
 
-              <span className="mt-1 truncate text-[0.5rem] font-bold uppercase tracking-[0.22em] text-[#B88A3D] sm:text-[0.58rem] sm:tracking-[0.34em]">
+              <span className="mt-1 whitespace-nowrap text-[0.34rem] font-bold uppercase tracking-[0.12em] text-[#B88A3D] min-[380px]:text-[0.4rem] min-[380px]:tracking-[0.16em] sm:text-[0.58rem] sm:tracking-[0.34em]">
                 Premium Fragrance House
               </span>
             </span>
@@ -600,8 +600,12 @@ export default function Navbar() {
 
             <button
               type="button"
-              onClick={() => setCartOpen(true)}
-              aria-label={`Open cart with ${cartCount} item${cartCount === 1 ? "" : "s"}`}
+              aria-label="Search products"
+              onClick={() => {
+                setSearchOpen((value) => !value);
+                setLoginOpen(false);
+                setOpen(false);
+              }}
               className="
                 relative
                 grid
@@ -614,6 +618,29 @@ export default function Navbar() {
                 duration-300
                 hover:bg-[#5d1717]/8
                 hover:text-[#8a5f1f]
+                sm:hidden
+              "
+            >
+              <Search size={20} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setCartOpen(true)}
+              aria-label={`Open cart with ${cartCount} item${cartCount === 1 ? "" : "s"}`}
+              className="
+                relative
+                hidden
+                h-11
+                w-11
+                place-items-center
+                rounded-full
+                text-[#5d1717]
+                transition
+                duration-300
+                hover:bg-[#5d1717]/8
+                hover:text-[#8a5f1f]
+                sm:grid
               "
             >
               <ShoppingCart size={21} />
@@ -645,6 +672,82 @@ export default function Navbar() {
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </nav>
+
+        {searchOpen && (
+          <div
+            ref={searchRef}
+            className="
+              relative
+              mb-3
+              overflow-hidden
+              rounded-[14px]
+              border
+              border-[#e5d8c3]
+              bg-[#fffaf3]
+              p-2.5
+              text-[#2A1B12]
+              shadow-[0_14px_34px_rgba(42,27,18,0.14)]
+              animate-[why-aan-reveal_0.18s_ease-out_both]
+              sm:hidden
+            "
+          >
+            <label className="relative block">
+              <Search
+                size={15}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8a7862]"
+              />
+              <input
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                autoFocus
+                placeholder="Search attar, oudh, musk..."
+                className="h-11 w-full rounded-[8px] border border-[#dfd1bb] bg-white pl-9 pr-3 text-sm font-medium outline-none transition placeholder:text-[#9b8c78] focus:border-[#B88A3D]"
+              />
+            </label>
+
+            <div className="mt-2 max-h-[17rem] space-y-2 overflow-y-auto">
+              {!searchCatalogReady ? null : searchResults.length > 0 ? (
+                searchResults.map((product) => (
+                  <Link
+                    key={product.id}
+                    href={`/product/${product.slug}`}
+                    onClick={() => {
+                      setSearchOpen(false);
+                      setSearchQuery("");
+                    }}
+                    className="grid grid-cols-[50px_1fr] gap-3 rounded-[8px] border border-transparent bg-white p-2 transition hover:border-[#D4A24C] hover:bg-[#fff7e9]"
+                  >
+                    <span className="relative overflow-hidden rounded-[8px] bg-[#120b08]">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        width={50}
+                        height={50}
+                        decoding="async"
+                        className="h-[50px] w-[50px] object-cover"
+                      />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-semibold">
+                        {product.name}
+                      </span>
+                      <span className="mt-1 block truncate text-xs text-[#7b6b57]">
+                        {product.category}
+                      </span>
+                      <span className="mt-1 block text-xs font-bold text-[#8a5f1f]">
+                        {formatPrice(product.price)}
+                      </span>
+                    </span>
+                  </Link>
+                ))
+              ) : (
+                <p className="rounded-[8px] bg-white p-4 text-sm text-[#7b6b57]">
+                  No products found.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Mobile Menu */}
         {open && (
