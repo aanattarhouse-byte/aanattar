@@ -83,7 +83,7 @@ export default function PaymentClient() {
     getCheckoutSession()
   );
   const [addressOpen, setAddressOpen] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("COD");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("Razorpay");
   const [statusMessage, setStatusMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -332,7 +332,7 @@ export default function PaymentClient() {
             <section className="rounded-[8px] border border-white/10 bg-white/[0.04] p-5">
               <h2 className="text-lg font-semibold">Payment Method</h2>
               <div className="mt-4 grid gap-3">
-                <label className="flex cursor-pointer items-center gap-3 rounded-[8px] border border-white/10 bg-black/20 p-4 text-sm">
+                {/* <label className="flex cursor-pointer items-center gap-3 rounded-[8px] border border-white/10 bg-black/20 p-4 text-sm">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -340,7 +340,7 @@ export default function PaymentClient() {
                     onChange={() => setPaymentMethod("COD")}
                   />
                   Cash On Delivery
-                </label>
+                </label> */}
                 <label className="flex cursor-pointer items-center gap-3 rounded-[8px] border border-white/10 bg-black/20 p-4 text-sm">
                   <input
                     type="radio"
