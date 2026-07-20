@@ -12,7 +12,7 @@ const heroSlides = [
   },
   {
     desktopSrc: "/desktop2.webp",
-    mobileSrc: "/mobile2.jpeg",
+    mobileSrc: "/mobile2.webp",
     alt: "Luxury Perfume Banner 2",
     href: "/build-your-signature",
     isImageButtonLink: true,
