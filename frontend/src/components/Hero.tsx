@@ -17,7 +17,7 @@ const heroSlides = [
     href: "/build-your-signature",
     isImageButtonLink: true,
     linkClassName:
-      "hidden md:block md:left-[69%] md:top-[87%] md:h-[8%] md:w-[18%]",
+      "left-[32%] top-[40%] h-[6%] w-[35%] md:left-[69%] md:top-[87%] md:h-[8%] md:w-[18%]",
   },
   {
     desktopSrc: "/desktop3.jpg",
