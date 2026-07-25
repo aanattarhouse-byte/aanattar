@@ -82,6 +82,7 @@ export default async function RootLayout({
               "html{background:#0b0b0b}body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(circle at 50% -20%,rgba(255,179,71,.13),transparent 34rem),linear-gradient(180deg,#0b0b0b 0%,#111 48%,#0b0b0b 100%);color:#fafafa}body::selection{background:rgba(251,191,36,.3);color:#fff}",
           }}
         />
+        {/* Meta Pixel Code */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -98,8 +99,6 @@ fbq('track', 'PageView');
 `,
           }}
         />
-      </head>
-      <body className="min-h-screen flex flex-col bg-[#0B0B0B] text-zinc-100 antialiased selection:bg-amber-400/30 selection:text-white pb-[60px] md:pb-0">
         <noscript>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -110,6 +109,9 @@ fbq('track', 'PageView');
             alt=""
           />
         </noscript>
+        {/* End Meta Pixel Code */}
+      </head>
+      <body className="min-h-screen flex flex-col bg-[#0B0B0B] text-zinc-100 antialiased selection:bg-amber-400/30 selection:text-white pb-[60px] md:pb-0">
         <AuthProvider initialUser={initialUser}>
           <CartProvider>
             <DeferredCinematicShell />
