@@ -98,8 +98,8 @@ export default function PaymentClient() {
 
   const goToSuccessPage = (orderId?: string) => {
     const successPath = orderId
-      ? `/order/success?orderId=${encodeURIComponent(orderId)}`
-      : "/order/success";
+      ? `/thankyou?orderId=${encodeURIComponent(orderId)}`
+      : "/thankyou";
 
     router.replace(successPath);
   };

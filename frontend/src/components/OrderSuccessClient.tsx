@@ -117,7 +117,7 @@ export default function OrderSuccessClient() {
   ];
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0B0B0B] px-4 py-12 text-white sm:px-6 lg:px-8">
+    <main className="relative min-h-screen overflow-hidden bg-[#0B0B0B] px-3 py-5 text-white sm:px-4 sm:py-7 lg:px-6">
       <style>{`
         @keyframes order-success-pop {
           0% { opacity: 0; transform: scale(0.72); }
@@ -158,7 +158,7 @@ export default function OrderSuccessClient() {
       `}</style>
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute left-1/2 top-0 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-[#B88A3D]/10 blur-3xl" />
+        <div className="absolute left-1/2 top-0 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-[#B88A3D]/10 blur-3xl" />
         {confetti.map((piece) => (
           <span
             key={piece.id}
@@ -174,50 +174,50 @@ export default function OrderSuccessClient() {
         ))}
       </div>
 
-      <section className="relative z-10 mx-auto flex min-h-[calc(100vh-6rem)] max-w-[600px] items-center">
-        <div className="order-success-card w-full rounded-[24px] border border-[#E5D8C3]/15 bg-[#120E0A]/85 p-5 text-center shadow-[0_28px_90px_rgba(0,0,0,0.48)] backdrop-blur-md sm:p-8">
-          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-emerald-300 via-emerald-500 to-green-700 text-white shadow-[0_0_34px_rgba(34,197,94,0.35)] order-success-icon">
-            <Check size={54} strokeWidth={3.4} />
+      <section className="relative z-10 mx-auto flex min-h-[calc(100vh-3rem)] max-w-[520px] items-center">
+        <div className="order-success-card w-full rounded-[18px] border border-[#E5D8C3]/15 bg-[#120E0A]/85 p-4 text-center shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md sm:p-5">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-300 via-emerald-500 to-green-700 text-white shadow-[0_0_26px_rgba(34,197,94,0.32)] order-success-icon sm:h-[72px] sm:w-[72px]">
+            <Check size={38} strokeWidth={3.2} />
           </div>
 
-          <h1 className="mt-7 font-display text-4xl font-semibold text-white sm:text-5xl">
+          <h1 className="mt-4 font-display text-3xl font-semibold text-white sm:text-4xl">
             Thank You!
           </h1>
-          <div className="mx-auto mt-4 max-w-md space-y-2 text-sm text-zinc-300 sm:text-base">
+          <div className="mx-auto mt-3 max-w-sm space-y-1 text-xs text-zinc-300 sm:text-sm">
             <p>Your order has been placed successfully.</p>
             <p>Thank you for choosing Aan Attar.</p>
             <p>We have received your order and our team will begin processing it shortly.</p>
           </div>
 
           {(fetchState === "loading" || authLoading) && displayOrderId && (
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#B88A3D]/20 bg-[#B88A3D]/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#EAC87A]">
-              <span className="h-3 w-3 animate-spin rounded-full border border-[#EAC87A] border-t-transparent" />
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#B88A3D]/20 bg-[#B88A3D]/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#EAC87A]">
+              <span className="h-2.5 w-2.5 animate-spin rounded-full border border-[#EAC87A] border-t-transparent" />
               Loading order details
             </div>
           )}
 
           {fetchState === "error" && displayOrderId && (
-            <p className="mx-auto mt-5 max-w-sm rounded-[8px] border border-amber-300/20 bg-amber-300/10 p-3 text-xs text-amber-100">
+            <p className="mx-auto mt-4 max-w-sm rounded-[8px] border border-amber-300/20 bg-amber-300/10 p-2.5 text-[11px] text-amber-100">
               Your order is confirmed. Detailed tracking may take a moment to appear.
             </p>
           )}
 
-          <div className="mt-8 rounded-[14px] border border-[#E5D8C3]/12 bg-black/[0.24] p-4 text-left sm:p-5">
-            <div className="space-y-4">
+          <div className="mt-5 rounded-[12px] border border-[#E5D8C3]/12 bg-black/[0.24] p-3 text-left sm:p-4">
+            <div className="space-y-3">
               {orderRows.map((row) => {
                 const Icon = row.icon;
                 return (
-                  <div key={row.label} className="flex items-start gap-3">
-                    <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] border border-[#B88A3D]/20 bg-[#B88A3D]/10 text-[#E0B35A]">
-                      <Icon size={17} />
+                  <div key={row.label} className="flex items-start gap-2.5">
+                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] border border-[#B88A3D]/20 bg-[#B88A3D]/10 text-[#E0B35A]">
+                      <Icon size={15} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-zinc-500">
+                      <p className="font-sans text-[9px] font-bold uppercase tracking-[0.14em] text-zinc-500">
                         {row.label}
                       </p>
                       <p
-                        className={`mt-1 break-words text-sm font-semibold text-zinc-100 ${
-                          row.mono ? "font-mono text-xs sm:text-sm" : "font-sans"
+                        className={`mt-0.5 break-words text-xs font-semibold text-zinc-100 ${
+                          row.mono ? "font-mono text-[11px] sm:text-xs" : "font-sans"
                         }`}
                       >
                         {row.value}
@@ -229,23 +229,23 @@ export default function OrderSuccessClient() {
             </div>
           </div>
 
-          <div className="mt-7 rounded-[14px] border border-white/10 bg-white/[0.03] p-4 text-left sm:p-5">
-            <div className="space-y-4">
+          <div className="mt-4 rounded-[12px] border border-white/10 bg-white/[0.03] p-3 text-left sm:p-4">
+            <div className="grid gap-2 sm:grid-cols-2">
               {timelineSteps.map((step, index) => {
                 const isCurrent = index === 0;
                 return (
-                  <div key={step} className="flex items-center gap-3">
+                  <div key={step} className="flex items-center gap-2.5">
                     <div
-                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border ${
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border ${
                         isCurrent
                           ? "border-emerald-400 bg-emerald-500 text-white shadow-[0_0_14px_rgba(34,197,94,0.34)]"
                           : "border-zinc-700 bg-[#0B0B0B] text-zinc-500"
                       }`}
                     >
-                      {isCurrent ? <Check size={16} strokeWidth={3} /> : <Clock3 size={13} />}
+                      {isCurrent ? <Check size={14} strokeWidth={3} /> : <Clock3 size={11} />}
                     </div>
                     <span
-                      className={`font-sans text-sm font-semibold ${
+                      className={`font-sans text-xs font-semibold ${
                         isCurrent ? "text-emerald-200" : "text-zinc-400"
                       }`}
                     >
@@ -257,29 +257,29 @@ export default function OrderSuccessClient() {
             </div>
           </div>
 
-          <div className="mt-8 grid gap-3">
+          <div className="mt-5 grid gap-2.5">
             <Link
               href="/"
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[8px] bg-[#B88A3D] px-5 text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#D4A24C] active:scale-[0.99]"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-[8px] bg-[#B88A3D] px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-black transition hover:bg-[#D4A24C] active:scale-[0.99] sm:h-11"
             >
-              <Home size={16} />
+              <Home size={14} />
               Continue Shopping
             </Link>
 
             <Link
               href={displayOrderId ? `/track-order?orderId=${encodeURIComponent(displayOrderId)}` : "/track-order"}
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[8px] border border-[#B88A3D]/45 px-5 text-xs font-bold uppercase tracking-[0.12em] text-[#F0D08A] transition hover:bg-[#B88A3D]/10 active:scale-[0.99]"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-[8px] border border-[#B88A3D]/45 px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-[#F0D08A] transition hover:bg-[#B88A3D]/10 active:scale-[0.99] sm:h-11"
             >
-              <PackageCheck size={16} />
+              <PackageCheck size={14} />
               Track Order
             </Link>
 
             {invoiceOrderId && (
               <Link
                 href={`/my-orders/invoice/${invoiceOrderId}`}
-                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[8px] border border-white/12 px-5 text-xs font-bold uppercase tracking-[0.12em] text-zinc-200 transition hover:bg-white/[0.08] active:scale-[0.99]"
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-[8px] border border-white/12 px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-zinc-200 transition hover:bg-white/[0.08] active:scale-[0.99] sm:h-11"
               >
-                <FileText size={16} />
+                <FileText size={14} />
                 Download Invoice
               </Link>
             )}
