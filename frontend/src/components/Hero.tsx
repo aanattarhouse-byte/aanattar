@@ -82,10 +82,12 @@ export default function Hero() {
               className={
                 image.isImageButtonLink
                   ? `absolute z-10 cursor-pointer ${image.linkClassName}`
-                  : `absolute z-10 mt-4 inline-block cursor-pointer rounded-full border border-[#f8d772] bg-gradient-to-r from-[#fff1a8] via-[#e6bc4c] to-[#e4ab39] px-4 py-2 text-[13px] font-semibold text-[#672380] shadow-[0_10px_28px_rgba(70,26,4,0.35),inset_0_1px_0_rgba(255,255,255,0.7)] transition duration-300 ease-in-out hover:translate-x-1 hover:from-[#fff6bf] hover:via-[#f0c84d] hover:to-[#c89222] hover:text-[#3a0d4d] hover:shadow-[0_12px_34px_rgba(70,26,4,0.45),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-6 sm:py-2.5 sm:text-[18px] md:mt-5 md:text-[19px] ${image.linkClassName}`
+                  : `absolute z-10 cursor-pointer ${image.linkClassName}`
               }
             >
-              {image.isImageButtonLink ? <span className="sr-only">Build Your Signature</span> : "Shop Now "}
+              <span className="sr-only">
+                {image.isImageButtonLink ? "Build Your Signature" : "Shop Salim now"}
+              </span>
             </Link>
           </div>
         ))}
