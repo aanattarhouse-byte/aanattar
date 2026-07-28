@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { backendFetch } from "@/lib/backendApi";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -78,6 +79,7 @@ function loadRazorpayScript() {
 }
 
 export default function PaymentClient() {
+  const router = useRouter();
   const { user, loading: authLoading, loginWithGoogle } = useAuth();
   const [session, setSession] = useState<CheckoutSession | null>(() =>
     getCheckoutSession()
@@ -92,6 +94,14 @@ export default function PaymentClient() {
   const refreshSession = () => {
     setAddressOpen(false);
     setSession(getCheckoutSession());
+  };
+
+  const goToSuccessPage = (orderId?: string) => {
+    const successPath = orderId
+      ? `/order/success?orderId=${encodeURIComponent(orderId)}`
+      : "/order/success";
+
+    router.replace(successPath);
   };
 
   const createCodOrder = async () => {
@@ -116,11 +126,7 @@ export default function PaymentClient() {
       });
 
       clearCheckoutSession();
-      setStatusMessage(
-        result?.order?._id
-          ? `Order confirmed. Order ID: ${result.order._id}`
-          : "Order confirmed."
-      );
+      goToSuccessPage(result?.order?._id);
     } catch (error) {
       setStatusMessage(
         error instanceof Error
@@ -195,11 +201,7 @@ export default function PaymentClient() {
             });
 
             clearCheckoutSession();
-            setStatusMessage(
-              result?.order?._id
-                ? `Payment successful. Order ID: ${result.order._id}`
-                : "Payment successful. Order confirmed."
-            );
+            goToSuccessPage(result?.order?._id);
           } catch (error) {
             setStatusMessage(
               error instanceof Error

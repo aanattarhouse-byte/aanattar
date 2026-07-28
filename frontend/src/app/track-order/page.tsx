@@ -32,6 +32,13 @@ export default function TrackOrderLandingPage() {
   const [loadingRecent, setLoadingRecent] = useState(false);
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const orderIdQuery = searchParams.get("orderId")?.trim();
+    if (orderIdQuery && /^[0-9a-fA-F]{24}$/.test(orderIdQuery)) {
+      router.replace(`/track-order/${orderIdQuery}`);
+      return;
+    }
+
     if (user) {
       const fetchRecentOrders = async () => {
         setLoadingRecent(true);
@@ -48,7 +55,7 @@ export default function TrackOrderLandingPage() {
       };
       fetchRecentOrders();
     }
-  }, [user]);
+  }, [router, user]);
 
   function formatCurrency(value: number) {
     return new Intl.NumberFormat("en-IN", {
