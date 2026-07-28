@@ -12,8 +12,8 @@ type HeroSlide = {
 
 const heroSlides: HeroSlide[] = [
   {
-    desktopSrc: "/desktop0.Webp",
-    mobileSrc: "/mobile0.Webp",
+    desktopSrc: "/desktop0.webp",
+    mobileSrc: "/mobile0.webp",
     alt: "Luxury Perfume Banner 1",
     href: "/products/salim-luxury-attar",
     linkClassName:
