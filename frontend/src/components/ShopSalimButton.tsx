@@ -11,7 +11,7 @@ export default function ShopSalimButton({
   className?: string;
 }) {
   return (
-    <Link href="/products/salim-luxury-attar" className={className}>
+    <Link href="/products/salim" className={className}>
       {children}
     </Link>
   );

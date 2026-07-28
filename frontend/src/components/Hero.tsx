@@ -14,10 +14,10 @@ const heroSlides: HeroSlide[] = [
   {
     desktopSrc: "/desktop0.webp",
     mobileSrc: "/mobile0.webp",
-    alt: "Luxury Perfume Banner 1",
-    href: "/products/salim-luxury-attar",
+    alt: "Luxury Perfume Banner",
+    href: "/products/salim",
     linkClassName:
-      "left-[72%] top-[62%] sm:left-[286%] sm:top-[60%] md:left-[58%] md:top-[73%]",
+      "left-[30.5%] top-[85.9%] h-[5%] w-[39%] md:left-[6%] md:top-[61.4%] md:h-[9%] md:w-[14%]",
   },
   // {
   //   desktopSrc: "/desktop2.webp",
@@ -48,7 +48,7 @@ export default function Hero() {
         {scrollingImages.map((image, index) => (
           <div
             key={`${image.desktopSrc}-${image.mobileSrc}-${index}`}
-            className="relative h-[560px] w-full shrink-0 sm:h-[640px] md:h-full"
+            className="relative w-full shrink-0 md:h-full"
           >
             <Image
               src={image.desktopSrc}
@@ -74,7 +74,7 @@ export default function Hero() {
               decoding="async"
               quality={82}
               sizes="(max-width:640px) 100vw, (max-width:1024px) 100vw, 100vw"
-              className="h-full w-full object-cover object-center md:hidden"
+              className="h-auto w-full object-contain md:hidden"
             />
             <Link
               href={image.href}
