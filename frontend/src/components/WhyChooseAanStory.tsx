@@ -53,7 +53,7 @@ export default function WhyChooseAanStory() {
 
         <div className="relative -mx-4 mt-3 max-w-6xl overflow-visible md:mx-auto md:mt-6 md:overflow-hidden">
           <Link
-            href="/products/salim"
+            href="/products/salim-luxury-attar"
             className="group relative block w-full cursor-pointer overflow-hidden"
             aria-label="Shop Salim Luxury Attar"
           >

@@ -15,7 +15,7 @@ const heroSlides: HeroSlide[] = [
     desktopSrc: "/desktop0.webp",
     mobileSrc: "/mobile0.webp",
     alt: "Luxury Perfume Banner",
-    href: "/products/salim",
+    href: "/products/salim-luxury-attar",
     linkClassName:
       "left-[30.5%] top-[85.9%] h-[5%] w-[39%] md:left-[6%] md:top-[61.4%] md:h-[9%] md:w-[14%]",
   },
