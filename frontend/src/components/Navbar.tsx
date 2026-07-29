@@ -113,7 +113,7 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
-  const { user, loginWithGoogle, logout } = useAuth();
+  const { user, browserInfo, loginWithGoogle, loginWithGoogleRedirect, logout, openInSystemBrowser } = useAuth();
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -243,6 +243,24 @@ export default function Navbar() {
       await loginWithGoogle();
       setLoginOpen(false);
       setShowLoginModal(false);
+    } catch (err: unknown) {
+      console.error(err);
+      const message = err instanceof Error ? err.message : "Google sign-in failed. Please try again.";
+      setAuthError(message);
+      if (browserInfo.isMetaInAppBrowser) {
+        setLoginOpen(false);
+        setShowLoginModal(true);
+      }
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleGoogleRedirectLogin = async () => {
+    setAuthError("");
+    setAuthLoading(true);
+    try {
+      await loginWithGoogleRedirect();
     } catch (err: unknown) {
       console.error(err);
       setAuthError(err instanceof Error ? err.message : "Google sign-in failed. Please try again.");
@@ -1173,17 +1191,47 @@ export default function Navbar() {
               <div className="flex flex-col gap-4">
                 <div className="text-center">
                   <h3 className="text-xl font-semibold text-[#2A1B12] font-display">
-                    Welcome to Aan Attar
+                    {browserInfo.isMetaInAppBrowser ? "Open in your browser" : "Welcome to Aan Attar"}
                   </h3>
                   <p className="mt-1 text-sm text-[#7b6b57]">
-                    Sign in for a premium experience
+                    {browserInfo.isMetaInAppBrowser
+                      ? "For the best sign-in experience, please open this page in Chrome or Safari."
+                      : "Sign in for a premium experience"}
                   </p>
                 </div>
 
-                {/* Google Button */}
+                {browserInfo.isMetaInAppBrowser && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={openInSystemBrowser}
+                      className="
+                        flex
+                        h-11
+                        w-full
+                        items-center
+                        justify-center
+                        rounded-[8px]
+                        bg-[#5d1717]
+                        text-sm
+                        font-semibold
+                        text-white
+                        transition
+                        hover:bg-[#742020]
+                        active:scale-[0.98]
+                      "
+                    >
+                      Open in Browser
+                    </button>
+                    <p className="text-center text-xs leading-relaxed text-[#7b6b57]">
+                      If the button does not open a browser, use the Instagram or Facebook menu and choose Open in browser.
+                    </p>
+                  </>
+                )}
+
                 <button
                   type="button"
-                  onClick={handleGoogleLogin}
+                  onClick={browserInfo.isMetaInAppBrowser ? handleGoogleRedirectLogin : handleGoogleLogin}
                   disabled={authLoading}
                   className="
                     flex
@@ -1224,7 +1272,7 @@ export default function Navbar() {
                       d="M12 24c3.24 0 5.96-1.073 7.945-2.909l-3.523-2.732c-.977.655-2.227 1.05-3.664 1.05-2.822 0-5.218-1.905-6.068-4.473L.664 18.05A11.97 11.97 0 0 0 12 24Z"
                     />
                   </svg>
-                  Google Account
+                  {browserInfo.isMetaInAppBrowser ? "Continue Here" : "Google Account"}
                 </button>
 
                 {authError && (

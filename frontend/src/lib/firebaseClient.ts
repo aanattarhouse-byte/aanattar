@@ -25,6 +25,13 @@ export async function getFirebaseAuth() {
     ]);
     const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
     auth = getAuth(app);
+
+    // Keep Firebase's client session in first-party local storage so OAuth
+    // redirects can restore the signed-in user before we exchange the ID token
+    // for the existing backend HTTP-only session cookie.
+    const { browserLocalPersistence, setPersistence } = await import('firebase/auth');
+    await setPersistence(auth, browserLocalPersistence);
+
     return auth;
   } catch (error) {
     console.error('Failed to initialize Firebase client SDK:', error);
