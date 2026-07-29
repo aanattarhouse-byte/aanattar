@@ -14,11 +14,11 @@ export const salimComboConfig = {
   requiredMiniQuantity: 2,
   addOns: [
     {
-      id: "armani-prestige",
-      name: "Armani Prestige",
+      id: "aqua-prestige",
+      name: "Aqua Prestige",
       size: "5ML",
       price: 150,
-      image: "/Armani Prestige 1.jpeg",
+      image: "/Aqua Prestige 1.jpeg",
     },
     {
       id: "one-man-show-signature",
@@ -35,11 +35,11 @@ export const salimComboConfig = {
       image: "/white musk 1.jpeg",
     },
     {
-      id: "dior-sauvage-intense",
-      name: "Dior Sauvage Intense",
+      id: "raw-woods-intense",
+      name: "Raw Woods Intense",
       size: "5ML",
       price: 150,
-      image: "/Dioɽ Sauvage Intense 1.jpeg",
+      image: "/Raw Woods Intense 1.jpeg",
     },
   ],
 } satisfies {

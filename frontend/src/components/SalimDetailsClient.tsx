@@ -437,10 +437,10 @@ export default function SalimDetailsClient() {
                 Premium Standards
               </span>
               <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl text-white">
-                Engineered for Performance
+                Why heat makes it better, not weaker
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-                Salim Luxury Attar has been carefully blended to ensure a strong, premium presence that conforms to international skin-safety norms while lasting through humid Indian climates.
+                Alcohol-based perfumes evaporate as your skin warms up — that&apos;s why they fade by afternoon. Salim is a concentrated oil blend. Body heat helps release its fragrance gradually, so a hot commute, a workout, or a long day at work brings the scent out rather than burning it away.
               </p>
             </div>
 

@@ -21,6 +21,19 @@ async function getCookieHeader() {
     .join('; ');
 }
 
+async function getAuthCookieHeader() {
+  const store = await cookies();
+
+  if (!store.has('token')) {
+    return null;
+  }
+
+  return store
+    .getAll()
+    .map((cookie) => `${cookie.name}=${encodeURIComponent(cookie.value)}`)
+    .join('; ');
+}
+
 export function toClientUser(user: {
   _id?: unknown;
   id?: unknown;
@@ -44,8 +57,14 @@ export function toClientUser(user: {
 
 export async function getInitialAuthUser() {
   try {
+    const cookieHeader = await getAuthCookieHeader();
+
+    if (!cookieHeader) {
+      return null;
+    }
+
     const data = await backendFetch('/api/auth/me', {
-      headers: { Cookie: await getCookieHeader() },
+      headers: { Cookie: cookieHeader },
       cache: 'no-store'
     });
 

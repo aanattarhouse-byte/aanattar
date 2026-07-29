@@ -54,8 +54,8 @@ const PREMIUM_COLLECTION_PRICE = 149;
 
 const recommendations: WardrobeRecommendation[] = [
   {
-    slug: "armani-prestige",
-    name: "Armani Prestige",
+    slug: "aqua-prestige",
+    name: "Aqua Prestige",
     occasion: "For the Interview",
     line: "You've rehearsed everything. Don't forget this.",
   },
@@ -72,20 +72,20 @@ const recommendations: WardrobeRecommendation[] = [
     line: "Wear it and people just... like being around you more. Coincidence? No.",
   },
   {
-    slug: "dior-sauvage-intense",
-    name: "Dior Sauvage Intense",
+    slug: "raw-woods-intense",
+    name: "Raw Woods Intense",
     occasion: "For the First Date",
     line: "We're not saying it's magic. We're just saying it works.",
   },
   {
-    slug: "giorgio-armani-luxe",
-    name: "Giorgio Armani Luxe",
+    slug: "mediterranean-luxe",
+    name: "Mediterranean Luxe",
     occasion: "For the Wedding",
     line: "Be the guest they talk about at brunch the next morning.",
   },
   {
-    slug: "gucci-guilty-cologne-supreme",
-    name: "Gucci Guilty Cologne Supreme",
+    slug: "cypress-supreme",
+    name: "Cypress Supreme",
     occasion: "For the Party",
     line: "The playlist is good. The drinks are good. You smell incredible. Perfect night.",
   },
@@ -102,14 +102,14 @@ const recommendations: WardrobeRecommendation[] = [
     line: "Put in the effort. It'll show. It always shows.",
   },
   {
-    slug: "chanel-bleu-de-chanel-reserve",
-    name: "Chanel Bleu de Chanel Réserve",
+    slug: "azure-cedar-reserve",
+    name: "Azure Cedar Reserve",
     occasion: "For the Big Moments",
-    line: "Life's too short to skip the Chanel.",
+    line: "Life's too short to skip the signature.",
   },
   {
-    slug: "gucci-flora-bloom",
-    name: "Gucci Flora Bloom",
+    slug: "garden-bloom",
+    name: "Garden Bloom",
     occasion: 'For "Her"',
     line: "A fragrance that turns ordinary moments into memorable ones.",
   },
