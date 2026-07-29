@@ -80,7 +80,7 @@ function loadRazorpayScript() {
 
 export default function PaymentClient() {
   const router = useRouter();
-  const { user, loading: authLoading, loginWithGoogle } = useAuth();
+  const { user, loading: authLoading, browserInfo, loginWithGoogle, openInSystemBrowser } = useAuth();
   const [session, setSession] = useState<CheckoutSession | null>(() =>
     getCheckoutSession()
   );
@@ -255,6 +255,12 @@ export default function PaymentClient() {
 
   const confirmOrder = () => {
     if (!user) {
+      if (browserInfo.isMetaInAppBrowser) {
+        setStatusMessage("Please open in Chrome or Safari to login and place your order.");
+        openInSystemBrowser();
+        return;
+      }
+
       setStatusMessage("Please login to place your order.");
       void loginWithGoogle().catch(() => {
         setStatusMessage("Login is required before placing an order.");
@@ -408,7 +414,11 @@ export default function PaymentClient() {
               }`}
             >
               {!user
-                ? authLoading ? "Logging In..." : "Login To Order"
+                ? authLoading
+                  ? "Logging In..."
+                  : browserInfo.isMetaInAppBrowser
+                  ? "Open In Browser"
+                  : "Login To Order"
                 : paymentMethod === "COD"
                 ? isSubmitting ? "Confirming..." : "Confirm Order"
                 : isVerifying ? "Verifying Payment..." : isSubmitting ? "Opening Payment..." : "Pay Now"}

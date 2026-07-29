@@ -14,7 +14,7 @@ export default function CartClient() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [loginMessage, setLoginMessage] = useState("");
   const { items, subtotal, updateQuantity, removeItem } = useCart();
-  const { user, loading: authLoading, loginWithGoogle } = useAuth();
+  const { user, loading: authLoading, browserInfo, loginWithGoogle, openInSystemBrowser } = useAuth();
   const salimComboState = getSalimComboState(items);
   const visibleItems = items;
 
@@ -22,6 +22,12 @@ export default function CartClient() {
     setLoginMessage("");
 
     if (!user) {
+      if (browserInfo.isMetaInAppBrowser) {
+        setLoginMessage("Please open in Chrome or Safari to login and place your order.");
+        openInSystemBrowser();
+        return;
+      }
+
       setLoginMessage("Please login to place your order.");
       try {
         await loginWithGoogle();
@@ -175,7 +181,13 @@ export default function CartClient() {
           disabled={authLoading}
           className="mt-6 h-12 w-full rounded-[8px] text-xs font-bold uppercase tracking-[0.12em] text-black transition bg-[#D4A24C] hover:bg-[#E0B35A] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {authLoading ? "Logging In..." : user ? "Order Now" : "Login To Order"}
+          {authLoading
+            ? "Logging In..."
+            : user
+            ? "Order Now"
+            : browserInfo.isMetaInAppBrowser
+            ? "Open In Browser"
+            : "Login To Order"}
         </button>
         {loginMessage && (
           <p className="mt-3 rounded-[8px] border border-amber-300/20 bg-amber-300/10 p-3 text-xs font-semibold text-amber-100">
