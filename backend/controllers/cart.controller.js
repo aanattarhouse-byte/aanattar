@@ -5,6 +5,8 @@ import asyncHandler from '../utils/asyncHandler.js';
 
 const getVolumePrice = (volume, pricePerMl) => {
   const volumeMl = Number(String(volume || '').replace(/ml/i, ''));
+  if (volumeMl === 15) return pricePerMl * 10 + 160;
+
   return volumeMl > 0 ? volumeMl * pricePerMl : null;
 };
 
