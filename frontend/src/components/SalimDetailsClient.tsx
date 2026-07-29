@@ -432,15 +432,15 @@ export default function SalimDetailsClient() {
       <section className="border-t border-white/10 bg-[#070605] px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-            <div>
+            <div className="text-left">
               <span className="text-xs font-bold uppercase tracking-[0.24em] text-amber-300">
                 Premium Standards
               </span>
               <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl text-white">
-                Why heat makes it better, not weaker
+                Engineered for Performance
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-                Alcohol-based perfumes evaporate as your skin warms up — that&apos;s why they fade by afternoon. Salim is a concentrated oil blend. Body heat helps release its fragrance gradually, so a hot commute, a workout, or a long day at work brings the scent out rather than burning it away.
+                Salim Luxury Attar has been carefully blended to ensure a strong, premium presence that conforms to international skin-safety norms while lasting through humid Indian climates.
               </p>
             </div>
 
@@ -489,6 +489,18 @@ export default function SalimDetailsClient() {
                   <h4 className="text-sm font-bold text-white">Compliment Trigger</h4>
                   <p className="mt-1 text-xs text-zinc-400">
                     Uniquely composed projection layers that command notice and appreciation.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-400">
+                  <Zap size={18} />
+                </span>
+                <div>
+                  <h4 className="text-sm font-bold text-white">Why heat makes it better, not weaker</h4>
+                  <p className="mt-1 text-xs text-zinc-400">
+                    Alcohol-based perfumes evaporate as your skin warms up — that&apos;s why they fade by afternoon. Salim is a concentrated oil blend. Body heat helps release its fragrance gradually, so a hot commute, a workout, or a long day at work brings the scent out rather than burning it away.
                   </p>
                 </div>
               </div>
