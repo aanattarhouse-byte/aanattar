@@ -113,7 +113,7 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
-  const { user, browserInfo, loginWithGoogle, loginWithGoogleRedirect, logout, openInSystemBrowser } = useAuth();
+  const { user, browserInfo, loginWithGoogle, logout, openInSystemBrowser } = useAuth();
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -251,19 +251,6 @@ export default function Navbar() {
         setLoginOpen(false);
         setShowLoginModal(true);
       }
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const handleGoogleRedirectLogin = async () => {
-    setAuthError("");
-    setAuthLoading(true);
-    try {
-      await loginWithGoogleRedirect();
-    } catch (err: unknown) {
-      console.error(err);
-      setAuthError(err instanceof Error ? err.message : "Google sign-in failed. Please try again.");
     } finally {
       setAuthLoading(false);
     }
@@ -1229,51 +1216,53 @@ export default function Navbar() {
                   </>
                 )}
 
-                <button
-                  type="button"
-                  onClick={browserInfo.isMetaInAppBrowser ? handleGoogleRedirectLogin : handleGoogleLogin}
-                  disabled={authLoading}
-                  className="
-                    flex
-                    h-11
-                    w-full
-                    items-center
-                    justify-center
-                    gap-3
-                    rounded-[8px]
-                    border
-                    border-[#d8cbb4]
-                    bg-white
-                    text-sm
-                    font-semibold
-                    text-[#2A1B12]
-                    transition
-                    hover:border-[#B88A3D]
-                    hover:bg-[#fff7e9]
-                    active:scale-[0.98]
-                    disabled:opacity-50
-                  "
-                >
-                  <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24">
-                    <path
-                      fill="#EA4335"
-                      d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.198 2.698 1.24 6.65l4.026 3.115Z"
-                    />
-                    <path
-                      fill="#4285F4"
-                      d="M23.04 12.273c0-.818-.073-1.609-.209-2.373H12v4.5h6.19c-.268 1.419-1.07 2.619-2.277 3.428l3.523 2.732c2.06-1.9 3.24-4.7 3.24-8.287Z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.266 14.235A7.108 7.108 0 0 1 4.909 12c0-.79.13-1.554.357-2.265L1.24 6.62A11.96 11.96 0 0 0 0 12c0 1.92.454 3.736 1.24 5.35l4.026-3.115Z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 24c3.24 0 5.96-1.073 7.945-2.909l-3.523-2.732c-.977.655-2.227 1.05-3.664 1.05-2.822 0-5.218-1.905-6.068-4.473L.664 18.05A11.97 11.97 0 0 0 12 24Z"
-                    />
-                  </svg>
-                  {browserInfo.isMetaInAppBrowser ? "Continue Here" : "Google Account"}
-                </button>
+                {!browserInfo.isMetaInAppBrowser && (
+                  <button
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    disabled={authLoading}
+                    className="
+                      flex
+                      h-11
+                      w-full
+                      items-center
+                      justify-center
+                      gap-3
+                      rounded-[8px]
+                      border
+                      border-[#d8cbb4]
+                      bg-white
+                      text-sm
+                      font-semibold
+                      text-[#2A1B12]
+                      transition
+                      hover:border-[#B88A3D]
+                      hover:bg-[#fff7e9]
+                      active:scale-[0.98]
+                      disabled:opacity-50
+                    "
+                  >
+                    <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24">
+                      <path
+                        fill="#EA4335"
+                        d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.198 2.698 1.24 6.65l4.026 3.115Z"
+                      />
+                      <path
+                        fill="#4285F4"
+                        d="M23.04 12.273c0-.818-.073-1.609-.209-2.373H12v4.5h6.19c-.268 1.419-1.07 2.619-2.277 3.428l3.523 2.732c2.06-1.9 3.24-4.7 3.24-8.287Z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M5.266 14.235A7.108 7.108 0 0 1 4.909 12c0-.79.13-1.554.357-2.265L1.24 6.62A11.96 11.96 0 0 0 0 12c0 1.92.454 3.736 1.24 5.35l4.026-3.115Z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M12 24c3.24 0 5.96-1.073 7.945-2.909l-3.523-2.732c-.977.655-2.227 1.05-3.664 1.05-2.822 0-5.218-1.905-6.068-4.473L.664 18.05A11.97 11.97 0 0 0 12 24Z"
+                      />
+                    </svg>
+                    Google Account
+                  </button>
+                )}
 
                 {authError && (
                   <p className="text-xs font-medium text-red-600 text-center">
