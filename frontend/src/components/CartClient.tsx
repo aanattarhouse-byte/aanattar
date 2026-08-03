@@ -168,7 +168,7 @@ export default function CartClient() {
           )}
           <div className="flex justify-between text-sm text-zinc-300">
             <span>Shipping</span>
-            <span>Calculated at checkout</span>
+            <span>Free</span>
           </div>
         </div>
         <div className="mt-5 flex justify-between text-base font-bold">
