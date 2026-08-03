@@ -18,10 +18,12 @@ export default function ProductCard({
   product,
   compact = false,
   priceOverride,
+  hideAddToCart = false,
 }: {
   product: Product;
   compact?: boolean;
   priceOverride?: number;
+  hideAddToCart?: boolean;
 }) {
   const [isTouched, setIsTouched] = useState(false);
   const { addItem } = useCart();
@@ -118,10 +120,10 @@ export default function ProductCard({
           {product.shortDescription}
         </p>
 
-        {product.slug === "salim-luxury-attar" ? (
+        {product.slug === "salim-luxury-attar" || hideAddToCart ? (
           <div className={`${compact ? "mt-4" : "mt-5"}`}>
             <Link
-              href="/products/salim-luxury-attar"
+              href={product.slug === "salim-luxury-attar" ? "/products/salim-luxury-attar" : `/product/${product.slug}`}
               prefetch={false}
               className={`flex w-full items-center justify-center rounded-[8px] border border-amber-300/30 bg-white/5 font-bold text-amber-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-black ${
                 compact ? "h-10 px-3 text-xs" : "h-11 px-4 text-sm"

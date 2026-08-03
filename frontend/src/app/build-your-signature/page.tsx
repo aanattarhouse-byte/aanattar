@@ -27,6 +27,7 @@ export default function BuildYourSignaturePage() {
             <ProductGrid
               products={signatureProducts}
               compact
+              hideAddToCart
             />
           </div>
         </div>
