@@ -144,7 +144,7 @@ export default function FounderVideo() {
               muted
               preload="metadata"
             >
-              <source src="/founder.mp4#t=0.001" type="video/mp4" />
+              <source src="/founder.webm#t=0.001" type="video/webm" />
             </video>
 
             {/* Play/Pause Overlay */}
