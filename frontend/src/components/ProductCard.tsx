@@ -104,12 +104,12 @@ export default function ProductCard({
           <span className={`font-sans font-bold leading-none text-amber-100 ${
             compact ? "text-base" : "text-xl"
           }`}>
-            {formatPrice(displayPrice)}
+            {formatPrice(displayPrice)}/ml
           </span>
           <span className={`font-sans font-semibold leading-none text-zinc-500 line-through ${
             compact ? "text-xs" : "text-sm"
           }`}>
-            {formatPrice(compareAtPrice)}
+            {formatPrice(compareAtPrice)}/ml
           </span>
           <span className={`rounded-[3px] bg-emerald-600 px-2 py-1 font-sans font-bold leading-none text-white ${
             compact ? "text-[0.58rem]" : "text-[0.68rem]"
