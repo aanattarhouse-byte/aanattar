@@ -40,10 +40,11 @@ const prepareVideoPreview = (video: HTMLVideoElement) => {
   video.muted = true;
   video.defaultMuted = true;
   video.playsInline = true;
-  video.preload = "auto";
+  video.preload = "metadata";
 
   if (!video.src) {
     video.src = src;
+    video.load();
   }
 };
 
@@ -52,6 +53,7 @@ const playVideoElement = (video: HTMLVideoElement, muted: boolean) => {
 
   video.muted = muted;
   video.defaultMuted = muted;
+  video.preload = "auto";
   if (!muted) {
     video.volume = 1;
   }
@@ -87,7 +89,7 @@ function MobileCard({
     offset: ["start end", "start start"],
   });
 
-  const imageScale = useTransform(scrollYProgress, [0, 1], [2, 1]);
+  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1]);
   const scale = useTransform(progress, range, [1, targetScale]);
 
   return (
@@ -107,7 +109,7 @@ function MobileCard({
         onClick={() => {
           if (video) playVideo(i);
         }}
-        className={`group relative h-[27rem] min-h-[27rem] w-full max-w-[340px] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] md:backdrop-blur-2xl backdrop-blur-sm transition-shadow duration-300 ${video ? "cursor-pointer" : ""
+        className={`group relative h-[27rem] min-h-[27rem] w-full max-w-[340px] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] transition-shadow duration-300 ${video ? "cursor-pointer" : ""
           }`} 
       >
         {/* Video / Image Asset */}
@@ -189,6 +191,31 @@ export default function VideoStoriesSection() {
   }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Load only lightweight metadata shortly before a card appears. This keeps
+  // mobile videos ready without forcing full MP4 downloads during page load.
+  useEffect(() => {
+    const videos = videoRefs.current.filter(Boolean) as HTMLVideoElement[];
+    if (!videos.length) return;
+
+    const loader = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const video = entry.target as HTMLVideoElement;
+          prepareVideoPreview(video);
+          obs.unobserve(video);
+        });
+      },
+      { rootMargin: "160px 0px", threshold: 0.01 }
+    );
+
+    videos.forEach((video) => {
+      if (video.dataset?.src) loader.observe(video);
+    });
+
+    return () => loader.disconnect();
+  }, [mounted, isMobile]);
 
   // Stacking scroll progress across the entire cards container
   const { scrollYProgress } = useScroll({
@@ -321,7 +348,7 @@ export default function VideoStoriesSection() {
                 onClick={() => {
                   if (story.video) playOnlyVideo(index);
                 }}
-                className={`group relative min-h-[27rem] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] md:backdrop-blur-2xl backdrop-blur-sm ${story.video ? "cursor-pointer" : ""}`}
+                className={`group relative min-h-[27rem] overflow-hidden rounded-[8px] border border-[#d9a84e]/24 bg-white/[0.04] shadow-[0_28px_90px_rgba(0,0,0,0.34)] ${story.video ? "cursor-pointer" : ""}`}
               >
                 {story.video ? (
                   <>
