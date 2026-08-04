@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import AnimatedSignatureHeader from "@/components/AnimatedSignatureHeader";
 import EmptyState from "@/components/EmptyState";
 import NoteChip from "@/components/NoteChip";
 import OccasionChip from "@/components/OccasionChip";
@@ -251,7 +250,21 @@ export default function ProductFilter({ products }: { products: Product[] }) {
 
   return (
     <div className="mx-auto max-w-7xl relative z-10">
-      <div ref={searchRef} className="sticky top-20 z-40 -mx-4 mb-9 px-4 pt-2 sm:static sm:mx-0 sm:px-0 sm:pt-0">
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+            Build Your Signature
+          </p>
+          <h1 className="mt-2 max-w-3xl text-3xl font-semibold leading-tight text-white drop-shadow-[0_8px_34px_rgba(255,179,71,0.18)] sm:text-4xl md:text-5xl">
+            Choose the attar that enters before you do.
+          </h1>
+        </div>
+        <p className="text-sm font-semibold text-zinc-400">
+          {products.length} signature attars
+        </p>
+      </div>
+
+      <div ref={searchRef} className="sticky top-20 z-40 -mx-4 mb-7 px-4 pt-2 sm:static sm:mx-0 sm:px-0 sm:pt-0">
         <div className="rounded-[28px] border border-white/10 bg-black/40 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-6">
           <div className="mb-5 flex justify-center">
             <div
@@ -313,9 +326,7 @@ export default function ProductFilter({ products }: { products: Product[] }) {
         </div>
       </div>
 
-      <AnimatedSignatureHeader />
-
-      <div ref={resultsRef} className="mt-9 scroll-mt-32">
+      <div ref={resultsRef} className="scroll-mt-32">
         <AnimatePresence mode="wait">
           <motion.div
             key={`${activeTab}-${committedQuery || "all"}`}
