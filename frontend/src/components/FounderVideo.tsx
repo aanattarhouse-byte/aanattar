@@ -16,18 +16,34 @@ export default function FounderVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  const prepareVideo = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.preload = "metadata";
+    if (!video.src) {
+      video.src = "/founder.webm#t=0.001";
+      video.load();
+    }
+  };
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        if (entry.isIntersecting) {
+          prepareVideo();
+          return;
+        }
+
         if (!entry.isIntersecting) {
           video.pause();
           setIsPlaying(false);
         }
       },
-      { threshold: 0.15, rootMargin: "200px 0px" }
+      { threshold: 0.15, rootMargin: "500px 0px" }
     );
 
     observer.observe(video);
@@ -39,9 +55,8 @@ export default function FounderVideo() {
 
   const handleMouseEnter = () => {
     const video = videoRef.current;
-    if (video && video.preload !== "auto") {
-      video.preload = "auto";
-    }
+    prepareVideo();
+    if (video) video.preload = "auto";
   };
 
   const togglePlay = () => {
@@ -52,6 +67,7 @@ export default function FounderVideo() {
       video.pause();
       setIsPlaying(false);
     } else {
+      prepareVideo();
       video.muted = false;
       video.defaultMuted = false;
       video.volume = 1;
@@ -142,10 +158,8 @@ export default function FounderVideo() {
               loop
               playsInline
               muted
-              preload="metadata"
-            >
-              <source src="/founder.webm#t=0.001" type="video/webm" />
-            </video>
+              preload="none"
+            />
 
             {/* Play/Pause Overlay */}
             <div className="absolute inset-0 flex items-center justify-center transition-all duration-300 z-20 pointer-events-none">

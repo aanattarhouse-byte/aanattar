@@ -14,16 +14,20 @@ import {
   type Product,
 } from "@/lib/products";
 
+export type ProductCardDetailMode = "notes" | "occasion";
+
 export default function ProductCard({
   product,
   compact = false,
   priceOverride,
   hideAddToCart = false,
+  detailMode = "notes",
 }: {
   product: Product;
   compact?: boolean;
   priceOverride?: number;
   hideAddToCart?: boolean;
+  detailMode?: ProductCardDetailMode;
 }) {
   const [isTouched, setIsTouched] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
@@ -31,6 +35,7 @@ export default function ProductCard({
   const discountPercent = getProductDiscountPercent(product);
   const displayPrice = priceOverride ?? product.price;
   const compareAtPrice = getCompareAtPrice(product.price, discountPercent);
+  const detailText = detailMode === "notes" ? product.notes.join(", ") : product.bestFor;
   const hoverImage = product.hoverImage && (isTouched || isHovering) ? product.hoverImage : undefined;
 
   const addToCart = () => {
@@ -121,7 +126,7 @@ export default function ProductCard({
         <p className={`mt-2 line-clamp-3 text-zinc-300 ${
           compact ? "text-xs" : "text-sm"
         }`}>
-          {product.shortDescription}
+          {detailText}
         </p>
 
         {product.slug === "salim-luxury-attar" || hideAddToCart ? (

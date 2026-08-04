@@ -33,21 +33,30 @@ const stories = [
   },
 ];
 
-const loadVideoBackground = (video: HTMLVideoElement) => {
+const prepareVideoPreview = (video: HTMLVideoElement) => {
   const src = video.dataset?.src || "";
   if (!src) return;
 
   video.muted = true;
   video.defaultMuted = true;
   video.playsInline = true;
-  video.preload = "none";
+  video.preload = "metadata";
 
   if (!video.src) {
     video.src = `${src}#t=0.001`;
     video.load();
   }
+};
 
-  video.play().catch(() => undefined);
+const playVideoElement = (video: HTMLVideoElement, muted: boolean) => {
+  prepareVideoPreview(video);
+
+  video.muted = muted;
+  video.defaultMuted = muted;
+  if (!muted) {
+    video.volume = 1;
+  }
+  return video.play();
 };
 
 interface MobileCardProps {
@@ -117,7 +126,6 @@ function MobileCard({
                   className="absolute inset-0 h-full w-full object-cover"
                   data-src={video}
                   aria-label={`${stories[i].title} video`}
-                  autoPlay
                   loop
                   muted
                   playsInline
@@ -183,33 +191,24 @@ export default function VideoStoriesSection() {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Start video backgrounds before the card reaches the viewport.
-  // On mobile, we only preload the first video. The rest will load as they become active.
+  // Prepare first frames before the cards reach the viewport without autoplaying every file.
   useEffect(() => {
     const videos = videoRefs.current.filter(Boolean) as HTMLVideoElement[];
     if (!videos.length) return;
-
-    loadVideoBackground(videos[0]);
-
-    if (isMobile) {
-      // On mobile, subsequent videos will only load when they scroll to active focus
-      return;
-    }
 
     const loader = new IntersectionObserver(
       (entries, obs) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const video = entry.target as HTMLVideoElement;
-          loadVideoBackground(video);
+          prepareVideoPreview(video);
           obs.unobserve(video);
         });
       },
-      { rootMargin: "200px 0px", threshold: 0.01 }
+      { rootMargin: "700px 0px", threshold: 0.01 }
     );
 
     videos.forEach((v) => {
-      // Only observe videos that have a data-src attribute
       if (v.dataset && v.dataset.src) loader.observe(v);
     });
 
@@ -232,8 +231,8 @@ export default function VideoStoriesSection() {
       if (activeIndex < 0) activeIndex = 0;
 
       const activeVideo = videoRefs.current[activeIndex];
-      if (activeVideo && playingIndex !== activeIndex) {
-        loadVideoBackground(activeVideo);
+      if (activeVideo && !activeVideo.src) {
+        prepareVideoPreview(activeVideo);
       }
 
       videoRefs.current.forEach((video, idx) => {
@@ -292,13 +291,7 @@ export default function VideoStoriesSection() {
       item.currentTime = 0;
     });
 
-    if (!video.src) {
-      loadVideoBackground(video);
-    }
-    video.muted = false;
-    video.defaultMuted = false;
-    video.volume = 1;
-    video.play()
+    playVideoElement(video, false)
       .then(() => setPlayingIndex(index))
       .catch(() => undefined);
   };
@@ -369,7 +362,6 @@ export default function VideoStoriesSection() {
                           className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
                           data-src={story.video}
                           aria-label={`${story.title} video`}
-                          autoPlay
                           loop
                           muted
                           playsInline

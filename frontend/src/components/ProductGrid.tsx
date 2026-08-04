@@ -1,4 +1,5 @@
 import ProductCard from "@/components/ProductCard";
+import type { ProductCardDetailMode } from "@/components/ProductCard";
 import type { Product } from "@/lib/products";
 
 export default function ProductGrid({
@@ -6,11 +7,13 @@ export default function ProductGrid({
   compact = false,
   priceOverride,
   hideAddToCart = false,
+  detailMode = "notes",
 }: {
   products: Product[];
   compact?: boolean;
   priceOverride?: number;
   hideAddToCart?: boolean;
+  detailMode?: ProductCardDetailMode;
 }) {
   return (
     <div className={`grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${
@@ -23,6 +26,7 @@ export default function ProductGrid({
           compact={compact}
           priceOverride={priceOverride}
           hideAddToCart={hideAddToCart}
+          detailMode={detailMode}
         />
       ))}
     </div>
