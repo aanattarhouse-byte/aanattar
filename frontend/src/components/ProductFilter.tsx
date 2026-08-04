@@ -155,8 +155,8 @@ export default function ProductFilter({ products }: { products: Product[] }) {
       .slice(0, 8);
   }, [allSuggestions, debouncedInput]);
 
-  const filteredProducts = useMemo(() => {
-    if (!committedQuery) return [];
+  const displayedProducts = useMemo(() => {
+    if (!committedQuery) return products;
 
     return products.filter((product) => {
       const metadata = activeTab === "notes" ? product.notes : product.occasions ?? [];
@@ -317,41 +317,43 @@ export default function ProductFilter({ products }: { products: Product[] }) {
 
       <div ref={resultsRef} className="mt-9 scroll-mt-32">
         <AnimatePresence mode="wait">
-          {committedQuery ? (
-            <motion.div
-              key={`${activeTab}-${committedQuery}`}
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 18 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#d4a24c]">
-                    {activeTab === "notes" ? "Fragrance Notes" : "Occasion Match"}
-                  </p>
-                  <h2 className="mt-2 font-display text-3xl font-semibold text-white sm:text-4xl">
-                    Results for &quot;{committedQuery}&quot;
-                  </h2>
-                </div>
-                <p className="text-sm font-semibold text-zinc-400">
-                  {filteredProducts.length} product{filteredProducts.length === 1 ? "" : "s"}
+          <motion.div
+            key={`${activeTab}-${committedQuery || "all"}`}
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 18 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#d4a24c]">
+                  {activeTab === "notes" ? "Fragrance Notes" : "Occasion Match"}
                 </p>
+                <h2 className="mt-2 font-display text-3xl font-semibold text-white sm:text-4xl">
+                  {committedQuery ? (
+                    <>Results for &quot;{committedQuery}&quot;</>
+                  ) : (
+                    "All signature attars"
+                  )}
+                </h2>
               </div>
+              <p className="text-sm font-semibold text-zinc-400">
+                {displayedProducts.length} product{displayedProducts.length === 1 ? "" : "s"}
+              </p>
+            </div>
 
-              {filteredProducts.length ? (
-                <ProductGrid
-                  products={filteredProducts}
-                  compact
-                  hideAddToCart
-                  detailMode={activeTab}
-                  animated
-                />
-              ) : (
-                <EmptyState onClear={clearSearch} />
-              )}
-            </motion.div>
-          ) : null}
+            {displayedProducts.length ? (
+              <ProductGrid
+                products={displayedProducts}
+                compact
+                hideAddToCart
+                detailMode={activeTab}
+                animated
+              />
+            ) : (
+              <EmptyState onClear={clearSearch} />
+            )}
+          </motion.div>
         </AnimatePresence>
       </div>
     </div>
