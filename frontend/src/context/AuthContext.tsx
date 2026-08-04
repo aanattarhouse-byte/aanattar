@@ -37,6 +37,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const META_BROWSER_MESSAGE = 'For the best sign-in experience, please open this page in Chrome or Safari.';
+const GOOGLE_REDIRECT_PENDING_KEY = 'aanstory_google_redirect_pending';
 
 function getBrowserInfo(): BrowserInfo {
   if (typeof navigator === 'undefined') {
@@ -142,6 +143,7 @@ export function AuthProvider({
 
     // Redirect is the Firebase-supported OAuth flow for constrained browsers,
     // popup blockers, and Meta WebViews where new windows are unreliable.
+    window.sessionStorage.setItem(GOOGLE_REDIRECT_PENDING_KEY, '1');
     await signInWithRedirect(firebaseAuthInstance, provider);
   }, []);
 
@@ -150,14 +152,22 @@ export function AuthProvider({
 
     async function restoreRedirectSession() {
       try {
+        if (window.sessionStorage.getItem(GOOGLE_REDIRECT_PENDING_KEY) !== '1') {
+          return;
+        }
+
         const firebaseAuthInstance = await getFirebaseAuth();
         if (!firebaseAuthInstance || cancelled) return;
 
         const { getRedirectResult } = await import('firebase/auth');
         const redirectResult = await getRedirectResult(firebaseAuthInstance);
 
-        if (!redirectResult?.user || cancelled) return;
+        if (!redirectResult?.user || cancelled) {
+          window.sessionStorage.removeItem(GOOGLE_REDIRECT_PENDING_KEY);
+          return;
+        }
 
+        window.sessionStorage.removeItem(GOOGLE_REDIRECT_PENDING_KEY);
         setLoading(true);
         setError(null);
 
@@ -167,6 +177,7 @@ export function AuthProvider({
         await exchangeFirebaseCredential(redirectResult.user);
       } catch (err) {
         console.error('Google redirect sign-in recovery failed:', err);
+        window.sessionStorage.removeItem(GOOGLE_REDIRECT_PENDING_KEY);
         if (!cancelled) setError(getAuthErrorMessage(err));
       } finally {
         if (!cancelled) setLoading(false);

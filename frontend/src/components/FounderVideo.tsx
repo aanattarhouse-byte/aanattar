@@ -20,10 +20,9 @@ export default function FounderVideo() {
     const video = videoRef.current;
     if (!video) return;
 
-    video.preload = "metadata";
+    video.preload = "auto";
     if (!video.src) {
-      video.src = "/founder.webm#t=0.001";
-      video.load();
+      video.src = "/founder.webm";
     }
   };
 
@@ -33,17 +32,12 @@ export default function FounderVideo() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          prepareVideo();
-          return;
-        }
-
         if (!entry.isIntersecting) {
           video.pause();
           setIsPlaying(false);
         }
       },
-      { threshold: 0.15, rootMargin: "500px 0px" }
+      { threshold: 0.15 }
     );
 
     observer.observe(video);

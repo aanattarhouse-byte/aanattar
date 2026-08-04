@@ -8,18 +8,36 @@ const CinematicShell = dynamic(
   { ssr: false, loading: () => null }
 );
 
+const CINEMATIC_FALLBACK_DELAY_MS = 12000;
+
 export default function DeferredCinematicShell() {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    if (enabled) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const idle = window.requestIdleCallback ?? ((cb: IdleRequestCallback) => window.setTimeout(cb, 900));
-    const cancelIdle = window.cancelIdleCallback ?? window.clearTimeout;
-    const id = idle(() => setEnabled(true));
+    const enable = () => setEnabled(true);
+    const events: Array<keyof WindowEventMap> = [
+      "pointermove",
+      "pointerdown",
+      "keydown",
+      "scroll",
+      "touchstart",
+    ];
+    const timeoutId = window.setTimeout(enable, CINEMATIC_FALLBACK_DELAY_MS);
 
-    return () => cancelIdle(id);
-  }, []);
+    events.forEach((eventName) => {
+      window.addEventListener(eventName, enable, { once: true, passive: true });
+    });
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      events.forEach((eventName) => {
+        window.removeEventListener(eventName, enable);
+      });
+    };
+  }, [enabled]);
 
   return enabled ? <CinematicShell /> : null;
 }

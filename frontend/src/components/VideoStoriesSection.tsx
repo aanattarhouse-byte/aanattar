@@ -40,11 +40,10 @@ const prepareVideoPreview = (video: HTMLVideoElement) => {
   video.muted = true;
   video.defaultMuted = true;
   video.playsInline = true;
-  video.preload = "metadata";
+  video.preload = "auto";
 
   if (!video.src) {
-    video.src = `${src}#t=0.001`;
-    video.load();
+    video.src = src;
   }
 };
 
@@ -191,30 +190,6 @@ export default function VideoStoriesSection() {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Prepare first frames before the cards reach the viewport without autoplaying every file.
-  useEffect(() => {
-    const videos = videoRefs.current.filter(Boolean) as HTMLVideoElement[];
-    if (!videos.length) return;
-
-    const loader = new IntersectionObserver(
-      (entries, obs) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const video = entry.target as HTMLVideoElement;
-          prepareVideoPreview(video);
-          obs.unobserve(video);
-        });
-      },
-      { rootMargin: "700px 0px", threshold: 0.01 }
-    );
-
-    videos.forEach((v) => {
-      if (v.dataset && v.dataset.src) loader.observe(v);
-    });
-
-    return () => loader.disconnect();
-  }, [mounted, isMobile]);
-
   // Stacking scroll progress across the entire cards container
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -229,11 +204,6 @@ export default function VideoStoriesSection() {
       let activeIndex = Math.floor(progress * total);
       if (activeIndex >= total) activeIndex = total - 1;
       if (activeIndex < 0) activeIndex = 0;
-
-      const activeVideo = videoRefs.current[activeIndex];
-      if (activeVideo && !activeVideo.src) {
-        prepareVideoPreview(activeVideo);
-      }
 
       videoRefs.current.forEach((video, idx) => {
         if (video && idx !== activeIndex && !video.paused) {
