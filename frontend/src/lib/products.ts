@@ -10,6 +10,7 @@ export type Product = {
   bestFor: string;
   price: number;
   category: string;
+  occasions?: string[];
   premium?: boolean;
   discountPercent?: number;
   hoverImage?: string;
@@ -92,6 +93,48 @@ export const productDiscountPercents: Record<string, number> = {
   "1001-nights-exclusive": 12,
   "mukhallat-royale": 25,
 };
+
+const productOccasions: Record<string, string[]> = {
+  "royal-confidence": ["Office", "Formal", "Luxury", "Boardroom"],
+  "aqua-prestige": ["Office", "Formal", "Dinner", "Luxury"],
+  "jannat-essence": ["Daily Wear", "Ramadan", "Casual", "Summer"],
+  "velvet-oudh-royale": ["Winter", "Luxury", "Evening", "Date Night"],
+  "ameer-al-oudh-reserve": ["Wedding", "Eid", "Luxury", "Formal"],
+  "one-man-show-signature": ["Travel", "Party", "Outdoor", "Casual"],
+  "white-musk-pure": ["Daily Wear", "Office", "Gym", "Summer"],
+  "raw-woods-intense": ["Party", "Date Night", "Evening", "Travel"],
+  "champions-reserve": ["Luxury", "Party", "Formal", "Big Moments"],
+  "mediterranean-luxe": ["Summer", "Travel", "Daily Wear", "Casual"],
+  "cypress-supreme": ["Office", "Formal", "Daily Wear", "Casual"],
+  "signature-noir": ["Date Night", "Party", "Formal", "Evening"],
+  "intemate-velvet": ["Date Night", "Winter", "Casual", "Evening"],
+  "azure-cedar-reserve": ["Office", "Formal", "Daily Wear", "Luxury"],
+  "garden-bloom": ["Wedding", "Eid", "Summer", "Party"],
+  "white-oudh-classic": ["Daily Wear", "Ramadan", "Eid", "Casual"],
+  "purple-oudh-mystique": ["Luxury", "Date Night", "Party", "Evening"],
+  "blue-musk-fresh": ["Gym", "Summer", "Travel", "Daily Wear"],
+  "yellow-musk-gold": ["Daily Wear", "Summer", "Casual", "Travel"],
+  "boutique-reserve-select": ["Luxury", "Office", "Formal", "Travel"],
+  "majmua-heritage": ["Ramadan", "Eid", "Traditional", "Winter"],
+  "jannatul-firdaus-royal": ["Ramadan", "Eid", "Summer", "Formal"],
+  "t-rose-elegance": ["Wedding", "Date Night", "Eid", "Luxury"],
+  "sandal-supreme": ["Office", "Daily Wear", "Ramadan", "Casual"],
+  "velvet-desire": ["Party", "Date Night", "Luxury", "Evening"],
+  "suede-signature": ["Office", "Daily Wear", "Casual", "Travel"],
+  "musk-rizali-premium": ["Luxury", "Office", "Daily Wear", "Formal"],
+  "black-edition": ["Party", "Date Night", "Winter", "Travel"],
+  "mogra-garden-bloom": ["Wedding", "Eid", "Evening", "Traditional"],
+  "jasmin-pure": ["Daily Wear", "Summer", "Casual", "Office"],
+  "lavender-mist": ["Daily Wear", "Travel", "Casual", "Night"],
+  "marigold-blossom": ["Wedding", "Eid", "Ramadan", "Traditional"],
+  "chocolate-musk-reserve": ["Winter", "Date Night", "Luxury", "Casual"],
+  "1001-nights-exclusive": ["Wedding", "Luxury", "Eid", "Evening"],
+  "mukhallat-royale": ["Wedding", "Luxury", "Eid", "Formal"],
+};
+
+export function getProductOccasions(product: Pick<Product, "slug" | "occasions">) {
+  return product.occasions ?? productOccasions[product.slug] ?? ["Daily Wear"];
+}
 
 const baseImage = "/attar-bottle.svg";
 
@@ -669,6 +712,7 @@ export const products: Product[] = productCatalog.map((product) => ({
   ...product,
   image: productImages[product.slug] ?? product.image,
   hoverImage: productHoverImages[product.slug] ?? product.hoverImage,
+  occasions: getProductOccasions(product),
   discountPercent: getProductDiscountPercent(product),
 }));
 

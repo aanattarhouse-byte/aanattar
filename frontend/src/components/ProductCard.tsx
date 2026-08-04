@@ -35,7 +35,7 @@ export default function ProductCard({
   const discountPercent = getProductDiscountPercent(product);
   const displayPrice = priceOverride ?? product.price;
   const compareAtPrice = getCompareAtPrice(product.price, discountPercent);
-  const detailText = detailMode === "notes" ? product.notes.join(", ") : product.bestFor;
+  const detailText = detailMode === "notes" ? product.notes.join(", ") : (product.occasions ?? []).join(", ");
   const hoverImage = product.hoverImage && (isTouched || isHovering) ? product.hoverImage : undefined;
 
   const addToCart = () => {
