@@ -256,16 +256,8 @@ export default function ProductFilter({ products }: { products: Product[] }) {
 
   return (
     <div ref={searchRef} className="mx-auto max-w-7xl relative z-10">
-      <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-            Build Your Signature
-          </p>
-          <h1 className="mt-2 max-w-3xl text-3xl font-semibold leading-tight text-white drop-shadow-[0_8px_34px_rgba(255,179,71,0.18)] sm:text-4xl md:text-5xl">
-            Choose the attar that enters before you do.
-          </h1>
-        </div>
-        <div className="flex flex-col items-start gap-3 sm:items-end">
+      <div className="mb-8 flex flex-col gap-6">
+        <div className="flex flex-col items-center gap-3">
           <div
             role="tablist"
             aria-label="Choose fragrance filter"
@@ -296,6 +288,15 @@ export default function ProductFilter({ products }: { products: Product[] }) {
               Clear {activeTab === "notes" ? "note" : "occasion"}: {committedQuery}
             </button>
           ) : null}
+        </div>
+
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+            Build Your Signature
+          </p>
+          <h1 className="mt-2 max-w-3xl text-3xl font-semibold leading-tight text-white drop-shadow-[0_8px_34px_rgba(255,179,71,0.18)] sm:text-4xl md:text-5xl">
+            Choose the attar that enters before you do.
+          </h1>
         </div>
       </div>
 
