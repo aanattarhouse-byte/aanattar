@@ -256,7 +256,7 @@ export default function ProductFilter({ products }: { products: Product[] }) {
 
   return (
     <div ref={searchRef} className="mx-auto max-w-7xl relative z-10">
-      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
             Build Your Signature
@@ -265,42 +265,41 @@ export default function ProductFilter({ products }: { products: Product[] }) {
             Choose the attar that enters before you do.
           </h1>
         </div>
-        <p className="text-sm font-semibold text-zinc-400">
-          {products.length} signature attars
-        </p>
-      </div>
-
-      <div className="mb-8 flex flex-col items-center gap-3">
-        <div
-          role="tablist"
-          aria-label="Choose fragrance filter"
-          className="inline-flex overflow-hidden rounded-full border border-[#d4a24c]/35 bg-white p-1 text-black shadow-[0_12px_32px_rgba(0,0,0,0.35)]"
-        >
-          {tabs.map((tab, index) => (
-            <button
-              key={tab.value}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab.value}
-              onClick={() => handleTabChange(tab.value)}
-              className={`h-11 px-6 text-xl font-medium leading-none transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5d28a] sm:h-10 sm:text-base ${
-                activeTab === tab.value ? "text-black" : "text-zinc-500 hover:text-black"
-              } ${index > 0 ? "border-l border-black/25" : ""}`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {committedQuery ? (
-          <button
-            type="button"
-            onClick={clearSearch}
-            className="rounded-full border border-[#d4a24c]/30 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-amber-100 transition hover:border-[#f5d28a] hover:bg-[#f5d28a] hover:text-black"
+        <div className="flex flex-col items-start gap-3 sm:items-end">
+          <p className="text-sm font-semibold text-zinc-400">
+            {products.length} signature attars
+          </p>
+          <div
+            role="tablist"
+            aria-label="Choose fragrance filter"
+            className="inline-flex overflow-hidden rounded-full border border-[#d4a24c]/35 bg-white p-1 text-black shadow-[0_12px_32px_rgba(0,0,0,0.35)]"
           >
-            Clear {activeTab === "notes" ? "note" : "occasion"}: {committedQuery}
-          </button>
-        ) : null}
+            {tabs.map((tab, index) => (
+              <button
+                key={tab.value}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab.value}
+                onClick={() => handleTabChange(tab.value)}
+                className={`h-11 px-6 text-xl font-medium leading-none transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5d28a] sm:h-10 sm:text-base ${
+                  activeTab === tab.value ? "text-black" : "text-zinc-500 hover:text-black"
+                } ${index > 0 ? "border-l border-black/25" : ""}`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {committedQuery ? (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="rounded-full border border-[#d4a24c]/30 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-amber-100 transition hover:border-[#f5d28a] hover:bg-[#f5d28a] hover:text-black"
+            >
+              Clear {activeTab === "notes" ? "note" : "occasion"}: {committedQuery}
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <AnimatePresence>
