@@ -266,9 +266,6 @@ export default function ProductFilter({ products }: { products: Product[] }) {
           </h1>
         </div>
         <div className="flex flex-col items-start gap-3 sm:items-end">
-          <p className="text-sm font-semibold text-zinc-400">
-            {products.length} signature attars
-          </p>
           <div
             role="tablist"
             aria-label="Choose fragrance filter"
