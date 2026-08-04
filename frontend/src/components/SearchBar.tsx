@@ -46,7 +46,7 @@ export default function SearchBar({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="relative"
+      className="relative max-w-md"
     >
       <label htmlFor={id} className="sr-only">
         {label}
@@ -54,7 +54,7 @@ export default function SearchBar({
       <div className="relative">
         <Icon
           aria-hidden
-          className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#d4a24c]"
+          className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#d4a24c]"
         />
         <input
           id={id}
@@ -70,7 +70,7 @@ export default function SearchBar({
           onFocus={onFocus}
           onKeyDown={onKeyDown}
           placeholder={placeholder}
-          className="h-16 w-full rounded-[24px] border border-[#d4a24c]/35 bg-white/[0.08] pl-14 pr-5 text-base font-semibold text-white shadow-[0_28px_90px_rgba(0,0,0,0.34)] outline-none backdrop-blur-xl transition placeholder:text-zinc-500 focus:border-[#f5d28a] focus:bg-white/[0.11] focus:ring-4 focus:ring-[#d4a24c]/15 sm:h-20 sm:text-lg"
+          className="h-11 w-full rounded-full border border-[#d4a24c]/35 bg-white/[0.08] pl-11 pr-4 text-sm font-semibold text-white shadow-[0_14px_38px_rgba(0,0,0,0.24)] outline-none backdrop-blur-xl transition placeholder:text-zinc-500 focus:border-[#f5d28a] focus:bg-white/[0.11] focus:ring-4 focus:ring-[#d4a24c]/15"
         />
       </div>
 
