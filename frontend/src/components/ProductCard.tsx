@@ -26,10 +26,12 @@ export default function ProductCard({
   hideAddToCart?: boolean;
 }) {
   const [isTouched, setIsTouched] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const { addItem } = useCart();
   const discountPercent = getProductDiscountPercent(product);
   const displayPrice = priceOverride ?? product.price;
   const compareAtPrice = getCompareAtPrice(product.price, discountPercent);
+  const hoverImage = product.hoverImage && (isTouched || isHovering) ? product.hoverImage : undefined;
 
   const addToCart = () => {
     addItem({
@@ -54,6 +56,8 @@ export default function ProductCard({
         prefetch={false}
         className="relative block aspect-[4/3] overflow-hidden bg-[#0f0907]"
         aria-label={`View ${product.name}`}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
         onTouchStart={() => setIsTouched(true)}
         onTouchEnd={() => setIsTouched(false)}
         onTouchCancel={() => setIsTouched(false)}
@@ -66,11 +70,11 @@ export default function ProductCard({
           decoding="async"
           className={`object-cover transition duration-700 ease-out md:group-hover:scale-105 ${
             isTouched ? "scale-105 opacity-0" : ""
-          } ${product.hoverImage ? "md:group-hover:opacity-0" : ""}`}
+          } ${hoverImage ? "md:group-hover:opacity-0" : ""}`}
         />
-        {product.hoverImage ? (
+        {hoverImage ? (
           <Image
-            src={product.hoverImage}
+            src={hoverImage}
             alt={`${product.name} packaging`}
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"

@@ -1,81 +1,14 @@
-"use client";
-
-import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 
 export default function AnimatedSignatureHeader() {
-  const headingRef = useRef<HTMLHeadingElement>(null);
-
-  useEffect(() => {
-    if (!headingRef.current) return;
-
-    let timeline: { kill: () => void } | undefined;
-
-    import("gsap").then(({ default: gsap }) => {
-      if (!headingRef.current) return;
-
-      const chars = headingRef.current.querySelectorAll(".char-span");
-      const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
-      timeline = tl;
-
-      tl.set(headingRef.current, { y: 0, opacity: 1 });
-      tl.set(chars, { y: -150, opacity: 0, filter: "blur(12px)" });
-
-      tl.to(chars, {
-        y: 0,
-        opacity: 1,
-        filter: "blur(0px)",
-        duration: 0.9,
-        stagger: 0.04,
-        ease: "back.out(1.6)",
-      });
-
-      tl.to({}, { duration: 2 });
-
-      tl.to(headingRef.current, {
-        y: 80,
-        opacity: 0,
-        filter: "blur(12px)",
-        duration: 0.8,
-        ease: "power2.inOut",
-      });
-    });
-
-    return () => {
-      timeline?.kill();
-    };
-  }, []);
-
-  const headingText = "Choose the attar that enters before you do.";
-  const words = headingText.split(" ");
-
   return (
     <div className="max-w-2xl">
       <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
         Build Your Signature
       </p>
-      
-      {/* GSAP Animated Character-by-Character Gravity/Bounce Heading */}
-      <h1
-        ref={headingRef}
-        className="mt-3 text-3xl leading-tight sm:text-4xl md:text-5xl font-display font-semibold text-white drop-shadow-[0_8px_34px_rgba(255,179,71,0.18)] flex flex-wrap gap-x-[0.25em] min-h-[3.6rem]"
-      >
-        {words.map((word, wIndex) => (
-          <span
-            key={wIndex}
-            className="word-span inline-block whitespace-nowrap"
-          >
-            {word.split("").map((char, cIndex) => (
-              <span
-                key={cIndex}
-                className="char-span inline-block opacity-0"
-                style={{ display: "inline-block" }}
-              >
-                {char}
-              </span>
-            ))}
-          </span>
-        ))}
+
+      <h1 className="mt-3 text-3xl font-semibold leading-tight text-white drop-shadow-[0_8px_34px_rgba(255,179,71,0.18)] sm:text-4xl md:text-5xl">
+        Choose the attar that enters before you do.
       </h1>
 
       <p className="mt-4 max-w-xl text-sm text-zinc-300 md:text-base">
