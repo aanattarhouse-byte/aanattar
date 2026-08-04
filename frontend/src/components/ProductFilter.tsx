@@ -120,6 +120,7 @@ export default function ProductFilter({ products }: { products: Product[] }) {
   const [activeTab, setActiveTab] = useState<ProductCardDetailMode>("notes");
   const [inputValue, setInputValue] = useState("");
   const [committedQuery, setCommittedQuery] = useState("");
+  const [selectorOpen, setSelectorOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -142,7 +143,6 @@ export default function ProductFilter({ products }: { products: Product[] }) {
   );
 
   const allSuggestions = activeTab === "notes" ? noteSuggestions : occasionSuggestions;
-  const popularChips = activeTab === "notes" ? noteChips : occasionChips;
 
   const filteredSuggestions = useMemo(() => {
     const needle = normalize(debouncedInput);
@@ -168,6 +168,11 @@ export default function ProductFilter({ products }: { products: Product[] }) {
     setHighlightedIndex(0);
   }, []);
 
+  const closeSelector = useCallback(() => {
+    setSelectorOpen(false);
+    closePopup();
+  }, [closePopup]);
+
   const commitSearch = useCallback(
     (value: string) => {
       const nextValue = value.trim();
@@ -175,13 +180,13 @@ export default function ProductFilter({ products }: { products: Product[] }) {
 
       setInputValue(nextValue);
       setCommittedQuery(nextValue);
-      closePopup();
+      closeSelector();
 
       window.requestAnimationFrame(() => {
         resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     },
-    [closePopup]
+    [closeSelector]
   );
 
   const clearSearch = useCallback(() => {
@@ -196,6 +201,7 @@ export default function ProductFilter({ products }: { products: Product[] }) {
     setInputValue("");
     setCommittedQuery("");
     closePopup();
+    setSelectorOpen(true);
   };
 
   const handleInputChange = (value: string) => {
@@ -206,7 +212,7 @@ export default function ProductFilter({ products }: { products: Product[] }) {
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Escape") {
-      closePopup();
+      closeSelector();
       return;
     }
 
@@ -249,7 +255,7 @@ export default function ProductFilter({ products }: { products: Product[] }) {
   }, [closePopup]);
 
   return (
-    <div className="mx-auto max-w-7xl relative z-10">
+    <div ref={searchRef} className="mx-auto max-w-7xl relative z-10">
       <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
@@ -264,67 +270,114 @@ export default function ProductFilter({ products }: { products: Product[] }) {
         </p>
       </div>
 
-      <div ref={searchRef} className="sticky top-20 z-40 -mx-4 mb-7 px-4 pt-2 sm:static sm:mx-0 sm:px-0 sm:pt-0">
-        <div className="rounded-[28px] border border-white/10 bg-black/40 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-6">
-          <div className="mb-5 flex justify-center">
-            <div
-              role="tablist"
-              aria-label="Choose fragrance filter"
-              className="inline-flex overflow-hidden rounded-full border border-[#d4a24c]/35 bg-white p-1 text-black shadow-[0_12px_32px_rgba(0,0,0,0.35)]"
+      <div className="mb-8 flex flex-col items-center gap-3">
+        <div
+          role="tablist"
+          aria-label="Choose fragrance filter"
+          className="inline-flex overflow-hidden rounded-full border border-[#d4a24c]/35 bg-white p-1 text-black shadow-[0_12px_32px_rgba(0,0,0,0.35)]"
+        >
+          {tabs.map((tab, index) => (
+            <button
+              key={tab.value}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === tab.value}
+              onClick={() => handleTabChange(tab.value)}
+              className={`h-11 px-6 text-xl font-medium leading-none transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5d28a] sm:h-10 sm:text-base ${
+                activeTab === tab.value ? "text-black" : "text-zinc-500 hover:text-black"
+              } ${index > 0 ? "border-l border-black/25" : ""}`}
             >
-              {tabs.map((tab, index) => (
-                <button
-                  key={tab.value}
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === tab.value}
-                  onClick={() => handleTabChange(tab.value)}
-                  className={`h-11 px-6 text-xl font-medium leading-none transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5d28a] sm:h-10 sm:text-base ${
-                    activeTab === tab.value
-                      ? "text-black"
-                      : "text-zinc-500 hover:text-black"
-                  } ${index > 0 ? "border-l border-black/25" : ""}`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <SearchBar
-            id={`signature-${activeTab}-search`}
-            label={activeTab === "notes" ? "Search fragrance notes" : "Search by occasion"}
-            value={inputValue}
-            placeholder={
-              activeTab === "notes"
-                ? "Search fragrance notes (e.g. Oud, Rose, Vanilla, Musk, Amber, Sandalwood...)"
-                : "Search by occasion..."
-            }
-            popupOpen={popupOpen}
-            suggestions={filteredSuggestions}
-            highlightedIndex={highlightedIndex}
-            popupIcon={activeTab === "notes" ? "search" : "sparkles"}
-            onChange={handleInputChange}
-            onFocus={() => setPopupOpen(true)}
-            onKeyDown={handleKeyDown}
-            onSelect={commitSearch}
-            onHighlight={setHighlightedIndex}
-          />
-
-          <div
-            aria-label={activeTab === "notes" ? "Popular fragrance notes" : "Popular occasions"}
-            className="-mx-1 mt-5 flex gap-2 overflow-x-auto px-1 pb-2"
-          >
-            {popularChips.map((chip) =>
-              activeTab === "notes" ? (
-                <NoteChip key={chip} label={chip} onClick={commitSearch} />
-              ) : (
-                <OccasionChip key={chip} label={chip} onClick={commitSearch} />
-              )
-            )}
-          </div>
+              {tab.label}
+            </button>
+          ))}
         </div>
+
+        {committedQuery ? (
+          <button
+            type="button"
+            onClick={clearSearch}
+            className="rounded-full border border-[#d4a24c]/30 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-amber-100 transition hover:border-[#f5d28a] hover:bg-[#f5d28a] hover:text-black"
+          >
+            Clear {activeTab === "notes" ? "note" : "occasion"}: {committedQuery}
+          </button>
+        ) : null}
       </div>
+
+      <AnimatePresence>
+        {selectorOpen ? (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-start justify-center bg-black/70 px-4 py-24 backdrop-blur-sm sm:items-center sm:py-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onMouseDown={closeSelector}
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="signature-selector-title"
+              className="w-full max-w-3xl rounded-[24px] border border-white/12 bg-[#12100e] p-4 shadow-[0_30px_100px_rgba(0,0,0,0.55)] sm:p-6"
+              initial={{ opacity: 0, y: 18, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 18, scale: 0.98 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#d4a24c]">
+                    {activeTab === "notes" ? "Fragrance Notes" : "Occasion Match"}
+                  </p>
+                  <h2 id="signature-selector-title" className="mt-1 font-display text-2xl font-semibold text-white">
+                    Select {activeTab === "notes" ? "a note" : "an occasion"}
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeSelector}
+                  aria-label="Close selector"
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/15 bg-white/[0.06] text-xl leading-none text-white transition hover:border-[#f5d28a] hover:bg-[#f5d28a] hover:text-black"
+                >
+                  x
+                </button>
+              </div>
+
+              <SearchBar
+                id={`signature-${activeTab}-search`}
+                label={activeTab === "notes" ? "Search fragrance notes" : "Search by occasion"}
+                value={inputValue}
+                placeholder={
+                  activeTab === "notes"
+                    ? "Search fragrance notes..."
+                    : "Search by occasion..."
+                }
+                popupOpen={popupOpen}
+                suggestions={filteredSuggestions}
+                highlightedIndex={highlightedIndex}
+                popupIcon={activeTab === "notes" ? "search" : "sparkles"}
+                onChange={handleInputChange}
+                onFocus={() => setPopupOpen(true)}
+                onKeyDown={handleKeyDown}
+                onSelect={commitSearch}
+                onHighlight={setHighlightedIndex}
+              />
+
+              <div
+                aria-label={activeTab === "notes" ? "All fragrance notes" : "All occasions"}
+                className="mt-5 flex max-h-56 flex-wrap gap-2 overflow-y-auto pr-1"
+              >
+                {allSuggestions.map((chip) =>
+                  activeTab === "notes" ? (
+                    <NoteChip key={chip} label={chip} onClick={commitSearch} />
+                  ) : (
+                    <OccasionChip key={chip} label={chip} onClick={commitSearch} />
+                  )
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <div ref={resultsRef} className="scroll-mt-32">
         <AnimatePresence mode="wait">
