@@ -50,7 +50,7 @@ type WardrobeRecommendation = {
   line: string;
 };
 
-const PREMIUM_COLLECTION_PRICE = 149;
+const PREMIUM_COLLECTION_PRICE = 150;
 
 const recommendations: WardrobeRecommendation[] = [
   {
