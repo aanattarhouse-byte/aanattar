@@ -38,6 +38,7 @@ const occasionChips = [
   "Luxury",
   "Formal",
   "Casual",
+  //"Casual",
 ];
 
 const noteAliases = [
