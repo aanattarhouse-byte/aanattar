@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 type HeroSlide = {
@@ -7,27 +6,24 @@ type HeroSlide = {
   alt: string;
   href: string;
   isImageButtonLink?: boolean;
-  linkClassName: string;
+  linkClassName?: string;
 };
 
 const heroSlides: HeroSlide[] = [
-  {
-    desktopSrc: "/dekstop2.png",
-    mobileSrc: "/mobile2.png",
-    alt: "Luxury Perfume Banner",
-    href: "/products/salim-luxury-attar",
-    linkClassName:
-      "left-[30.5%] top-[85.9%] h-[5%] w-[39%] md:left-[6%] md:top-[61.4%] md:h-[9%] md:w-[14%]",
-  },
   // {
-  //   desktopSrc: "/desktop2.webp",
-  //   mobileSrc: "/mobile2.webp",
-  //   alt: "Luxury Perfume Banner 2",
-  //   href: "/build-your-signature",
-  //   isImageButtonLink: true,
+  //   desktopSrc: "/dekstop2.png",
+  //   mobileSrc: "/mobile2.png",
+  //   alt: "Luxury Perfume Banner",
+  //   href: "/products/salim-luxury-attar",
   //   linkClassName:
-  //     "left-[32%] top-[40%] h-[6%] w-[35%] md:left-[69%] md:top-[87%] md:h-[8%] md:w-[18%]",
+  //     "left-[20.5%] top-[55.9%] h-[5%] w-[39%] md:left-[6%] md:top-[61.4%] md:h-[9%] md:w-[14%]",
   // },
+  {
+    desktopSrc: "/desktop1.webp",
+    mobileSrc: "/mobile2.png",
+    alt: "Salim Luxury Attar offer banner",
+    href: "/products/salim-luxury-attar",
+  },
   // {
   //   desktopSrc: "/desktop3.jpg",
   //   mobileSrc: "/mobile3.jpeg",
@@ -41,53 +37,102 @@ const heroSlides: HeroSlide[] = [
 export default function Hero() {
   const scrollingImages = heroSlides.length > 1 ? [...heroSlides, heroSlides[0]] : heroSlides;
   const shouldScroll = heroSlides.length > 1;
+  const heroBackground =
+    "radial-gradient(circle at 50% 0%, rgba(255, 179, 71, 0.12), transparent 34rem), linear-gradient(180deg, #0b0b0b 0%, #111111 52%, #0b0b0b 100%)";
 
   return (
-    <section className="relative w-full overflow-hidden bg-black md:h-[75vh] lg:h-[calc(100vh-82px)] lg:max-h-screen">
-      <div className={`${shouldScroll ? "hero-scroll-track" : ""} flex md:h-full`}>
+    <section
+      className="hero-section relative flex w-full overflow-hidden"
+      style={{
+        background: heroBackground,
+      }}
+    >
+      <div
+        className={`${shouldScroll ? "hero-scroll-track" : ""} flex`}
+        style={{ height: "100%", width: "100%" }}
+      >
         {scrollingImages.map((image, index) => (
           <div
             key={`${image.desktopSrc}-${image.mobileSrc}-${index}`}
-            className="relative w-full shrink-0 md:h-full"
+            className="hero-slide relative flex shrink-0 items-center justify-center"
+            style={{
+              height: "100%",
+              width: "100%",
+            }}
           >
-            <Image
+            <img
               src={image.desktopSrc}
               alt={image.alt}
-              width={1820}
-              height={1000}
-              priority={index === 0}
-              loading={index === 0 ? "eager" : "lazy"}
+              width={1920}
+              height={1080}
               fetchPriority={index === 0 ? "high" : "low"}
               decoding="async"
-              quality={82}
-              sizes="(max-width:640px) 100vw, (max-width:1024px) 100vw, 100vw"
-              className="hidden h-full w-full object-cover object-center md:block"
+              className="hidden h-full w-full object-contain object-center md:block"
+              style={{
+                height: "100%",
+                objectFit: "contain",
+                objectPosition: "center",
+                width: "100%",
+              }}
             />
-            <Image
+            <img
               src={image.mobileSrc}
               alt={image.alt}
-              width={780}
-              height={1500}
-              priority={index === 0}
-              loading={index === 0 ? "eager" : "lazy"}
+              width={1080}
+              height={1920}
               fetchPriority={index === 0 ? "high" : "low"}
               decoding="async"
-              quality={82}
-              sizes="(max-width:640px) 100vw, (max-width:1024px) 100vw, 100vw"
-              className="h-auto w-full object-contain md:hidden"
+              className="h-full w-full object-contain object-center md:hidden"
+              style={{
+                height: "100%",
+                objectFit: "contain",
+                objectPosition: "center",
+                width: "100%",
+              }}
             />
             <Link
               href={image.href}
-              aria-label={image.isImageButtonLink ? "Build Your Signature" : undefined}
+              aria-label={image.isImageButtonLink ? "Build Your Signature" : "Shop Salim now"}
+              style={
+                image.isImageButtonLink
+                  ? undefined
+                  : {
+                      left: "72.4%",
+                      top: "75.6%",
+                      transform: "translate(-50%, -50%)",
+                    }
+              }
               className={
                 image.isImageButtonLink
                   ? `absolute z-10 cursor-pointer ${image.linkClassName}`
-                  : `absolute z-10 cursor-pointer ${image.linkClassName}`
+                  : "absolute z-20 inline-flex cursor-pointer items-center justify-center"
               }
             >
-              <span className="sr-only">
-                {image.isImageButtonLink ? "Build Your Signature" : "Shop Salim now"}
-              </span>
+              {image.isImageButtonLink ? (
+                <span className="sr-only">Build Your Signature</span>
+              ) : (
+                <span
+                  style={{
+                    alignItems: "center",
+                    background: "#ffdc43",
+                    border: "1px solid #ffec83",
+                    borderRadius: "999px",
+                    boxShadow:
+                      "0 3px 0 rgba(120, 76, 0, 0.78), 0 10px 20px rgba(0, 0, 0, 0.34)",
+                    color: "#000000",
+                    display: "inline-flex",
+                    fontSize: "12px",
+                    fontWeight: 800,
+                    height: "30px",
+                    justifyContent: "center",
+                    lineHeight: 1,
+                    minWidth: "100px",
+                    padding: "0 24px",
+                  }}
+                >
+                  Shop now
+                </span>
+              )}
             </Link>
           </div>
         ))}

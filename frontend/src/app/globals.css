@@ -90,6 +90,28 @@ section {
   will-change: transform;
 }
 
+.hero-section {
+  aspect-ratio: 9 / 16;
+  height: calc(100dvh - 60px);
+  max-height: 1920px;
+  min-height: 420px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 179, 71, 0.12), transparent 34rem),
+    linear-gradient(180deg, #0b0b0b 0%, #111111 52%, #0b0b0b 100%);
+}
+
+.hero-slide {
+  background: transparent;
+}
+
+@media (min-width: 768px) {
+  .hero-section {
+    aspect-ratio: 16 / 9;
+    height: calc(100dvh - 82px);
+    max-height: 1080px;
+  }
+}
+
 .why-aan-reveal {
   animation: why-aan-reveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
