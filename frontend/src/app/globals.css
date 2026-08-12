@@ -138,12 +138,13 @@ section {
 
 .hero-shop-now-link {
   cursor: pointer;
-  height: 7%;
-  left: 50%;
+  height: 100%;
+  inset: 0;
+  left: 0;
   position: absolute;
-  top: 82.5%;
-  transform: translate(-50%, -50%);
-  width: 24%;
+  top: 0;
+  transform: none;
+  width: 100%;
   z-index: 20;
 }
 
