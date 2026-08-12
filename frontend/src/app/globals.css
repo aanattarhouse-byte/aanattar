@@ -87,28 +87,60 @@ section {
 
 .hero-scroll-track {
   animation: hero-scroll-right-to-left 12s infinite ease-in-out;
+  display: flex;
+  height: 100%;
   will-change: transform;
+  width: 100%;
 }
 
 .hero-section {
-  aspect-ratio: 9 / 16;
-  height: calc(100dvh - 60px);
-  max-height: 1920px;
-  min-height: 420px;
+  --hero-visible-offset: 139px;
+  align-items: center;
+  display: flex;
+  height: calc(100vh - var(--hero-visible-offset));
+  height: calc(100svh - var(--hero-visible-offset));
+  min-height: 0;
+  overflow: hidden;
   background:
     radial-gradient(circle at 50% 0%, rgba(255, 179, 71, 0.12), transparent 34rem),
     linear-gradient(180deg, #0b0b0b 0%, #111111 52%, #0b0b0b 100%);
 }
 
 .hero-slide {
+  align-items: center;
   background: transparent;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.hero-image {
+  height: 100% !important;
+  inset: 0;
+  max-height: 100% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  position: absolute;
+  width: 100% !important;
+}
+
+.hero-image-desktop {
+  object-fit: cover !important;
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  .hero-section {
+    --hero-visible-offset: 143px;
+  }
 }
 
 @media (min-width: 768px) {
   .hero-section {
-    aspect-ratio: 16 / 9;
-    height: calc(100dvh - 82px);
-    max-height: 1080px;
+    --hero-visible-offset: 83px;
   }
 }
 
