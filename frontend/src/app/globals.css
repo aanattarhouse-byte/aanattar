@@ -132,13 +132,18 @@ section {
   object-fit: cover !important;
 }
 
+.hero-image-mobile {
+  object-fit: cover !important;
+}
+
 .hero-shop-now-link {
   cursor: pointer;
-  height: 11%;
-  left: 68.5%;
+  height: 7%;
+  left: 50%;
   position: absolute;
-  top: 84%;
-  width: 15%;
+  top: 82.5%;
+  transform: translate(-50%, -50%);
+  width: 24%;
   z-index: 20;
 }
 
@@ -151,6 +156,14 @@ section {
 @media (min-width: 768px) {
   .hero-section {
     --hero-visible-offset: 83px;
+  }
+
+  .hero-shop-now-link {
+    height: 11%;
+    left: 68.5%;
+    top: 84%;
+    transform: none;
+    width: 15%;
   }
 }
 

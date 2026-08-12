@@ -87,7 +87,7 @@ export default function Hero() {
               height={6000}
               fetchPriority={index === 0 ? "high" : "low"}
               decoding="async"
-              className="hero-image block md:hidden"
+              className="hero-image hero-image-mobile block md:hidden"
               style={{
                 height: "100%",
                 inset: 0,
