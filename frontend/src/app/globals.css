@@ -132,6 +132,16 @@ section {
   object-fit: cover !important;
 }
 
+.hero-shop-now-link {
+  cursor: pointer;
+  height: 11%;
+  left: 68.5%;
+  position: absolute;
+  top: 84%;
+  width: 15%;
+  z-index: 20;
+}
+
 @media (min-width: 640px) and (max-width: 767px) {
   .hero-section {
     --hero-visible-offset: 143px;

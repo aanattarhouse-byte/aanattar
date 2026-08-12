@@ -107,6 +107,15 @@ export default function Hero() {
                 <span className="sr-only">Build Your Signature</span>
               </Link>
             )}
+            {!image.isImageButtonLink && (
+              <Link
+                href={image.href}
+                aria-label="Shop Salim Luxury Attar"
+                className="hero-shop-now-link"
+              >
+                <span className="sr-only">Shop now</span>
+              </Link>
+            )}
           </div>
         ))}
       </div>
